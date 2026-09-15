@@ -1,0 +1,254 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Espace admin" description="Gestion des dossiers clients — accès réservé." noindex>
+  <section class="section max-w-4xl">
+    <h1 class="font-display text-3xl text-indigo">Espace admin</h1>
+
+    <!-- Connexion -->
+    <div id="login-panel" class="mt-8 max-w-sm">
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="block font-sans text-sm font-medium text-encre">Email</label>
+          <input type="email" id="login-email" required class="mt-2 w-full rounded-sm border border-sable-light bg-white px-4 py-3 font-sans text-sm focus:border-indigo focus:outline-none" />
+        </div>
+        <div>
+          <label class="block font-sans text-sm font-medium text-encre">Mot de passe</label>
+          <input type="password" id="login-password" required class="mt-2 w-full rounded-sm border border-sable-light bg-white px-4 py-3 font-sans text-sm focus:border-indigo focus:outline-none" />
+        </div>
+        <button type="submit" class="btn-primary w-full">Se connecter</button>
+        <p id="login-error" class="font-sans text-xs text-jade-dark"></p>
+      </form>
+    </div>
+
+    <!-- Tableau de bord -->
+    <div id="dashboard-panel" class="mt-8 hidden">
+      <div class="flex items-center justify-between">
+        <p class="font-sans text-sm text-encre/60">Connecté</p>
+        <button id="logout-btn" class="font-sans text-sm text-encre/60 underline hover:text-indigo">Se déconnecter</button>
+      </div>
+
+      <!-- Créer un dossier -->
+      <div id="create-case-card" class="mt-8 rounded-lg border border-sable-light bg-white p-6">
+        <h2 class="font-display text-xl text-indigo">Créer un nouveau dossier</h2>
+        <form id="create-case-form" class="mt-4 flex flex-wrap items-end gap-3">
+          <div class="flex-1">
+            <label class="block font-sans text-sm font-medium text-encre">Nom du client</label>
+            <input type="text" id="new-client-name" required class="mt-2 w-full rounded-sm border border-sable-light bg-papier px-4 py-3 font-sans text-sm focus:border-indigo focus:outline-none" />
+          </div>
+          <button type="submit" class="btn-primary">Créer</button>
+        </form>
+        <p id="create-result" class="mt-3 font-sans text-xs text-encre/70"></p>
+      </div>
+
+      <!-- Liste des dossiers -->
+      <div id="cases-section" class="mt-10">
+        <h2 class="font-display text-xl text-indigo">Dossiers en cours</h2>
+        <div id="cases-list" class="mt-4 space-y-3"></div>
+      </div>
+
+      <!-- Détail d'un dossier -->
+      <div id="case-detail" class="mt-10 hidden rounded-lg border border-sable-light bg-white p-6">
+        <button id="back-to-list" class="font-sans text-sm text-encre/60 underline hover:text-indigo">← Retour à la liste</button>
+        <h2 class="mt-3 font-display text-2xl text-indigo" id="detail-client-name"></h2>
+
+        <div class="mt-4">
+          <label class="block font-sans text-sm font-medium text-encre">Statut du dossier</label>
+          <select id="status-select" class="mt-2 rounded-sm border border-sable-light bg-papier px-4 py-2 font-sans text-sm focus:border-indigo focus:outline-none">
+            <option value="diagnostic">Diagnostic en cours</option>
+            <option value="documents">Réunion des documents</option>
+            <option value="verification">Vérification du dossier</option>
+            <option value="depot">Dossier déposé</option>
+            <option value="decision">En attente de décision</option>
+            <option value="approuve">Visa obtenu</option>
+            <option value="refuse">Dossier refusé</option>
+          </select>
+        </div>
+
+        <p class="mt-4 font-sans text-xs text-encre/60">Lien à envoyer au client :</p>
+        <p id="detail-link" class="mt-1 break-all rounded-sm bg-papier px-3 py-2 font-mono text-xs text-indigo"></p>
+
+        <h3 class="mt-6 font-display text-lg text-indigo">Documents déposés</h3>
+        <ul id="detail-documents" class="mt-3 space-y-2 font-sans text-sm"></ul>
+
+        <h3 class="mt-6 font-display text-lg text-indigo">Messages</h3>
+        <div id="detail-messages" class="mt-3 space-y-3"></div>
+        <form id="reply-form" class="mt-4 space-y-3">
+          <textarea id="reply-input" rows="3" required placeholder="Votre réponse…" class="w-full rounded-sm border border-sable-light bg-papier px-4 py-3 font-sans text-sm focus:border-indigo focus:outline-none"></textarea>
+          <button type="submit" class="btn-primary">Répondre</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://ujrtyrnnhwsfqnftoawt.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_nKqEap0GKlrBNhtwxqivZg_UCtZT8Ek';
+    // @ts-ignore
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const statusLabels: Record<string, string> = {
+      diagnostic: 'Diagnostic en cours',
+      documents: 'Réunion des documents',
+      verification: 'Vérification du dossier',
+      depot: 'Dossier déposé',
+      decision: 'En attente de décision',
+      approuve: 'Visa obtenu',
+      refuse: 'Dossier refusé',
+    };
+
+    const loginPanel = document.getElementById('login-panel')!;
+    const dashboardPanel = document.getElementById('dashboard-panel')!;
+    const casesList = document.getElementById('cases-list')!;
+    const caseDetail = document.getElementById('case-detail')!;
+    let currentCase: any = null;
+
+    async function checkSession() {
+      const { data } = await sb.auth.getSession();
+      if (data.session) {
+        loginPanel.classList.add('hidden');
+        dashboardPanel.classList.remove('hidden');
+        await loadCases();
+      }
+    }
+
+    document.getElementById('login-form')!.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = (document.getElementById('login-email') as HTMLInputElement).value;
+      const password = (document.getElementById('login-password') as HTMLInputElement).value;
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      const errorEl = document.getElementById('login-error')!;
+      if (error) {
+        errorEl.textContent = 'Email ou mot de passe incorrect.';
+        return;
+      }
+      errorEl.textContent = '';
+      loginPanel.classList.add('hidden');
+      dashboardPanel.classList.remove('hidden');
+      await loadCases();
+    });
+
+    document.getElementById('logout-btn')!.addEventListener('click', async () => {
+      await sb.auth.signOut();
+      window.location.reload();
+    });
+
+    async function loadCases() {
+      const { data } = await sb.from('cases').select('*').order('created_at', { ascending: false });
+      casesList.innerHTML = '';
+      (data || []).forEach((c: any) => {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'flex w-full items-center justify-between rounded-sm border border-sable-light bg-white px-4 py-3 text-left hover:border-indigo';
+        row.innerHTML = `
+          <span class="font-sans text-sm font-medium text-indigo">${c.client_name}</span>
+          <span class="font-mono text-xs text-jade">${statusLabels[c.status] || c.status}</span>
+        `;
+        row.addEventListener('click', () => openCase(c));
+        casesList.appendChild(row);
+      });
+      if (!data || data.length === 0) {
+        casesList.innerHTML = '<p class="font-sans text-sm text-encre/50">Aucun dossier pour le moment.</p>';
+      }
+    }
+
+    document.getElementById('create-case-form')!.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('new-client-name') as HTMLInputElement;
+      const name = nameInput.value.trim();
+      if (!name) return;
+      const { data, error } = await sb.from('cases').insert({ client_name: name }).select().single();
+      const resultEl = document.getElementById('create-result')!;
+      if (error || !data) {
+        resultEl.textContent = 'Erreur lors de la création.';
+        return;
+      }
+      const link = `${window.location.origin}/dossier/?token=${data.access_token}`;
+      resultEl.innerHTML = `Dossier créé. Lien à envoyer au client : <span class="font-mono">${link}</span>`;
+      nameInput.value = '';
+      await loadCases();
+    });
+
+    async function openCase(c: any) {
+      currentCase = c;
+      document.getElementById('create-case-card')!.classList.add('hidden');
+      document.getElementById('cases-section')!.classList.add('hidden');
+      caseDetail.classList.remove('hidden');
+
+      document.getElementById('detail-client-name')!.textContent = c.client_name;
+      (document.getElementById('status-select') as HTMLSelectElement).value = c.status;
+      document.getElementById('detail-link')!.textContent =
+        `${window.location.origin}/dossier/?token=${c.access_token}`;
+
+      await loadCaseDocuments(c.id);
+      await loadCaseMessages(c.id);
+    }
+
+    document.getElementById('back-to-list')!.addEventListener('click', () => {
+      caseDetail.classList.add('hidden');
+      document.getElementById('create-case-card')!.classList.remove('hidden');
+      document.getElementById('cases-section')!.classList.remove('hidden');
+    });
+
+    document.getElementById('status-select')!.addEventListener('change', async (e) => {
+      if (!currentCase) return;
+      const newStatus = (e.target as HTMLSelectElement).value;
+      await sb.from('cases').update({ status: newStatus }).eq('id', currentCase.id);
+      currentCase.status = newStatus;
+      await loadCases();
+    });
+
+    async function loadCaseDocuments(caseId: string) {
+      const { data } = await sb.from('documents').select('*').eq('case_id', caseId).order('uploaded_at', { ascending: false });
+      const list = document.getElementById('detail-documents')!;
+      list.innerHTML = '';
+      for (const doc of data || []) {
+        const { data: signed } = await sb.storage.from('documents').createSignedUrl(doc.storage_path, 3600);
+        const li = document.createElement('li');
+        li.innerHTML = signed?.signedUrl
+          ? `<a href="${signed.signedUrl}" target="_blank" rel="noopener noreferrer" class="text-jade underline">${doc.file_name}</a>`
+          : doc.file_name;
+        list.appendChild(li);
+      }
+      if (!data || data.length === 0) {
+        list.innerHTML = '<li class="text-encre/50">Aucun document déposé.</li>';
+      }
+    }
+
+    async function loadCaseMessages(caseId: string) {
+      const { data } = await sb.from('messages').select('*').eq('case_id', caseId).order('created_at', { ascending: true });
+      const list = document.getElementById('detail-messages')!;
+      list.innerHTML = '';
+      (data || []).forEach((msg: any) => {
+        const isAdvisor = msg.author === 'advisor';
+        const wrapper = document.createElement('div');
+        wrapper.className = isAdvisor
+          ? 'ml-auto max-w-md rounded-lg bg-indigo px-4 py-3 text-papier'
+          : 'max-w-md rounded-lg bg-jade-bg px-4 py-3';
+        wrapper.innerHTML = `
+          <p class="font-mono text-[10px] uppercase tracking-wide ${isAdvisor ? 'text-papier/60' : 'text-jade'}">${isAdvisor ? 'Vous' : 'Client'}</p>
+          <p class="mt-1 font-sans text-sm">${msg.body.replace(/</g, '&lt;')}</p>
+        `;
+        list.appendChild(wrapper);
+      });
+      if (!data || data.length === 0) {
+        list.innerHTML = '<p class="text-sm text-encre/50">Aucun message pour le moment.</p>';
+      }
+    }
+
+    document.getElementById('reply-form')!.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentCase) return;
+      const input = document.getElementById('reply-input') as HTMLTextAreaElement;
+      const body = input.value.trim();
+      if (!body) return;
+      await sb.from('messages').insert({ case_id: currentCase.id, author: 'advisor', body });
+      input.value = '';
+      await loadCaseMessages(currentCase.id);
+    });
+
+    checkSession();
+  </script>
+</BaseLayout>

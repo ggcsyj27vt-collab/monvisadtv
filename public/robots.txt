@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /dossier/
 
 Sitemap: https://myvisadtv.com/sitemap.xml

@@ -14,8 +14,10 @@ interface Props {
   lang?: Locale;
   /** Mettre à true si cette page existe aussi en /en/ et /de/ (ajoute les balises hreflang). */
   translated?: boolean;
+  /** Mettre à true pour empêcher l'indexation (pages privées : admin, espace client). */
+  noindex?: boolean;
 }
-const { title, description, structuredData, lang = 'fr', translated = false } = Astro.props;
+const { title, description, structuredData, lang = 'fr', translated = false, noindex = false } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
@@ -57,6 +59,7 @@ const organizationSchema = {
     <title>{title} | MyVisaDTV</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     {hreflangLinks.map((l) => (
       <link rel="alternate" hreflang={l.hreflang} href={l.href} />
     ))}
