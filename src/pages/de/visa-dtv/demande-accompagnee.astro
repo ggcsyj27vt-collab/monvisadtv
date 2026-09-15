@@ -1,0 +1,269 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CheckItem from '../../../components/CheckItem.astro';
+import StepCard from '../../../components/StepCard.astro';
+import FaqItem from '../../../components/FaqItem.astro';
+import DerniereMiseAJour from '../../../components/DerniereMiseAJour.astro';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Begleiteter DTV-Visumantrag',
+      serviceType: 'Administrative Visumbegleitung',
+      provider: {
+        '@type': 'ProfessionalService',
+        name: 'MyVisaDTV',
+        url: 'https://myvisadtv.com',
+      },
+      areaServed: 'FR',
+      offers: {
+        '@type': 'Offer',
+        price: '700',
+        priceCurrency: 'EUR',
+        url: 'https://myvisadtv.com/de/visa-dtv/demande-accompagnee/',
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Muss ich die 700 € vor der Diagnose bezahlen?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Nein. Die anfängliche Diagnose, basierend auf Ihrem Kontaktformular, ist kostenlos und unverbindlich. Die Zahlung erfolgt erst, nachdem Sie der Zusammenstellung der Unterlagen zugestimmt haben.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Was passiert, wenn mein Antrag abgelehnt wird?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Wir prüfen gemeinsam mit Ihnen die Gründe für die Entscheidung und die möglichen Optionen. Die Bedingungen einer eventuellen weiteren Begleitung werden Ihnen im Einzelfall klar mitgeteilt.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Kann ich in Raten zahlen?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Je nach Verfahrensschritt kann eine Ratenzahlung angeboten werden. Dies wird mit Ihrem Berater beim ersten Gespräch besprochen.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Wie läuft die Zahlung der 700 € ab?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Die Zahlung erfolgt nach der kostenlosen Diagnose, sobald Sie der Zusammenstellung der Unterlagen zugestimmt haben. Sie kann online per Karte erfolgen.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Sind die offiziellen Visumgebühren in den 700 € enthalten?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Ja, die für Ihren Antrag geltenden offiziellen Visumgebühren sind im Paket enthalten, im Rahmen der bei Bestellung genannten Bedingungen. Kosten für beglaubigte Übersetzungen oder Legalisation von Dokumenten bleiben Ihre eigene Verantwortung.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Kann ich während des Verfahrens kündigen?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Ja, Sie bleiben jederzeit frei. Die Bedingungen einer eventuellen Kündigung während des Verfahrens werden Ihnen vor der Zahlung mitgeteilt, damit Sie in voller Kenntnis der Sachlage zustimmen.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Kommuniziert der Berater bei Bedarf direkt mit der thailändischen Verwaltung?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Ihr Berater unterstützt Sie bei der Vorbereitung und der Terminvereinbarung, aber die Einreichung und der Austausch mit der Verwaltung müssen je nach geltenden Verfahren in der Regel vom Antragsteller selbst vorgenommen werden. Wir begleiten Sie bei jedem Schritt, damit es einfach bleibt.',
+          },
+        },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Begleiteter DTV-Visumantrag — 700 €"
+  description="Das vollständige MyVisaDTV-Paket: Diagnose, Zusammenstellung der Unterlagen, Prüfung und Begleitung bis zur Entscheidung, offizielle Visumgebühren inbegriffen. 700 € statt 1.000 €."
+  structuredData={structuredData}
+  lang="de"
+  translated
+>
+  <!-- Hero produit -->
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-24">
+      <p class="eyebrow mb-4">Komplettpaket</p>
+      <div class="grid gap-12 md:grid-cols-[1.1fr_0.9fr] md:items-start">
+        <div>
+          <h1 class="font-display text-4xl leading-tight text-indigo md:text-5xl">
+            DTV-Visumantrag, von Anfang bis Ende begleitet
+          </h1>
+          <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+            Ein einziger Berater übernimmt Ihre Unterlagen von der Eignungsprüfung bis zur
+            Entscheidung der thailändischen Behörden. Sie müssen das Verfahren nicht mehr
+            allein bewältigen, behalten aber bei jedem Schritt die Entscheidungshoheit.
+          </p>
+          <div class="mt-8">
+            <DerniereMiseAJour date="2026-09-15" />
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-sable-light bg-white p-8">
+          <p class="font-mono text-xs uppercase tracking-wide text-sable">Aktuelles Angebot</p>
+          <p class="mt-2 font-sans text-lg text-sable line-through">1.000 €</p>
+          <p class="-mt-1 font-display text-5xl text-indigo">700 €</p>
+          <p class="mt-2 font-sans text-sm text-encre/70">Offizielle Visumgebühren inbegriffen, im Rahmen des zum Zeitpunkt der Einreichung geltenden Satzes.</p>
+          <a href="/de/fiche-renseignement/" class="btn-primary mt-6 w-full">Antrag jetzt starten</a>
+          <a
+            href="https://buy.stripe.com/9B67sMgfe7mG0aLcE014401"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary mt-3 w-full"
+          >
+            Schon entschieden? Jetzt bezahlen
+          </a>
+          <p class="mt-4 font-sans text-xs text-sable">
+            Kosten für beglaubigte Übersetzungen oder Legalisation von Dokumenten bleiben
+            Ihre eigene Verantwortung und sind in diesem Preis nicht enthalten.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ce qui est inclus -->
+  <section class="section">
+    <p class="eyebrow mb-3">Leistungsumfang</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">Das ist in den 700 € enthalten</h2>
+
+    <div class="mt-10 grid gap-12 md:grid-cols-2">
+      <ul class="space-y-5">
+        <CheckItem variant="gold">Ausführliche Eignungsprüfung Ihrer Situation (Berufsstatus, Einkommen, familiäre Situation)</CheckItem>
+        <CheckItem variant="gold">Individuelle Liste der zu beschaffenden Unterlagen</CheckItem>
+        <CheckItem variant="gold">Überprüfung und Aufbereitung jedes Dokuments</CheckItem>
+        <CheckItem variant="gold">Vollständige Zusammenstellung Ihres Antragsdossiers</CheckItem>
+        <CheckItem variant="gold">Offizielle DTV-Visumgebühren inbegriffen, im Rahmen des für Ihren Antrag geltenden Satzes</CheckItem>
+      </ul>
+      <ul class="space-y-5">
+        <CheckItem variant="gold">Unterstützung bei der Terminvereinbarung beim Konsulat oder beim Online-Verfahren</CheckItem>
+        <CheckItem variant="gold">Ein persönlicher Berater, während des gesamten Verfahrens per E-Mail erreichbar</CheckItem>
+        <CheckItem variant="gold">Verfolgung Ihres Antrags bis zur Bekanntgabe der Entscheidung</CheckItem>
+        <CheckItem variant="gold">Bei Bedarf eine Vorbereitungssitzung vor der Einreichung oder dem Interview</CheckItem>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Ce qui n'est pas inclus / honnêteté -->
+  <section class="section border-t border-sable-light">
+    <div class="rounded-lg border border-sable-light bg-white/60 p-8 md:p-10">
+      <h2 class="font-display text-2xl text-indigo">Was dieses Paket nicht abdeckt</h2>
+      <ul class="mt-6 space-y-4 font-sans text-sm leading-relaxed text-encre/80">
+        <li>— Die Erteilung des Visums ist niemals garantiert: Die Entscheidung liegt bei den thailändischen Behörden.</li>
+        <li>— Kosten für beglaubigte Übersetzungen oder Legalisation von Dokumenten bleiben Ihre eigene Verantwortung.</li>
+        <li>— Verfahren nach Ihrer Ankunft in Thailand (Meldungen, Verlängerungen) sind nicht enthalten und werden separat begleitet.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Déroulé détaillé -->
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">Ablauf</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">So läuft die Begleitung ab</h2>
+
+    <div class="mt-8 max-w-2xl">
+      <StepCard number="01" title="Eignungsprüfung" duration="1 bis 2 Tage">
+        Sie füllen das Kontaktformular aus. Wir analysieren es und melden uns mit einer
+        ersten begründeten Einschätzung Ihrer Situation, vor jeder Zahlung.
+      </StepCard>
+      <StepCard number="02" title="Zusammenstellung der Unterlagen" duration="1 bis 3 Wochen">
+        Ihr Berater übermittelt Ihnen die genaue Liste der zu beschaffenden Dokumente und
+        begleitet Sie Dokument für Dokument, sobald diese verfügbar sind.
+      </StepCard>
+      <StepCard number="03" title="Prüfung und Aufbereitung" duration="Einige Tage">
+        Jedes Dokument wird geprüft, geordnet und vor der Einreichung mit den erwarteten
+        Anforderungen in Einklang gebracht.
+      </StepCard>
+      <StepCard number="04" title="Einreichung des Antrags" duration="Je nach Einreichungsort">
+        Wir begleiten Sie bei der Terminvereinbarung oder dem Online-Verfahren, gemäß dem
+        in Ihrer Region geltenden Verfahren.
+      </StepCard>
+      <StepCard number="05" title="Begleitung bis zur Entscheidung" duration="Je nach konsularischen Fristen">
+        Ihr Berater bleibt bis zur Bekanntgabe der Entscheidung Ihr einziger Ansprechpartner
+        und beantwortet Ihre Fragen während der Wartezeit.
+      </StepCard>
+    </div>
+  </section>
+
+  <!-- FAQ produit -->
+  <section class="section border-t border-sable-light bg-jade-bg">
+    <p class="eyebrow mb-3">Fragen zum Angebot</p>
+    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">Bevor Sie starten</h2>
+
+    <div class="max-w-2xl">
+      <FaqItem question="Muss ich die 700 € vor der Diagnose bezahlen?">
+        Nein. Die anfängliche Diagnose, basierend auf Ihrem Kontaktformular, ist kostenlos
+        und unverbindlich. Die Zahlung erfolgt erst, nachdem Sie der Zusammenstellung der
+        Unterlagen zugestimmt haben.
+      </FaqItem>
+      <FaqItem question="Was passiert, wenn mein Antrag abgelehnt wird?">
+        Wir prüfen gemeinsam mit Ihnen die Gründe für die Entscheidung und die möglichen
+        Optionen. Die Bedingungen einer eventuellen weiteren Begleitung werden Ihnen im
+        Einzelfall klar mitgeteilt.
+      </FaqItem>
+      <FaqItem question="Kann ich in Raten zahlen?">
+        Je nach Verfahrensschritt kann eine Ratenzahlung angeboten werden. Dies wird mit
+        Ihrem Berater beim ersten Gespräch besprochen.
+      </FaqItem>
+      <FaqItem question="Wie läuft die Zahlung der 700 € ab?">
+        Die Zahlung erfolgt nach der kostenlosen Diagnose, sobald Sie der Zusammenstellung
+        der Unterlagen zugestimmt haben. Sie kann online per Karte erfolgen.
+      </FaqItem>
+      <FaqItem question="Sind die offiziellen Visumgebühren in den 700 € enthalten?">
+        Ja, die für Ihren Antrag geltenden offiziellen Visumgebühren sind im Paket
+        enthalten, im Rahmen der bei Bestellung genannten Bedingungen. Kosten für
+        beglaubigte Übersetzungen oder Legalisation von Dokumenten bleiben Ihre eigene
+        Verantwortung.
+      </FaqItem>
+      <FaqItem question="Kann ich während des Verfahrens kündigen?">
+        Ja, Sie bleiben jederzeit frei. Die Bedingungen einer eventuellen Kündigung während
+        des Verfahrens werden Ihnen vor der Zahlung mitgeteilt, damit Sie in voller Kenntnis
+        der Sachlage zustimmen.
+      </FaqItem>
+      <FaqItem question="Kommuniziert der Berater bei Bedarf direkt mit der thailändischen Verwaltung?">
+        Ihr Berater unterstützt Sie bei der Vorbereitung und der Terminvereinbarung, aber
+        die Einreichung und der Austausch mit der Verwaltung müssen je nach geltenden
+        Verfahren in der Regel vom Antragsteller selbst vorgenommen werden. Wir begleiten
+        Sie bei jedem Schritt, damit es einfach bleibt.
+      </FaqItem>
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="border-t border-sable-light bg-indigo text-papier">
+    <div class="section text-center">
+      <h2 class="mx-auto max-w-xl font-display text-3xl text-papier">
+        Bereit, Ihre Unterlagen einem persönlichen Berater anzuvertrauen?
+      </h2>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="/de/fiche-renseignement/" class="btn-primary inline-flex">Antrag jetzt starten</a>
+        <a
+          href="https://buy.stripe.com/9B67sMgfe7mG0aLcE014401"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-on-dark inline-flex"
+        >
+          Jetzt bezahlen (700 €)
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
+import type { Locale } from '../i18n/ui';
 import '../styles/global.css';
 
 interface Props {
@@ -9,10 +10,27 @@ interface Props {
   description: string;
   /** JSON-LD supplémentaire (ex. FAQPage) à injecter en plus du schéma d'organisation par défaut */
   structuredData?: Record<string, any>;
+  /** Langue de la page. Par défaut 'fr'. */
+  lang?: Locale;
+  /** Mettre à true si cette page existe aussi en /en/ et /de/ (ajoute les balises hreflang). */
+  translated?: boolean;
 }
-const { title, description, structuredData } = Astro.props;
+const { title, description, structuredData, lang = 'fr', translated = false } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Chemin sans préfixe de langue, pour construire les variantes hreflang.
+const basePath = Astro.url.pathname.replace(/^\/(en|de)(\/|$)/, '/');
+const hreflangLinks = translated
+  ? [
+      { hreflang: 'fr', href: new URL(basePath, Astro.site).toString() },
+      { hreflang: 'en', href: new URL(`/en${basePath}`.replace(/\/{2,}/g, '/'), Astro.site).toString() },
+      { hreflang: 'de', href: new URL(`/de${basePath}`.replace(/\/{2,}/g, '/'), Astro.site).toString() },
+      { hreflang: 'x-default', href: new URL(basePath, Astro.site).toString() },
+    ]
+  : [];
+
+const ogLocale = { fr: 'fr_FR', en: 'en_US', de: 'de_DE' }[lang];
 
 const organizationSchema = {
   '@context': 'https://schema.org',
@@ -30,7 +48,7 @@ const organizationSchema = {
 ---
 
 <!doctype html>
-<html lang="fr">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,6 +57,9 @@ const organizationSchema = {
     <title>{title} | MyVisaDTV</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    {hreflangLinks.map((l) => (
+      <link rel="alternate" hreflang={l.hreflang} href={l.href} />
+    ))}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,18 +73,18 @@ const organizationSchema = {
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content="https://myvisadtv.com/images/logo-dtv-thailand.png" />
-    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale" content={ogLocale} />
     <meta name="twitter:card" content="summary" />
 
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
   </head>
   <body class="bg-papier font-sans text-encre antialiased">
-    <Header />
+    <Header lang={lang} />
     <main>
       <slot />
     </main>
-    <Footer />
+    <Footer lang={lang} />
     <WhatsAppButton />
   </body>
 </html>

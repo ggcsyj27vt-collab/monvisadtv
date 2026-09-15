@@ -1,16 +1,38 @@
 ---
+import { ui, localePath, type Locale } from '../i18n/ui';
+
+interface Props {
+  lang?: Locale;
+}
+const { lang = 'fr' } = Astro.props;
+const t = ui[lang];
+
 const navItems = [
-  { href: '/', label: 'Accueil' },
-  { href: '/visa-dtv/demande-accompagnee/', label: 'La formule à 700 €' },
-  { href: '/visa-dtv/comprendre-le-dtv/', label: 'Comprendre le DTV' },
-  { href: '/blog/', label: 'Blog' },
-  { href: '/a-propos/', label: 'À propos' },
+  { href: localePath(lang, '/'), label: t.nav.home },
+  { href: localePath(lang, '/visa-dtv/demande-accompagnee/'), label: t.nav.offer },
+  { href: localePath(lang, '/visa-dtv/comprendre-le-dtv/'), label: t.nav.understand },
+  { href: '/blog/', label: t.nav.blog },
+  { href: localePath(lang, '/a-propos/'), label: t.nav.about },
 ];
+
+// Chemin de la page courante, sans le préfixe de langue, pour construire les liens
+// du sélecteur vers l'équivalent dans une autre langue.
+const rawPath = Astro.url.pathname;
+const pathWithoutLangPrefix = rawPath.replace(/^\/(en|de)(\/|$)/, '/');
+// Le blog n'existe qu'en français pour l'instant : le sélecteur renvoie vers
+// l'accueil de la langue choisie plutôt que vers une URL de blog inexistante.
+const isBlogPage = pathWithoutLangPrefix.startsWith('/blog');
+const targetPath = isBlogPage ? '/' : pathWithoutLangPrefix;
+const langLinks = {
+  fr: targetPath,
+  en: `/en${targetPath}`.replace(/\/{2,}/g, '/'),
+  de: `/de${targetPath}`.replace(/\/{2,}/g, '/'),
+};
 ---
 
 <header class="sticky top-0 z-50 border-b border-sable-light/70 bg-papier/95 backdrop-blur">
   <div class="mx-auto flex max-w-content items-center justify-between px-6 py-4 md:px-10">
-    <a href="/" class="flex items-center gap-2" aria-label="MyVisaDTV — retour à l'accueil">
+    <a href={localePath(lang, '/')} class="flex items-center gap-2" aria-label="MyVisaDTV">
       <img src="/images/logo-dtv-thailand.png" alt="MyVisaDTV — DTV Thailand Visa Services" class="h-14 w-auto md:h-16" />
     </a>
 
@@ -25,12 +47,22 @@ const navItems = [
       ))}
     </nav>
 
-    <a href="/fiche-renseignement/" class="btn-primary hidden lg:inline-flex">
-      Démarrer ma demande
-    </a>
+    <div class="flex items-center gap-4">
+      <div class="hidden items-center gap-1 font-mono text-xs text-indigo/60 md:flex" aria-label={t.langSwitcher.label}>
+        <a href={langLinks.fr} class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'fr' ? 'font-bold text-indigo' : ''}`}>fr</a>
+        <span aria-hidden="true">·</span>
+        <a href={langLinks.en} class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'en' ? 'font-bold text-indigo' : ''}`}>en</a>
+        <span aria-hidden="true">·</span>
+        <a href={langLinks.de} class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'de' ? 'font-bold text-indigo' : ''}`}>de</a>
+      </div>
 
-    <a href="/fiche-renseignement/" class="btn-primary text-xs lg:hidden">
-      Démarrer
-    </a>
+      <a href={localePath(lang, '/fiche-renseignement/')} class="btn-primary hidden lg:inline-flex">
+        {t.nav.startCta}
+      </a>
+
+      <a href={localePath(lang, '/fiche-renseignement/')} class="btn-primary text-xs lg:hidden">
+        {t.nav.startCtaShort}
+      </a>
+    </div>
   </div>
 </header>

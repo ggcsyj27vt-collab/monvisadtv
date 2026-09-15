@@ -1,0 +1,212 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FaqItem from '../../../components/FaqItem.astro';
+import DerniereMiseAJour from '../../../components/DerniereMiseAJour.astro';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Does the DTV replace a standard work visa?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. It covers different situations, in particular remote work for a foreign employer. Direct salaried employment with a Thai company usually falls under a different visa category.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I bring my family with a DTV?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Certain family situations are taken into account under conditions specific to each category. We look at this with you during the diagnostic.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Where can I check official information?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "The reference sources remain the official Thai government websites and representations. We point you to these sources alongside our support.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does the DTV allow me to work for a Thai company?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No, except in specifically regulated cases. The DTV is primarily intended for activity carried out for clients or an employer located outside Thailand, not salaried employment with a Thai company.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I change DTV category while it is still valid?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A change of situation (for example from remote worker to spouse of a Thai national) may require a new application rather than a simple amendment. We review this type of case individually during the diagnostic.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does the DTV give access to Thai social security?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. The DTV does not grant rights to Thai social security. Health insurance appropriate to your stay is still required, and is generally requested as part of the file.',
+      },
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Understanding the Destination Thailand Visa (DTV)"
+  description="What is the DTV, who is it for, what are the main categories of profiles concerned: MyVisaDTV's educational guide."
+  structuredData={faqSchema}
+  lang="en"
+  translated
+>
+  <!-- Hero -->
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-24">
+      <p class="eyebrow mb-4">Educational guide</p>
+      <h1 class="max-w-2xl font-display text-4xl leading-tight text-indigo md:text-5xl">
+        The Destination Thailand Visa, explained simply
+      </h1>
+      <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+        Before building a file, it's worth understanding what this visa actually covers,
+        who it's for, and what it does not allow.
+      </p>
+      <div class="mt-8">
+        <DerniereMiseAJour date="2026-08-26" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Qu'est-ce que le DTV -->
+  <section class="section">
+    <div class="grid gap-12 md:grid-cols-[0.9fr_1.1fr]">
+      <div>
+        <p class="eyebrow mb-3">The basics</p>
+        <h2 class="font-display text-3xl text-indigo">What is the DTV?</h2>
+      </div>
+      <div class="space-y-5 font-sans text-base leading-relaxed text-encre/85">
+        <p>
+          The Destination Thailand Visa (DTV) is a long-stay Thai visa category designed
+          for profiles that fall under neither standard tourism nor a local employment
+          contract: remote workers, self-employed people, participants in supervised
+          cultural or sporting activities, or spouses of Thai nationals.
+        </p>
+        <p>
+          In practice, it allows an extended stay in Thailand without requiring a Thai
+          employer, while imposing precise conditions on resources, proof of activity, and
+          the documents to provide.
+        </p>
+        <p class="text-sm text-sable">
+          Amounts, durations and precise categories change over time: we go through them
+          with you during the diagnostic, based on the most recent information available.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Profils concernés -->
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">Who it's for</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">The main groups of profiles</h2>
+
+    <div class="mt-10 grid gap-8 md:grid-cols-2">
+      <div class="rounded-lg border border-sable-light p-7">
+        <h3 class="font-display text-xl text-indigo">Remote workers and self-employed</h3>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">
+          People working remotely for an employer or clients located outside Thailand.
+        </p>
+      </div>
+      <div class="rounded-lg border border-sable-light p-7">
+        <h3 class="font-display text-xl text-indigo">Participants in a supervised activity</h3>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">
+          People taking part in a training programme, a cultural or sporting internship, or
+          a recognised programme in Thailand over an extended period.
+        </p>
+      </div>
+      <div class="rounded-lg border border-sable-light p-7">
+        <h3 class="font-display text-xl text-indigo">Spouses of Thai nationals</h3>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">
+          People married to a Thai national, subject to specific supporting documents for
+          this situation.
+        </p>
+      </div>
+      <div class="rounded-lg border border-sable-light p-7">
+        <h3 class="font-display text-xl text-indigo">Other situations to assess</h3>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">
+          Since every situation is different, the eligibility diagnostic remains the best
+          way to know precisely where you stand.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ce que le DTV ne permet pas -->
+  <section class="section border-t border-sable-light bg-jade-bg">
+    <div class="max-w-2xl">
+      <p class="eyebrow mb-3">Points to watch out for</p>
+      <h2 class="font-display text-3xl text-indigo">What the DTV does not allow</h2>
+      <ul class="mt-6 space-y-4 font-sans text-sm leading-relaxed text-encre/85">
+        <li>— It is not a permanent residency permit, nor a direct path to Thai nationality.</li>
+        <li>— It does not authorise paid employment directly with a Thai company, except in specifically regulated cases.</li>
+        <li>— Renewal conditions depend on the original category and should be planned well before your stay expires.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Pourquoi se faire accompagner (transition vers offre) -->
+  <section class="section border-t border-sable-light">
+    <div class="flex flex-wrap items-center justify-between gap-8 rounded-lg border border-sable-light bg-white p-10">
+      <div class="max-w-md">
+        <h2 class="font-display text-2xl text-indigo">You now know what to expect.</h2>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">
+          The full MyVisaDTV package takes over to turn this understanding into a concrete
+          file, ready to be filed.
+        </p>
+      </div>
+      <a href="/en/visa-dtv/demande-accompagnee/" class="btn-primary">See the €700 package</a>
+    </div>
+  </section>
+
+  <!-- FAQ pédagogique -->
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">Frequently asked questions</p>
+    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">Going further</h2>
+
+    <div class="max-w-2xl">
+      <FaqItem question="Does the DTV replace a standard work visa?">
+        No. It covers different situations, in particular remote work for a foreign
+        employer. Direct salaried employment with a Thai company usually falls under a
+        different visa category.
+      </FaqItem>
+      <FaqItem question="Can I bring my family with a DTV?">
+        Certain family situations are taken into account under conditions specific to each
+        category. We look at this with you during the diagnostic.
+      </FaqItem>
+      <FaqItem question="Where can I check official information?">
+        The reference sources remain the official Thai government websites and
+        representations. We point you to these sources alongside our support.
+      </FaqItem>
+      <FaqItem question="Does the DTV allow me to work for a Thai company?">
+        No, except in specifically regulated cases. The DTV is primarily intended for
+        activity carried out for clients or an employer located outside Thailand, not
+        salaried employment with a Thai company.
+      </FaqItem>
+      <FaqItem question="Can I change DTV category while it is still valid?">
+        A change of situation (for example from remote worker to spouse of a Thai national)
+        may require a new application rather than a simple amendment. We review this type
+        of case individually during the diagnostic.
+      </FaqItem>
+      <FaqItem question="Does the DTV give access to Thai social security?">
+        No. The DTV does not grant rights to Thai social security. Health insurance
+        appropriate to your stay is still required, and is generally requested as part of
+        the file.
+      </FaqItem>
+    </div>
+  </section>
+</BaseLayout>

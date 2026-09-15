@@ -1,0 +1,265 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CheckItem from '../../../components/CheckItem.astro';
+import StepCard from '../../../components/StepCard.astro';
+import FaqItem from '../../../components/FaqItem.astro';
+import DerniereMiseAJour from '../../../components/DerniereMiseAJour.astro';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Assisted DTV visa application',
+      serviceType: 'Administrative visa support',
+      provider: {
+        '@type': 'ProfessionalService',
+        name: 'MyVisaDTV',
+        url: 'https://myvisadtv.com',
+      },
+      areaServed: 'FR',
+      offers: {
+        '@type': 'Offer',
+        price: '700',
+        priceCurrency: 'EUR',
+        url: 'https://myvisadtv.com/en/visa-dtv/demande-accompagnee/',
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Do I have to pay the €700 before the diagnostic?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'No. The initial diagnostic, based on your intake form, is free and without obligation. Payment only happens once you agree to start building your file.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What happens if my application is refused?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'We review the reasons for the decision with you and look at the options available. The terms of any further support are communicated clearly on a case-by-case basis.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Can I pay in instalments?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'A payment plan may be offered depending on the stage of the process. This is discussed with your advisor during your first conversation.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How does payment of the €700 work?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Payment happens after the free diagnostic, once you have agreed to start building your file. It can be made online, by card.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Are the official visa fees included in the €700?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes, the official visa fees applicable to your application are included in the package, within the terms specified when you order. Sworn translation or document legalisation fees remain your responsibility.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Can I cancel during the process?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes, you remain free to do so at any time. The terms of any cancellation during the process are specified before payment, so you can commit with full knowledge.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Does the advisor communicate directly with the Thai administration if needed?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Your advisor supports you in preparing your file and booking appointments, but filing and communicating with the administration usually has to be done by the applicant themselves, depending on current procedures. We guide you at every step to keep it simple.',
+          },
+        },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Assisted DTV visa application — €700"
+  description="The full MyVisaDTV package: diagnostic, building the file, review and follow-up through to the decision, official visa fees included. €700 instead of €1,000."
+  structuredData={structuredData}
+  lang="en"
+  translated
+>
+  <!-- Hero produit -->
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-24">
+      <p class="eyebrow mb-4">Full package</p>
+      <div class="grid gap-12 md:grid-cols-[1.1fr_0.9fr] md:items-start">
+        <div>
+          <h1 class="font-display text-4xl leading-tight text-indigo md:text-5xl">
+            DTV visa application, supported from start to finish
+          </h1>
+          <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+            A single advisor handles your file from the eligibility diagnostic through to
+            the Thai authorities' decision. You no longer manage the process alone, but you
+            remain in control at every step.
+          </p>
+          <div class="mt-8">
+            <DerniereMiseAJour date="2026-09-15" />
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-sable-light bg-white p-8">
+          <p class="font-mono text-xs uppercase tracking-wide text-sable">Current offer</p>
+          <p class="mt-2 font-sans text-lg text-sable line-through">€1,000</p>
+          <p class="-mt-1 font-display text-5xl text-indigo">€700</p>
+          <p class="mt-2 font-sans text-sm text-encre/70">Official visa fees included, within the rate applicable at the time of filing.</p>
+          <a href="/en/fiche-renseignement/" class="btn-primary mt-6 w-full">Start my application</a>
+          <a
+            href="https://buy.stripe.com/9B67sMgfe7mG0aLcE014401"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary mt-3 w-full"
+          >
+            Already decided? Pay now
+          </a>
+          <p class="mt-4 font-sans text-xs text-sable">
+            Sworn translation or document legalisation fees remain your responsibility and
+            are not included in this price.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ce qui est inclus -->
+  <section class="section">
+    <p class="eyebrow mb-3">What's included</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">What's included in the €700</h2>
+
+    <div class="mt-10 grid gap-12 md:grid-cols-2">
+      <ul class="space-y-5">
+        <CheckItem variant="gold">Detailed eligibility diagnostic based on your situation (professional status, income, family situation)</CheckItem>
+        <CheckItem variant="gold">Personalised list of supporting documents to gather</CheckItem>
+        <CheckItem variant="gold">Review and formatting of every document</CheckItem>
+        <CheckItem variant="gold">Full preparation of your application file</CheckItem>
+        <CheckItem variant="gold">Official DTV visa fees included, within the rate applicable to your application</CheckItem>
+      </ul>
+      <ul class="space-y-5">
+        <CheckItem variant="gold">Support booking your consular appointment or completing the online process</CheckItem>
+        <CheckItem variant="gold">A dedicated advisor, reachable by email throughout the process</CheckItem>
+        <CheckItem variant="gold">Follow-up on your file until the decision is notified</CheckItem>
+        <CheckItem variant="gold">A preparation session before filing or your interview, if needed</CheckItem>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Ce qui n'est pas inclus / honnêteté -->
+  <section class="section border-t border-sable-light">
+    <div class="rounded-lg border border-sable-light bg-white/60 p-8 md:p-10">
+      <h2 class="font-display text-2xl text-indigo">What this package does not cover</h2>
+      <ul class="mt-6 space-y-4 font-sans text-sm leading-relaxed text-encre/80">
+        <li>— Getting the visa is never guaranteed: the decision belongs to the Thai authorities.</li>
+        <li>— Sworn translation or document legalisation fees remain your responsibility.</li>
+        <li>— Procedures once you are in Thailand (stay reports, renewals) are not included and are handled as separate support.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Déroulé détaillé -->
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">Process</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">How the support process works</h2>
+
+    <div class="mt-8 max-w-2xl">
+      <StepCard number="01" title="Eligibility diagnostic" duration="1 to 2 days">
+        You fill in the intake form. We analyse it and get back to you with an initial,
+        reasoned view of your situation, before any payment.
+      </StepCard>
+      <StepCard number="02" title="Building the file" duration="1 to 3 weeks">
+        Your advisor sends you the precise list of documents to gather and guides you
+        through each one as it becomes available.
+      </StepCard>
+      <StepCard number="03" title="Review and formatting" duration="A few days">
+        Every document is reviewed, organised and brought in line with expected
+        requirements before submission.
+      </StepCard>
+      <StepCard number="04" title="Filing the application" duration="Depending on your filing location">
+        We support you in booking an appointment or completing the online process,
+        according to the procedure in force in your jurisdiction.
+      </StepCard>
+      <StepCard number="05" title="Follow-up to the decision" duration="Depending on consular timelines">
+        Your advisor remains your single point of contact until the decision is notified,
+        and answers your questions while you wait.
+      </StepCard>
+    </div>
+  </section>
+
+  <!-- FAQ produit -->
+  <section class="section border-t border-sable-light bg-jade-bg">
+    <p class="eyebrow mb-3">Questions about the offer</p>
+    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">Before you start</h2>
+
+    <div class="max-w-2xl">
+      <FaqItem question="Do I have to pay the €700 before the diagnostic?">
+        No. The initial diagnostic, based on your intake form, is free and without
+        obligation. Payment only happens once you agree to start building your file.
+      </FaqItem>
+      <FaqItem question="What happens if my application is refused?">
+        We review the reasons for the decision with you and look at the options available.
+        The terms of any further support are communicated clearly on a case-by-case basis.
+      </FaqItem>
+      <FaqItem question="Can I pay in instalments?">
+        A payment plan may be offered depending on the stage of the process. This is
+        discussed with your advisor during your first conversation.
+      </FaqItem>
+      <FaqItem question="How does payment of the €700 work?">
+        Payment happens after the free diagnostic, once you have agreed to start building
+        your file. It can be made online, by card.
+      </FaqItem>
+      <FaqItem question="Are the official visa fees included in the €700?">
+        Yes, the official visa fees applicable to your application are included in the
+        package, within the terms specified when you order. Sworn translation or document
+        legalisation fees remain your responsibility.
+      </FaqItem>
+      <FaqItem question="Can I cancel during the process?">
+        Yes, you remain free to do so at any time. The terms of any cancellation during the
+        process are specified before payment, so you can commit with full knowledge.
+      </FaqItem>
+      <FaqItem question="Does the advisor communicate directly with the Thai administration if needed?">
+        Your advisor supports you in preparing your file and booking appointments, but
+        filing and communicating with the administration usually has to be done by the
+        applicant themselves, depending on current procedures. We guide you at every step
+        to keep it simple.
+      </FaqItem>
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="border-t border-sable-light bg-indigo text-papier">
+    <div class="section text-center">
+      <h2 class="mx-auto max-w-xl font-display text-3xl text-papier">
+        Ready to hand your file over to a dedicated advisor?
+      </h2>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="/en/fiche-renseignement/" class="btn-primary inline-flex">Start my application</a>
+        <a
+          href="https://buy.stripe.com/9B67sMgfe7mG0aLcE014401"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-on-dark inline-flex"
+        >
+          Pay now (€700)
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
