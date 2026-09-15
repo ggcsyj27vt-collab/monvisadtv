@@ -1,0 +1,36 @@
+---
+const navItems = [
+  { href: '/', label: 'Accueil' },
+  { href: '/visa-dtv/demande-accompagnee/', label: 'La formule à 700 €' },
+  { href: '/visa-dtv/comprendre-le-dtv/', label: 'Comprendre le DTV' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/a-propos/', label: 'À propos' },
+];
+---
+
+<header class="sticky top-0 z-50 border-b border-sable-light/70 bg-papier/95 backdrop-blur">
+  <div class="mx-auto flex max-w-content items-center justify-between px-6 py-4 md:px-10">
+    <a href="/" class="flex items-center gap-2" aria-label="MyVisaDTV — retour à l'accueil">
+      <img src="/images/logo-dtv-thailand.png" alt="MyVisaDTV — DTV Thailand Visa Services" class="h-14 w-auto md:h-16" />
+    </a>
+
+    <nav class="hidden items-center gap-6 lg:flex" aria-label="Navigation principale">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class="font-sans text-sm font-medium text-indigo/80 transition hover:text-indigo"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <a href="/fiche-renseignement/" class="btn-primary hidden lg:inline-flex">
+      Démarrer ma demande
+    </a>
+
+    <a href="/fiche-renseignement/" class="btn-primary text-xs lg:hidden">
+      Démarrer
+    </a>
+  </div>
+</header>

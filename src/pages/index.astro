@@ -1,0 +1,231 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CheckItem from '../components/CheckItem.astro';
+import FaqItem from '../components/FaqItem.astro';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Le visa est-il garanti si je passe par MyVisaDTV ?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Non. La décision finale appartient exclusivement aux autorités thaïlandaises. Notre rôle est de maximiser la qualité et la conformité de votre dossier, pas de garantir une décision qui ne nous appartient pas.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Puis-je déposer ma demande moi-même après le diagnostic ?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Oui. Le diagnostic d'éligibilité initial peut être réalisé indépendamment de la formule complète. Nous vous l'indiquons clairement avant tout engagement.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: "Combien de temps dure l'accompagnement ?",
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Cela dépend de la disponibilité de vos justificatifs et des délais consulaires, qui varient selon votre lieu de dépôt. Le détail est expliqué sur la page consacrée à la formule complète.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Quels documents dois-je préparer avant de commencer ?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Cela dépend de votre situation : les pièces demandées varient selon que vous êtes salarié en télétravail, indépendant, conjoint d'un ressortissant thaïlandais ou dans une autre situation. Le diagnostic d'éligibilité vous indique précisément la liste qui vous concerne, avant tout engagement.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Puis-je faire cette démarche depuis la France, avant mon départ ?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Oui. La majorité de la préparation du dossier — diagnostic, réunion des justificatifs, vérification — peut se faire à distance, où que vous soyez. Seules certaines étapes de dépôt dépendent de votre lieu de résidence au moment de la demande.",
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Que se passe-t-il si ma situation professionnelle change en cours de dossier ?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: "Nous adaptons le dossier à votre situation réelle au moment du dépôt. Si un changement intervient en cours d'accompagnement (nouveau client, nouveau contrat, changement de statut), parlez-en à votre conseiller dès que possible pour ajuster les justificatifs nécessaires.",
+      },
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Accompagnement visa DTV Thaïlande"
+  description="MyVisaDTV prépare et dépose votre demande de Destination Thailand Visa avec un expert dédié, du diagnostic d'éligibilité à la décision consulaire."
+  structuredData={faqSchema}
+>
+  <!-- Hero -->
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto grid max-w-content gap-12 px-6 py-20 md:grid-cols-[1.1fr_0.9fr] md:items-center md:px-10 md:py-28">
+      <div>
+        <p class="eyebrow mb-5">Destination Thailand Visa (DTV)</p>
+        <h1 class="font-display text-4xl leading-tight text-indigo md:text-5xl">
+          Votre installation en Thaïlande commence par un dossier solide.
+        </h1>
+        <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+          MyVisaDTV prépare et dépose votre demande de DTV avec un conseiller dédié : du
+          diagnostic d'éligibilité à la constitution du dossier, jusqu'à la décision des
+          autorités thaïlandaises.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-4">
+          <a href="/fiche-renseignement/" class="btn-primary">Démarrer ma demande</a>
+          <a href="/visa-dtv/demande-accompagnee/" class="btn-secondary">Voir la formule à 700 €</a>
+        </div>
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <p class="inline-flex items-center gap-2 rounded-sm bg-jade-bg px-3 py-1.5 font-mono text-xs text-jade">
+            <span aria-hidden="true">●</span>
+            Premier avis sous 48h ouvrées
+          </p>
+        </div>
+        <p class="mt-4 font-mono text-xs text-sable">
+          Cabinet de conseil indépendant — n'est pas un organisme gouvernemental thaïlandais.
+        </p>
+      </div>
+
+      <div class="rounded-lg border border-sable-light bg-white/60 p-8">
+        <p class="eyebrow mb-4">Ce que couvre l'accompagnement</p>
+        <ul class="space-y-4">
+          <CheckItem>Diagnostic d'éligibilité personnalisé avant tout engagement</CheckItem>
+          <CheckItem>Liste des pièces justificatives adaptée à votre situation</CheckItem>
+          <CheckItem>Vérification et mise en forme complète du dossier</CheckItem>
+          <CheckItem>Un conseiller dédié joignable jusqu'à la décision</CheckItem>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pourquoi un accompagnement -->
+  <section class="section">
+    <p class="eyebrow mb-3">Pourquoi ne pas déposer seul</p>
+    <h2 class="max-w-2xl font-display text-3xl text-indigo">
+      Le DTV est accessible en autonomie. La difficulté est ailleurs.
+    </h2>
+    <div class="mt-12 grid gap-10 md:grid-cols-3">
+      <div>
+        <h3 class="font-display text-xl text-indigo">Des critères qui évoluent</h3>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">
+          Catégories, montants, durées et pièces demandées sont réexaminés régulièrement par les
+          autorités thaïlandaises. Nous suivons ces évolutions pour votre dossier.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">Un dossier qui se lit d'un coup d'œil</h3>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">
+          Un dossier mal ordonné ou incomplet ralentit l'instruction. Nous structurons chaque
+          pièce pour qu'elle réponde exactement à ce qui est demandé.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">Un interlocuteur, pas un formulaire</h3>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">
+          Vous gardez la main sur votre projet. Nous répondons à vos questions au fur et à
+          mesure, en français, jusqu'à la décision.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comment ça marche (aperçu) -->
+  <section class="section border-t border-sable-light">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow mb-3">Le déroulé</p>
+        <h2 class="max-w-xl font-display text-3xl text-indigo">Cinq étapes, un seul dossier à préparer.</h2>
+      </div>
+      <a href="/visa-dtv/comprendre-le-dtv/" class="btn-secondary">Comprendre le DTV en détail</a>
+    </div>
+
+    <ol class="mt-12 grid gap-8 md:grid-cols-5">
+      {[
+        ['01', 'Diagnostic'],
+        ['02', 'Constitution du dossier'],
+        ['03', 'Vérification'],
+        ['04', 'Dépôt de la demande'],
+        ['05', 'Suivi jusqu\u2019à décision'],
+      ].map(([n, label]) => (
+        <li>
+          <span class="font-display text-2xl text-or-dark">{n}</span>
+          <p class="mt-2 font-sans text-sm font-medium text-indigo">{label}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- Offre -->
+  <section class="border-y border-sable-light bg-indigo text-papier">
+    <div class="section flex flex-wrap items-center justify-between gap-10">
+      <div class="max-w-xl">
+        <p class="eyebrow mb-3">La formule complète</p>
+        <h2 class="font-display text-3xl text-papier md:text-4xl">700 € au lieu de 1 000 € pour un dossier pris en main de bout en bout</h2>
+        <p class="mt-4 font-sans text-sm leading-relaxed text-papier/75">
+          Frais officiels du visa inclus, pour l'intégralité de l'accompagnement : du
+          diagnostic à la décision.
+        </p>
+      </div>
+      <a href="/visa-dtv/demande-accompagnee/" class="btn-primary">Voir le détail de l'offre</a>
+    </div>
+  </section>
+
+  <!-- FAQ courte -->
+  <section class="section">
+    <p class="eyebrow mb-3">Questions fréquentes</p>
+    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">Avant de vous lancer</h2>
+
+    <div class="max-w-2xl">
+      <FaqItem question="Le visa est-il garanti si je passe par MyVisaDTV ?">
+        Non. La décision finale appartient exclusivement aux autorités thaïlandaises. Notre rôle
+        est de maximiser la qualité et la conformité de votre dossier, pas de garantir une
+        décision qui ne nous appartient pas.
+      </FaqItem>
+      <FaqItem question="Puis-je déposer ma demande moi-même après le diagnostic ?">
+        Oui. Le diagnostic d'éligibilité initial peut être réalisé indépendamment de la formule
+        complète. Nous vous l'indiquons clairement avant tout engagement.
+      </FaqItem>
+      <FaqItem question="Combien de temps dure l'accompagnement ?">
+        Cela dépend de la disponibilité de vos justificatifs et des délais consulaires, qui
+        varient selon votre lieu de dépôt. Le détail est expliqué sur la page consacrée à la
+        formule complète.
+      </FaqItem>
+      <FaqItem question="Quels documents dois-je préparer avant de commencer ?">
+        Cela dépend de votre situation : les pièces demandées varient selon que vous êtes
+        salarié en télétravail, indépendant, conjoint d'un ressortissant thaïlandais ou dans une
+        autre situation. Le diagnostic d'éligibilité vous indique précisément la liste qui vous
+        concerne, avant tout engagement.
+      </FaqItem>
+      <FaqItem question="Puis-je faire cette démarche depuis la France, avant mon départ ?">
+        Oui. La majorité de la préparation du dossier — diagnostic, réunion des justificatifs,
+        vérification — peut se faire à distance, où que vous soyez. Seules certaines étapes de
+        dépôt dépendent de votre lieu de résidence au moment de la demande.
+      </FaqItem>
+      <FaqItem question="Que se passe-t-il si ma situation professionnelle change en cours de dossier ?">
+        Nous adaptons le dossier à votre situation réelle au moment du dépôt. Si un changement
+        intervient en cours d'accompagnement (nouveau client, nouveau contrat, changement de
+        statut), parlez-en à votre conseiller dès que possible pour ajuster les justificatifs
+        nécessaires.
+      </FaqItem>
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="border-t border-sable-light bg-jade-bg">
+    <div class="section text-center">
+      <h2 class="mx-auto max-w-xl font-display text-3xl text-indigo">
+        Commencez par une fiche de renseignement de cinq minutes.
+      </h2>
+      <p class="mx-auto mt-4 max-w-md font-sans text-sm text-encre/80">
+        Nous revenons vers vous avec un premier avis sur votre éligibilité, sans engagement.
+      </p>
+      <a href="/fiche-renseignement/" class="btn-primary mt-8 inline-flex">Remplir la fiche de renseignement</a>
+    </div>
+  </section>
+</BaseLayout>

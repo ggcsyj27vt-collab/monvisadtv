@@ -1,0 +1,16 @@
+---
+interface Props {
+  date: string; // format ISO, ex. "2026-08-26"
+}
+const { date } = Astro.props;
+const formatted = new Date(date).toLocaleDateString('fr-FR', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<p class="inline-flex items-center gap-2 rounded-sm bg-jade-bg px-3 py-1.5 font-mono text-xs text-jade">
+  <span aria-hidden="true">●</span>
+  Information vérifiée le {formatted} — à confirmer auprès des sources officielles avant toute décision.
+</p>

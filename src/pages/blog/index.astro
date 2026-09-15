@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout
+  title="Blog"
+  description="Conseils, comparatifs et points de repère pour préparer votre installation en Thaïlande et votre demande de visa DTV."
+>
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-20">
+      <p class="eyebrow mb-4">Le blog</p>
+      <h1 class="max-w-2xl font-display text-4xl leading-tight text-indigo md:text-5xl">
+        Conseils et repères pour votre installation en Thaïlande
+      </h1>
+      <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+        Des articles pour comprendre le DTV, comparer vos options et préparer votre projet
+        d'installation — au-delà du seul dossier de visa.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="grid gap-8 md:grid-cols-2">
+      {posts.map((post) => (
+        <a
+          href={`/blog/${post.slug}/`}
+          class="group flex flex-col rounded-lg border border-sable-light bg-white p-8 transition hover:border-jade"
+        >
+          <p class="font-mono text-xs uppercase tracking-[0.14em] text-encre/50">
+            {post.data.pubDate.toLocaleDateString('fr-FR', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
+          </p>
+          <h2 class="mt-3 font-display text-xl leading-snug text-indigo group-hover:text-jade md:text-2xl">
+            {post.data.title}
+          </h2>
+          <p class="mt-3 font-sans text-sm leading-relaxed text-encre/70">
+            {post.data.excerpt}
+          </p>
+          <span class="mt-5 font-sans text-sm font-semibold text-jade">Lire l'article →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

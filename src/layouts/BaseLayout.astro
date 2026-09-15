@@ -1,0 +1,69 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** JSON-LD supplémentaire (ex. FAQPage) à injecter en plus du schéma d'organisation par défaut */
+  structuredData?: Record<string, any>;
+}
+const { title, description, structuredData } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'MyVisaDTV',
+  url: 'https://myvisadtv.com',
+  logo: 'https://myvisadtv.com/images/logo-dtv-thailand.png',
+  image: 'https://myvisadtv.com/images/logo-dtv-thailand.png',
+  description:
+    "Cabinet de conseil indépendant spécialisé dans l'accompagnement des demandes de Destination Thailand Visa (DTV).",
+  areaServed: 'FR',
+  serviceType: 'Accompagnement administratif visa',
+  priceRange: '€€',
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/favicon-256.png" />
+    <title>{title} | MyVisaDTV</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta property="og:title" content={`${title} | MyVisaDTV`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content="https://myvisadtv.com/images/logo-dtv-thailand.png" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="twitter:card" content="summary" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+  </head>
+  <body class="bg-papier font-sans text-encre antialiased">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <WhatsAppButton />
+  </body>
+</html>

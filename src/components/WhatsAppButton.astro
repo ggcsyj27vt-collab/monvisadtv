@@ -1,0 +1,33 @@
+---
+// Bouton flottant WhatsApp, affiché sur toutes les pages via BaseLayout.
+const phoneDigits = '6631747492';
+const message = "Bonjour, je souhaite en savoir plus sur l'accompagnement visa DTV.";
+const waLink = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(message)}`;
+---
+
+<a
+  href={waLink}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Nous écrire sur WhatsApp"
+  class="group fixed bottom-6 right-6 z-40 flex items-center gap-3 rounded-full bg-indigo py-3 pl-3 pr-3 text-papier shadow-lg transition hover:pr-5 md:bottom-8 md:right-8"
+>
+  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-jade text-papier">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
+      <path
+        d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M8.7 8.6c.2-.5.5-.5.7-.5h.5c.2 0 .4 0 .6.4.2.5.6 1.4.7 1.5.1.1.1.3 0 .4-.1.2-.2.3-.3.4-.1.1-.3.3-.4.4-.1.1-.3.3-.1.6.2.3.8 1.2 1.6 1.9 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1.2-.2.6-.7.8-.9.2-.2.3-.2.6-.1.2.1 1.4.7 1.7.8.3.1.4.2.5.3.1.2.1.9-.2 1.3-.3.4-1.2.9-1.7.9-.5 0-1 .1-3.2-.9-2.7-1.2-4.4-4-4.5-4.2-.1-.2-1-1.4-1-2.6 0-1.2.6-1.8.8-2Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+  <span class="hidden max-w-0 overflow-hidden whitespace-nowrap font-sans text-sm font-semibold opacity-0 transition-all duration-200 group-hover:max-w-xs group-hover:opacity-100 md:inline-block">
+    Écrivez-nous sur WhatsApp
+  </span>
+</a>

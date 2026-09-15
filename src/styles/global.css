@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: #F7F3EA;
+    color: #1F2430;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Fraunces', Georgia, serif;
+    color: #16233F;
+  }
+  a {
+    text-underline-offset: 3px;
+  }
+  :focus-visible {
+    outline: 2px solid #16233F;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm bg-or px-6 py-3 font-sans text-sm font-semibold tracking-wide text-indigo transition hover:bg-or-light;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-indigo px-6 py-3 font-sans text-sm font-semibold tracking-wide text-indigo transition hover:bg-indigo hover:text-papier;
+  }
+  .btn-on-dark {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-papier/40 px-6 py-3 font-sans text-sm font-semibold tracking-wide text-papier transition hover:bg-papier hover:text-indigo;
+  }
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.18em] text-or-dark;
+  }
+  .section {
+    @apply mx-auto max-w-content px-6 py-20 md:px-10;
+  }
+
+  /* Styles pour le contenu Markdown des articles de blog (Content Collections) */
+  .article-content {
+    @apply font-sans text-base leading-relaxed text-encre/90;
+  }
+  .article-content h2 {
+    @apply mt-12 font-display text-2xl leading-snug text-indigo md:text-3xl;
+  }
+  .article-content h3 {
+    @apply mt-8 font-display text-xl leading-snug text-indigo;
+  }
+  .article-content p {
+    @apply mt-5;
+  }
+  .article-content ul {
+    @apply mt-5 list-disc space-y-2 pl-6;
+  }
+  .article-content li {
+    @apply pl-1;
+  }
+  .article-content a {
+    @apply text-jade underline decoration-jade/40 underline-offset-2 hover:text-jade-light;
+  }
+  .article-content strong {
+    @apply font-semibold text-indigo;
+  }
+  .article-content .btn-primary {
+    @apply mt-4 no-underline;
+  }
+  .article-content table {
+    @apply mt-6 w-full border-collapse overflow-hidden rounded-md border border-sable-light text-sm;
+  }
+  .article-content th,
+  .article-content td {
+    @apply border border-sable-light px-4 py-2 text-left;
+  }
+  .article-content th {
+    @apply bg-sable-light font-display text-indigo;
+  }
+}

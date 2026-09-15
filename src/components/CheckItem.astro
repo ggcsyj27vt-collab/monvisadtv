@@ -1,0 +1,16 @@
+---
+interface Props {
+  variant?: 'gold' | 'jade';
+}
+const { variant = 'jade' } = Astro.props;
+const dot = variant === 'gold' ? 'bg-or text-indigo' : 'bg-jade text-papier';
+---
+
+<li class="flex items-start gap-3">
+  <span class={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${dot}`} aria-hidden="true">
+    <svg viewBox="0 0 20 20" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 10.5L8 14.5L16 5.5" />
+    </svg>
+  </span>
+  <span class="font-sans text-sm leading-relaxed text-encre/90"><slot /></span>
+</li>

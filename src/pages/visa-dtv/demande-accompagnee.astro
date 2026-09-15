@@ -1,0 +1,268 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CheckItem from '../../components/CheckItem.astro';
+import StepCard from '../../components/StepCard.astro';
+import FaqItem from '../../components/FaqItem.astro';
+import DerniereMiseAJour from '../../components/DerniereMiseAJour.astro';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Demande de visa DTV accompagnée',
+      serviceType: 'Accompagnement administratif visa',
+      provider: {
+        '@type': 'ProfessionalService',
+        name: 'MyVisaDTV',
+        url: 'https://myvisadtv.com',
+      },
+      areaServed: 'FR',
+      offers: {
+        '@type': 'Offer',
+        price: '700',
+        priceCurrency: 'EUR',
+        url: 'https://myvisadtv.com/visa-dtv/demande-accompagnee/',
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Dois-je payer les 700 € avant le diagnostic ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: "Non. Le diagnostic initial, réalisé à partir de votre fiche de renseignement, est gratuit et sans engagement. Le paiement n'intervient qu'après votre accord pour lancer la constitution du dossier.",
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Que se passe-t-il si mon dossier est refusé ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Nous analysons avec vous les motifs de la décision et les options possibles. Les conditions d\'un éventuel nouvel accompagnement vous sont communiquées clairement au cas par cas.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Puis-je payer en plusieurs fois ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Un échelonnement peut être proposé selon les étapes de la procédure. Cette possibilité est discutée avec votre conseiller lors du premier échange.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Comment se déroule le paiement des 700 € ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: "Le paiement intervient après le diagnostic gratuit, une fois que vous avez donné votre accord pour lancer la constitution du dossier. Il peut être réalisé en ligne, par carte bancaire.",
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Les frais officiels du visa sont-ils inclus dans les 700 € ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: "Oui, les frais officiels du visa applicables à votre demande sont inclus dans la formule, dans la limite des conditions précisées lors de votre commande. Les frais de traduction assermentée ou de légalisation de documents restent en revanche à votre charge.",
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Puis-je annuler en cours d\'accompagnement ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: "Oui, vous restez libre à tout moment. Les conditions d'une éventuelle annulation en cours de procédure vous sont précisées avant le paiement, pour que vous vous engagiez en toute connaissance de cause.",
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Le conseiller communique-t-il directement avec l\'administration thaïlandaise si besoin ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: "Votre conseiller vous accompagne dans la préparation et la prise de rendez-vous, mais le dépôt et les échanges avec l'administration restent, selon les procédures en vigueur, généralement à réaliser par le demandeur lui-même. Nous vous guidons à chaque étape pour que cela reste simple.",
+          },
+        },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Demande de visa DTV accompagnée — 700 €"
+  description="La formule complète MyVisaDTV : diagnostic, constitution du dossier, vérification et suivi jusqu'à la décision, frais officiels du visa inclus. 700 € au lieu de 1 000 €."
+  structuredData={structuredData}
+>
+  <!-- Hero produit -->
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-24">
+      <p class="eyebrow mb-4">Formule complète</p>
+      <div class="grid gap-12 md:grid-cols-[1.1fr_0.9fr] md:items-start">
+        <div>
+          <h1 class="font-display text-4xl leading-tight text-indigo md:text-5xl">
+            Demande de visa DTV, accompagnée de bout en bout
+          </h1>
+          <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+            Un conseiller unique prend en charge votre dossier depuis le diagnostic
+            d'éligibilité jusqu'à la décision des autorités thaïlandaises. Vous ne gérez plus la
+            procédure seul, mais vous restez décisionnaire à chaque étape.
+          </p>
+          <div class="mt-8">
+            <DerniereMiseAJour date="2026-09-15" />
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-sable-light bg-white p-8">
+          <p class="font-mono text-xs uppercase tracking-wide text-sable">Offre actuelle</p>
+          <p class="mt-2 font-sans text-lg text-sable line-through">1 000 €</p>
+          <p class="-mt-1 font-display text-5xl text-indigo">700 €</p>
+          <p class="mt-2 font-sans text-sm text-encre/70">Frais officiels du visa inclus, dans la limite du tarif applicable au moment du dépôt.</p>
+          <a href="/fiche-renseignement/" class="btn-primary mt-6 w-full">Démarrer ma demande</a>
+          <a
+            href="https://buy.stripe.com/9B67sMgfe7mG0aLcE014401"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary mt-3 w-full"
+          >
+            Déjà prêt(e) ? Payer maintenant
+          </a>
+          <p class="mt-4 font-sans text-xs text-sable">
+            Les frais de traduction assermentée ou de légalisation de documents restent à votre
+            charge et ne sont pas inclus dans ce tarif.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ce qui est inclus -->
+  <section class="section">
+    <p class="eyebrow mb-3">Contenu de la formule</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">Ce qui est inclus dans les 700 €</h2>
+
+    <div class="mt-10 grid gap-12 md:grid-cols-2">
+      <ul class="space-y-5">
+        <CheckItem variant="gold">Diagnostic d'éligibilité détaillé sur votre situation (statut professionnel, revenus, situation familiale)</CheckItem>
+        <CheckItem variant="gold">Liste personnalisée des pièces justificatives à réunir</CheckItem>
+        <CheckItem variant="gold">Relecture et mise en conformité de chaque document</CheckItem>
+        <CheckItem variant="gold">Constitution complète du dossier de demande</CheckItem>
+        <CheckItem variant="gold">Frais officiels du visa DTV inclus, dans la limite du tarif applicable à votre demande</CheckItem>
+      </ul>
+      <ul class="space-y-5">
+        <CheckItem variant="gold">Accompagnement à la prise de rendez-vous consulaire ou à la démarche en ligne</CheckItem>
+        <CheckItem variant="gold">Un conseiller dédié, joignable par email pendant toute la procédure</CheckItem>
+        <CheckItem variant="gold">Suivi du dossier jusqu'à la notification de décision</CheckItem>
+        <CheckItem variant="gold">Une session de préparation avant le dépôt ou l'entretien si nécessaire</CheckItem>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Ce qui n'est pas inclus / honnêteté -->
+  <section class="section border-t border-sable-light">
+    <div class="rounded-lg border border-sable-light bg-white/60 p-8 md:p-10">
+      <h2 class="font-display text-2xl text-indigo">Ce que cette formule ne couvre pas</h2>
+      <ul class="mt-6 space-y-4 font-sans text-sm leading-relaxed text-encre/80">
+        <li>— L'obtention du visa n'est jamais garantie : la décision appartient aux autorités thaïlandaises.</li>
+        <li>— Les frais de traduction assermentée ou de légalisation de documents restent à votre charge.</li>
+        <li>— Les démarches une fois sur le territoire thaïlandais (déclarations de séjour, renouvellements) ne sont pas incluses et font l'objet d'un accompagnement séparé.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Déroulé détaillé -->
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">Déroulé</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">Comment se déroule l'accompagnement</h2>
+
+    <div class="mt-8 max-w-2xl">
+      <StepCard number="01" title="Diagnostic d'éligibilité" duration="1 à 2 jours">
+        Vous répondez à la fiche de renseignement. Nous l'analysons et revenons vers vous avec
+        un premier avis motivé sur votre situation, avant tout paiement.
+      </StepCard>
+      <StepCard number="02" title="Constitution du dossier" duration="1 à 3 semaines">
+        Votre conseiller vous transmet la liste précise des pièces à réunir et vous guide
+        document par document, au fur et à mesure de leur disponibilité.
+      </StepCard>
+      <StepCard number="03" title="Vérification et mise en forme" duration="Quelques jours">
+        Chaque pièce est relue, ordonnée et mise en conformité avec les exigences attendues
+        avant la soumission.
+      </StepCard>
+      <StepCard number="04" title="Dépôt de la demande" duration="Selon votre lieu de dépôt">
+        Nous vous accompagnons dans la prise de rendez-vous ou la démarche en ligne, selon la
+        procédure en vigueur dans votre juridiction.
+      </StepCard>
+      <StepCard number="05" title="Suivi jusqu'à la décision" duration="Selon délais consulaires">
+        Votre conseiller reste votre point de contact unique jusqu'à la notification de la
+        décision, et répond à vos questions pendant l'attente.
+      </StepCard>
+    </div>
+  </section>
+
+  <!-- FAQ produit -->
+  <section class="section border-t border-sable-light bg-jade-bg">
+    <p class="eyebrow mb-3">Questions sur l'offre</p>
+    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">Avant de démarrer</h2>
+
+    <div class="max-w-2xl">
+      <FaqItem question="Dois-je payer les 700 € avant le diagnostic ?">
+        Non. Le diagnostic initial, réalisé à partir de votre fiche de renseignement, est
+        gratuit et sans engagement. Le paiement n'intervient qu'après votre accord pour lancer
+        la constitution du dossier.
+      </FaqItem>
+      <FaqItem question="Que se passe-t-il si mon dossier est refusé ?">
+        Nous analysons avec vous les motifs de la décision et les options possibles. Les
+        conditions d'un éventuel nouvel accompagnement vous sont communiquées clairement au cas
+        par cas.
+      </FaqItem>
+      <FaqItem question="Puis-je payer en plusieurs fois ?">
+        Un échelonnement peut être proposé selon les étapes de la procédure. Cette possibilité
+        est discutée avec votre conseiller lors du premier échange.
+      </FaqItem>
+      <FaqItem question="Comment se déroule le paiement des 700 € ?">
+        Le paiement intervient après le diagnostic gratuit, une fois que vous avez donné votre
+        accord pour lancer la constitution du dossier. Il peut être réalisé en ligne, par carte
+        bancaire.
+      </FaqItem>
+      <FaqItem question="Les frais officiels du visa sont-ils inclus dans les 700 € ?">
+        Oui, les frais officiels du visa applicables à votre demande sont inclus dans la
+        formule, dans la limite des conditions précisées lors de votre commande. Les frais de
+        traduction assermentée ou de légalisation de documents restent en revanche à votre
+        charge.
+      </FaqItem>
+      <FaqItem question="Puis-je annuler en cours d'accompagnement ?">
+        Oui, vous restez libre à tout moment. Les conditions d'une éventuelle annulation en
+        cours de procédure vous sont précisées avant le paiement, pour que vous vous engagiez en
+        toute connaissance de cause.
+      </FaqItem>
+      <FaqItem question="Le conseiller communique-t-il directement avec l'administration thaïlandaise si besoin ?">
+        Votre conseiller vous accompagne dans la préparation et la prise de rendez-vous, mais le
+        dépôt et les échanges avec l'administration restent, selon les procédures en vigueur,
+        généralement à réaliser par le demandeur lui-même. Nous vous guidons à chaque étape pour
+        que cela reste simple.
+      </FaqItem>
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="border-t border-sable-light bg-indigo text-papier">
+    <div class="section text-center">
+      <h2 class="mx-auto max-w-xl font-display text-3xl text-papier">
+        Prêt à confier votre dossier à un conseiller dédié ?
+      </h2>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="/fiche-renseignement/" class="btn-primary inline-flex">Démarrer ma demande</a>
+        <a
+          href="https://buy.stripe.com/9B67sMgfe7mG0aLcE014401"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-on-dark inline-flex"
+        >
+          Payer maintenant (700 €)
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="À propos"
+  description="MyVisaDTV est un cabinet fondé par Alexandre, installé en Thaïlande depuis plusieurs années. Découvrez son parcours et pourquoi il accompagne les francophones dans leur demande de visa DTV."
+>
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-20">
+      <p class="eyebrow mb-4">À propos</p>
+      <h1 class="max-w-2xl font-display text-4xl leading-tight text-indigo md:text-5xl">
+        Un accompagnement pensé par quelqu'un qui connaît la Thaïlande de l'intérieur.
+      </h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="grid gap-14 md:grid-cols-[0.8fr_1.2fr] md:items-start">
+      <div>
+        <img
+          src="/images/alexandre-fondateur.jpg"
+          alt="Alexandre, fondateur de MyVisaDTV"
+          class="w-full rounded-lg object-cover shadow-sm"
+          width="922"
+          height="1229"
+        />
+      </div>
+
+      <div class="font-sans text-base leading-relaxed text-encre/90">
+        <h2 class="font-display text-2xl text-indigo md:text-3xl">Alexandre, fondateur de MyVisaDTV</h2>
+
+        <p class="mt-5">
+          <!--
+            TODO Alexandre : à personnaliser librement — ce texte est un premier jet
+            basé sur ce que je sais déjà de toi. N'hésite pas à me donner plus de détails
+            (parcours professionnel avant la Thaïlande, déclic pour créer MyVisaDTV, etc.)
+            et je réécris ce paragraphe.
+          -->
+          Je vis en Thaïlande depuis plusieurs années, et je sillonne le pays depuis plus
+          de dix ans. Avant même de m'y installer durablement, j'ai vu à quel point les
+          démarches administratives thaïlandaises — et en particulier les questions de visa —
+          pouvaient devenir un frein, voire un motif de renoncement, pour des projets par
+          ailleurs parfaitement solides.
+        </p>
+        <p class="mt-5">
+          Le Destination Thailand Visa a changé la donne pour de nombreux profils : télétravailleurs,
+          indépendants, conjoints de Thaïlandais. Mais le dispositif reste technique, évolutif,
+          et difficile à naviguer seul quand on ne connaît pas les rouages de l'administration
+          thaïlandaise ni les attentes précises des autorités consulaires.
+        </p>
+        <p class="mt-5">
+          J'ai créé MyVisaDTV pour mettre cette connaissance du terrain au service des
+          francophones qui préparent leur installation. Mon rôle n'est pas de vous promettre
+          un résultat que je ne contrôle pas — la décision finale appartient toujours aux
+          autorités thaïlandaises — mais de vous éviter les erreurs qui ralentissent ou
+          fragilisent un dossier, et de rester à vos côtés jusqu'à la décision.
+        </p>
+
+        <div class="mt-10 rounded-lg border border-sable-light bg-jade-bg p-8">
+          <h3 class="font-display text-lg text-indigo">Pourquoi passer par MyVisaDTV ?</h3>
+          <ul class="mt-4 space-y-3 text-sm leading-relaxed text-encre/80">
+            <li>— Une connaissance du terrain, pas seulement des textes réglementaires.</li>
+            <li>— Un interlocuteur unique, joignable en français jusqu'à la décision.</li>
+            <li>— Une approche honnête : nous vous disons aussi ce que le DTV ne permet pas.</li>
+          </ul>
+        </div>
+
+        <div class="mt-10">
+          <a href="/fiche-renseignement/" class="btn-primary">Parlons de votre projet</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
