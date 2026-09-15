@@ -82,12 +82,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script>
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
     const SUPABASE_URL = 'https://ujrtyrnnhwsfqnftoawt.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_nKqEap0GKlrBNhtwxqivZg_UCtZT8Ek';
-    // @ts-ignore
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const statusLabels: Record<string, string> = {
       diagnostic: 'Diagnostic en cours',
