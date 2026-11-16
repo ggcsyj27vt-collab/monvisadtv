@@ -26,6 +26,7 @@ const year = new Date().getFullYear();
         <ul class="space-y-2 font-sans text-sm text-papier/80">
           <li><a class="hover:text-or" href={localePath(lang, '/a-propos/')}>{t.nav.about}</a></li>
           <li><a class="hover:text-or" href={localePath(lang, '/visa-dtv/demande-accompagnee/')}>{t.nav.offer}</a></li>
+          <li><a class="hover:text-or" href={localePath(lang, '/visa-dtv/verification-dossier/')}>{({ fr: 'Vérification du dossier (99 €)', en: 'Document check (€99)', de: 'Unterlagenprüfung (99 €)' } as Record<string, string>)[lang]}</a></li>
           <li><a class="hover:text-or" href={localePath(lang, '/visa-dtv/comprendre-le-dtv/')}>{t.nav.understand}</a></li>
           <li><a class="hover:text-or" href="/blog/">{t.nav.blog}</a></li>
           <li><a class="hover:text-or" href={localePath(lang, '/fiche-renseignement/')}>{lang === 'fr' ? 'Fiche de renseignement' : t.nav.startCta}</a></li>

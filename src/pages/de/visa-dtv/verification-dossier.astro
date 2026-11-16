@@ -1,0 +1,185 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CheckItem from '../../../components/CheckItem.astro';
+import StepCard from '../../../components/StepCard.astro';
+import FaqItem from '../../../components/FaqItem.astro';
+
+const PAY = 'https://buy.stripe.com/7sY5kE2oogXg4r1fQc14403';
+
+const faq = [
+  ['Für wen ist dieses Angebot?', "Für alle, die ihren DTV-Antrag lieber selbst vorbereiten und einreichen, aber vor dem Absenden einen Expertenblick wünschen. Ideal, wenn Sie Ihre Unterlagen bereits zusammengestellt haben und eine Ablehnung wegen eines fehlenden oder widersprüchlichen Dokuments vermeiden möchten."],
+  ['Was steht genau im Bericht?', "Ein schriftliches Dokument, das jede Ihrer Unterlagen mit einem klaren Status aufführt: in Ordnung, zu korrigieren oder fehlend. Für jeden zu korrigierenden Punkt erklären wir, was das Problem ist und was stattdessen einzureichen ist. Der Bericht weist auch auf Widersprüche zwischen Dokumenten hin (Name, Geburtsdatum, Adresse, Beträge, Daten) sowie auf Unterlagen, die die Botschaft als unzureichend ansehen könnte."],
+  ['Wann erhalte ich meinen Bericht?', "Innerhalb von 48 Arbeitsstunden nach Eingang Ihrer vollständigen Unterlagen über unser sicheres Formular."],
+  ['Wie sende ich Ihnen meine Unterlagen?', "Nach der Zahlung erhalten Sie per E-Mail den Link zu unserem sicheren Upload-Formular. Wir fordern Ihre Unterlagen nie als E-Mail-Anhang an. Ihre Dokumente werden ausschließlich für die Prüfung Ihres Antrags verwendet."],
+  ['Werden die 99 € angerechnet, wenn ich danach das Komplettpaket wähle?', "Ja. Wenn Sie uns nach der Prüfung den gesamten Antrag anvertrauen möchten, werden die 99 € vom Komplettpaket zu 699 € abgezogen: Sie zahlen die restlichen 600 €."],
+  ['Garantiert die Prüfung die Erteilung des Visums?', "Nein. Die Entscheidung liegt ausschließlich bei den thailändischen Behörden. Die Prüfung senkt das Risiko einer Ablehnung wegen unvollständiger oder widersprüchlicher Unterlagen, aber kein Dienst kann ein Visum garantieren."],
+  ['Sind die offiziellen Visumgebühren in den 99 € enthalten?', "Nein. Bei diesem Angebot reichen Sie Ihren Antrag selbst auf der offiziellen Website thaievisa.go.th ein und zahlen die offiziellen Visumgebühren direkt (etwa 10.000 THB). Die offiziellen Gebühren sind nur im Komplettpaket enthalten."],
+  ['Was, wenn sich meine Unterlagen nach dem Bericht ändern?', "Der Bericht bezieht sich auf die übermittelten Unterlagen. Bei Fragen zu einem Punkt des Berichts antworten Sie einfach auf unsere E-Mail. Für eine erneute vollständige Prüfung stark geänderter Unterlagen nennen wir Ihnen vorab die Bedingungen."],
+];
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Prüfung der DTV-Antragsunterlagen',
+      serviceType: 'Prüfung von Visumunterlagen',
+      provider: { '@type': 'ProfessionalService', name: 'MyVisaDTV', url: 'https://myvisadtv.com' },
+      offers: {
+        '@type': 'Offer',
+        price: '99',
+        priceCurrency: 'EUR',
+        url: 'https://myvisadtv.com/de/visa-dtv/verification-dossier/',
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Prüfung Ihrer DTV-Visumunterlagen — 99 €"
+  description="Sie stellen Ihren DTV-Antrag selbst zusammen? Für 99 € prüfen wir alle Unterlagen: fehlende Dokumente, Übereinstimmung mit den offiziellen Anforderungen und Stimmigkeit der Dokumente. Schriftlicher Bericht innerhalb von 48 Arbeitsstunden."
+  structuredData={structuredData}
+  lang="de"
+  translated
+>
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-24">
+      <p class="eyebrow mb-4">Unterlagenprüfung</p>
+      <div class="grid gap-12 md:grid-cols-[1.1fr_0.9fr] md:items-start">
+        <div>
+          <h1 class="font-display text-4xl leading-tight text-indigo md:text-5xl">
+            Sie beantragen selbst? Lassen Sie Ihre Unterlagen vor dem Einreichen prüfen
+          </h1>
+          <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+            Sie haben Ihre Unterlagen für das DTV-Visum zusammengestellt und möchten den Antrag
+            selbst einreichen. Vorher prüfen wir Ihre gesamten Unterlagen: dass kein Dokument
+            fehlt, dass jedes den Anforderungen der thailändischen Behörden entspricht und dass
+            alles von einem Dokument zum nächsten stimmig ist.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-sable-light bg-white p-8">
+          <p class="font-mono text-xs uppercase tracking-wide text-sable">Festpreis</p>
+          <p class="mt-2 font-display text-5xl text-indigo">99 €</p>
+          <p class="mt-2 font-sans text-sm text-encre/70">Schriftlicher Bericht innerhalb von 48 Arbeitsstunden nach Eingang Ihrer vollständigen Unterlagen.</p>
+          <a href={PAY} target="_blank" rel="noopener noreferrer" class="btn-primary mt-6 w-full">
+            Prüfung bestellen
+          </a>
+          <a href="https://cal.com/myvisadtv/appel-decouverte-dtv" target="_blank" rel="noopener noreferrer" class="btn-secondary mt-3 w-full">
+            Eine Frage? Kostenloses 10-Minuten-Gespräch
+          </a>
+          <p class="mt-4 font-sans text-xs text-sable">
+            99 € werden angerechnet, wenn Sie danach das Komplettpaket wählen. Offizielle
+            Visumgebühren sind in diesem Angebot nicht enthalten.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <p class="eyebrow mb-3">Umfang der Prüfung</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">Was wir für 99 € prüfen</h2>
+
+    <div class="mt-10 grid gap-12 md:grid-cols-2">
+      <div>
+        <h3 class="font-display text-xl text-indigo">1. Nichts fehlt</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Die für Ihr Profil (Workcation, Soft Power, medizinisch oder Angehörige) erforderlichen Unterlagen, verglichen mit dem, was Sie uns senden</CheckItem>
+          <CheckItem variant="gold">Die seit dem 31. August 2026 neu verlangten Unterlagen: Wohnsitznachweis und Führungszeugnis</CheckItem>
+          <CheckItem variant="gold">Zusätzliche Unterlagen für Ihre Situation (Angehörige, Selbstständigkeit, Soft-Power-Programm…)</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">2. Jedes Dokument entspricht den Anforderungen</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Reisepass: Gültigkeit, Lesbarkeit der Personalienseite</CheckItem>
+          <CheckItem variant="gold">Kontoauszüge: abgedeckter Zeitraum, Kontoinhaber, erforderlicher Mindestsaldo und Stabilität der Mittel</CheckItem>
+          <CheckItem variant="gold">Tätigkeitsnachweis: Vertrag, Arbeitgeberbescheinigung, Rechnungen oder Anmeldebestätigung mit den erwarteten Angaben</CheckItem>
+          <CheckItem variant="gold">Foto, Ausstellungsdaten, aktuelle Dokumente, Sprache und eventuelle Übersetzungen</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">3. Alles ist stimmig</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Gleicher Name, Vornamen und Geburtsdatum auf allen Dokumenten</CheckItem>
+          <CheckItem variant="gold">Adressen, Daten und Beträge, die zwischen Ihren Unterlagen übereinstimmen</CheckItem>
+          <CheckItem variant="gold">Unterlagen, die ein klares Bild ergeben: Ihre Tätigkeit, Ihr Einkommen und Ihr Vorhaben in Thailand</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">4. Ein klarer, umsetzbarer Bericht</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Jedes Dokument eingestuft: in Ordnung, zu korrigieren oder fehlend</CheckItem>
+          <CheckItem variant="gold">Für jeden Punkt: was das Problem ist und was stattdessen einzureichen ist</CheckItem>
+          <CheckItem variant="gold">Die Warnsignale, die häufig zu Ablehnungen führen</CheckItem>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section border-t border-sable-light">
+    <div class="rounded-lg border border-sable-light bg-white/60 p-8 md:p-10">
+      <h2 class="font-display text-2xl text-indigo">Was dieses Angebot nicht umfasst</h2>
+      <ul class="mt-6 space-y-4 font-sans text-sm leading-relaxed text-encre/80">
+        <li>— Die Zusammenstellung der Unterlagen für Sie, die Einreichung des Antrags und die Begleitung bis zur Entscheidung: Das ist die Aufgabe des <a class="underline hover:text-or-dark" href="/de/visa-dtv/demande-accompagnee/">Komplettpakets zu 699 €</a>.</li>
+        <li>— Die offiziellen Visumgebühren, die Sie bei der Antragstellung direkt bezahlen.</li>
+        <li>— Kosten für beglaubigte Übersetzungen oder Legalisierungen.</li>
+        <li>— Eine Garantie auf Erteilung: Die Entscheidung liegt bei den thailändischen Behörden.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">Ablauf</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">So funktioniert es</h2>
+
+    <div class="mt-8 max-w-2xl">
+      <StepCard number="01" title="Sie bestellen die Prüfung" duration="2 Minuten">
+        Sichere Kartenzahlung von 99 €. Sie erhalten sofort eine E-Mail mit dem Link zu unserem
+        Upload-Formular.
+      </StepCard>
+      <StepCard number="02" title="Sie laden Ihre Unterlagen hoch" duration="Wenn Sie bereit sind">
+        Sie senden alle Unterlagen, die Sie einreichen möchten, über unser sicheres Formular. Nie
+        per E-Mail.
+      </StepCard>
+      <StepCard number="03" title="Wir prüfen alles" duration="48 Arbeitsstunden">
+        Jedes Dokument wird anhand der offiziellen DTV-Anforderungen und Ihres Profils geprüft und
+        mit den anderen verglichen, um Widersprüche zu erkennen.
+      </StepCard>
+      <StepCard number="04" title="Sie erhalten Ihren Bericht" duration="Per E-Mail">
+        In Ordnung, zu korrigieren, fehlend: Sie wissen genau, was vor der Einreichung zu tun ist.
+      </StepCard>
+      <StepCard number="05" title="Sie reichen beruhigt ein" duration="In Ihrem Tempo">
+        Sie korrigieren und reichen selbst ein. Oder Sie überlassen uns den Rest: Die 99 € werden
+        dann vom Komplettpaket abgezogen.
+      </StepCard>
+    </div>
+  </section>
+
+  <section class="section border-t border-sable-light bg-jade-bg">
+    <p class="eyebrow mb-3">Fragen zur Prüfung</p>
+    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">Vor der Bestellung</h2>
+    <div class="max-w-2xl">
+      {faq.map(([q, a]) => <FaqItem question={q}>{a}</FaqItem>)}
+    </div>
+  </section>
+
+  <section class="border-t border-sable-light bg-indigo text-papier">
+    <div class="section text-center">
+      <h2 class="mx-auto max-w-xl font-display text-3xl text-papier">
+        Geprüfte Unterlagen vor der Einreichung, für 99 €
+      </h2>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href={PAY} target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex">Prüfung bestellen</a>
+        <a href="/de/visa-dtv/demande-accompagnee/" class="btn-on-dark inline-flex">Zum Komplettpaket (699 €)</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

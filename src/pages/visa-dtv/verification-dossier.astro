@@ -1,0 +1,193 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CheckItem from '../../components/CheckItem.astro';
+import StepCard from '../../components/StepCard.astro';
+import FaqItem from '../../components/FaqItem.astro';
+
+const PAY = 'https://buy.stripe.com/7sY5kE2oogXg4r1fQc14403';
+
+const faq = [
+  ['À qui s\'adresse cette formule ?', "Aux personnes qui préfèrent monter et déposer leur demande de DTV elles-mêmes, mais qui veulent un regard expert avant de cliquer sur « envoyer ». Elle est idéale si vous avez déjà réuni vos pièces et souhaitez éviter un refus pour un document manquant ou incohérent."],
+  ['Que contient exactement le rapport ?', "Un document écrit qui reprend chacune de vos pièces avec un statut clair : conforme, à corriger ou manquante. Pour chaque point à corriger, nous expliquons ce qui pose problème et ce qu'il faut fournir à la place. Le rapport signale aussi les incohérences entre documents (nom, date de naissance, adresse, montants, dates) et les pièces qui risquent d'être jugées insuffisantes par l'ambassade."],
+  ['Sous quel délai vais-je recevoir mon rapport ?', "Sous 48 heures ouvrées après réception de votre dossier complet sur notre formulaire sécurisé."],
+  ['Comment vous transmettre mes documents ?', "Après le paiement, vous recevez par e-mail le lien vers notre formulaire de dépôt sécurisé. Nous ne demandons jamais vos documents en pièce jointe par e-mail. Vos pièces servent uniquement à la vérification de votre dossier."],
+  ['Les 99 € sont-ils déduits si je choisis ensuite la formule complète ?', "Oui. Si, après la vérification, vous préférez nous confier toute la demande, les 99 € sont déduits de la formule complète à 699 € : il vous reste 600 € à régler."],
+  ['La vérification garantit-elle l\'obtention du visa ?', "Non. La décision appartient exclusivement aux autorités thaïlandaises. La vérification réduit le risque de refus lié à un dossier incomplet ou incohérent, mais aucun service ne peut garantir un visa."],
+  ['Les frais officiels du visa sont-ils inclus dans les 99 € ?', "Non. Avec cette formule, vous déposez vous-même votre demande sur le site officiel thaievisa.go.th et vous réglez directement les frais officiels du visa (environ 10 000 THB, soit près de 350 € à Paris). Les frais officiels ne sont inclus que dans la formule complète."],
+  ['Que se passe-t-il si mes documents changent après le rapport ?', "Le rapport porte sur les pièces transmises. Si vous avez une question sur un point du rapport, il suffit de répondre à notre e-mail. Pour une nouvelle vérification complète d'un dossier largement modifié, nous vous indiquons les conditions avant toute démarche."],
+];
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Vérification du dossier DTV',
+      serviceType: 'Contrôle de dossier de visa',
+      provider: { '@type': 'ProfessionalService', name: 'MyVisaDTV', url: 'https://myvisadtv.com' },
+      areaServed: 'FR',
+      offers: {
+        '@type': 'Offer',
+        price: '99',
+        priceCurrency: 'EUR',
+        url: 'https://myvisadtv.com/visa-dtv/verification-dossier/',
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Vérification de votre dossier de visa DTV — 99 €"
+  description="Vous montez votre dossier DTV vous-même ? Pour 99 €, nous vérifions toutes vos pièces : documents manquants, conformité aux exigences officielles et cohérence entre documents. Rapport écrit sous 48 h ouvrées."
+  structuredData={structuredData}
+  lang="fr"
+  translated
+>
+  <!-- Hero produit -->
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-24">
+      <p class="eyebrow mb-4">Vérification du dossier</p>
+      <div class="grid gap-12 md:grid-cols-[1.1fr_0.9fr] md:items-start">
+        <div>
+          <h1 class="font-display text-4xl leading-tight text-indigo md:text-5xl">
+            Vous déposez seul ? Faites vérifier votre dossier avant de l'envoyer
+          </h1>
+          <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+            Vous avez réuni vos documents pour le visa DTV et vous comptez déposer la demande
+            vous-même. Avant de le faire, nous contrôlons l'ensemble de votre dossier : qu'il ne
+            manque aucune pièce, que chacune correspond à ce que demande l'administration
+            thaïlandaise, et que tout est cohérent d'un document à l'autre.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-sable-light bg-white p-8">
+          <p class="font-mono text-xs uppercase tracking-wide text-sable">Tarif unique</p>
+          <p class="mt-2 font-display text-5xl text-indigo">99 €</p>
+          <p class="mt-2 font-sans text-sm text-encre/70">Rapport écrit sous 48 h ouvrées après réception de votre dossier complet.</p>
+          <a href={PAY} target="_blank" rel="noopener noreferrer" class="btn-primary mt-6 w-full">
+            Commander la vérification
+          </a>
+          <a href="https://cal.com/myvisadtv/appel-decouverte-dtv" target="_blank" rel="noopener noreferrer" class="btn-secondary mt-3 w-full">
+            Une question ? Appel gratuit de 10 min
+          </a>
+          <p class="mt-4 font-sans text-xs text-sable">
+            99 € déduits si vous passez ensuite à la formule complète. Frais officiels du visa non
+            inclus dans cette formule.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ce qui est vérifié -->
+  <section class="section">
+    <p class="eyebrow mb-3">Contenu de la vérification</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">Ce que nous contrôlons pour 99 €</h2>
+
+    <div class="mt-10 grid gap-12 md:grid-cols-2">
+      <div>
+        <h3 class="font-display text-xl text-indigo">1. Rien ne manque</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">La liste des pièces exigées pour votre profil (Workcation, Soft Power, médical ou dépendant), comparée à ce que vous nous transmettez</CheckItem>
+          <CheckItem variant="gold">Les nouvelles pièces exigées depuis le 31 août 2026 : justificatif de résidence et extrait de casier judiciaire</CheckItem>
+          <CheckItem variant="gold">Les pièces complémentaires propres à votre situation (dépendants, activité indépendante, programme Soft Power…)</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">2. Chaque pièce est conforme</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Passeport : validité, lisibilité de la page d'identité</CheckItem>
+          <CheckItem variant="gold">Relevés bancaires : période couverte, titulaire du compte, solde minimum exigé et stabilité des fonds</CheckItem>
+          <CheckItem variant="gold">Justificatif d'activité : contrat, attestation employeur, factures ou lettre d'inscription, avec les mentions attendues</CheckItem>
+          <CheckItem variant="gold">Photo, dates de délivrance, documents récents, langue et traductions éventuelles</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">3. Tout est cohérent</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Mêmes nom, prénoms et date de naissance sur tous les documents</CheckItem>
+          <CheckItem variant="gold">Adresses, dates et montants qui concordent entre vos pièces</CheckItem>
+          <CheckItem variant="gold">Un dossier qui raconte une histoire claire : votre activité, vos revenus et votre projet en Thaïlande</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">4. Un rapport clair et actionnable</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Chaque pièce classée : conforme, à corriger ou manquante</CheckItem>
+          <CheckItem variant="gold">Pour chaque point, ce qui pose problème et ce qu'il faut fournir à la place</CheckItem>
+          <CheckItem variant="gold">Les points de vigilance qui provoquent souvent des refus</CheckItem>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ce qui n'est pas inclus -->
+  <section class="section border-t border-sable-light">
+    <div class="rounded-lg border border-sable-light bg-white/60 p-8 md:p-10">
+      <h2 class="font-display text-2xl text-indigo">Ce que cette formule ne couvre pas</h2>
+      <ul class="mt-6 space-y-4 font-sans text-sm leading-relaxed text-encre/80">
+        <li>— La constitution du dossier à votre place, le dépôt de la demande et le suivi jusqu'à la décision : c'est le rôle de la <a class="underline hover:text-or-dark" href="/visa-dtv/demande-accompagnee/">formule complète à 699 €</a>.</li>
+        <li>— Les frais officiels du visa, que vous réglez directement lors de votre dépôt.</li>
+        <li>— Les frais de traduction assermentée ou de légalisation de documents.</li>
+        <li>— Une garantie d'obtention : la décision appartient aux autorités thaïlandaises.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Déroulé -->
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">Déroulé</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">Comment ça se passe</h2>
+
+    <div class="mt-8 max-w-2xl">
+      <StepCard number="01" title="Vous commandez la vérification" duration="2 minutes">
+        Paiement sécurisé de 99 € par carte bancaire. Vous recevez aussitôt un e-mail avec le
+        lien vers notre formulaire de dépôt.
+      </StepCard>
+      <StepCard number="02" title="Vous déposez vos documents" duration="Quand vous êtes prêt">
+        Vous transmettez toutes les pièces que vous comptez présenter, sur notre formulaire
+        sécurisé. Jamais par e-mail.
+      </StepCard>
+      <StepCard number="03" title="Nous vérifions tout" duration="48 h ouvrées">
+        Chaque pièce est contrôlée au regard des exigences officielles du DTV et de votre profil,
+        puis comparée aux autres pour repérer les incohérences.
+      </StepCard>
+      <StepCard number="04" title="Vous recevez votre rapport" duration="Par e-mail">
+        Pièces conformes, à corriger, manquantes : vous savez exactement quoi faire avant de
+        déposer.
+      </StepCard>
+      <StepCard number="05" title="Vous déposez sereinement" duration="À votre rythme">
+        Vous corrigez et déposez vous-même. Ou vous nous confiez la suite : les 99 € sont alors
+        déduits de la formule complète.
+      </StepCard>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section border-t border-sable-light bg-jade-bg">
+    <p class="eyebrow mb-3">Questions sur la vérification</p>
+    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">Avant de commander</h2>
+    <div class="max-w-2xl">
+      {faq.map(([q, a]) => <FaqItem question={q}>{a}</FaqItem>)}
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="border-t border-sable-light bg-indigo text-papier">
+    <div class="section text-center">
+      <h2 class="mx-auto max-w-xl font-display text-3xl text-papier">
+        Un dossier vérifié avant le dépôt, pour 99 €
+      </h2>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href={PAY} target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex">Commander la vérification</a>
+        <a href="/visa-dtv/demande-accompagnee/" class="btn-on-dark inline-flex">Voir la formule complète (699 €)</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

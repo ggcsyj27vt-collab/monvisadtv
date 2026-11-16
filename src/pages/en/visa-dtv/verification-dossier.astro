@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CheckItem from '../../../components/CheckItem.astro';
+import StepCard from '../../../components/StepCard.astro';
+import FaqItem from '../../../components/FaqItem.astro';
+
+const PAY = 'https://buy.stripe.com/7sY5kE2oogXg4r1fQc14403';
+
+const faq = [
+  ['Who is this service for?', "For people who prefer to prepare and submit their DTV application themselves, but want an expert review before clicking \"submit\". It is ideal if you have already gathered your documents and want to avoid a refusal caused by a missing or inconsistent document."],
+  ['What exactly is in the report?', "A written document that goes through each of your documents with a clear status: compliant, to be corrected or missing. For each point to correct, we explain what the problem is and what to provide instead. The report also flags inconsistencies between documents (name, date of birth, address, amounts, dates) and documents the embassy may consider insufficient."],
+  ['When will I receive my report?', "Within 48 business hours of receiving your complete set of documents on our secure form."],
+  ['How do I send you my documents?', "After payment, you receive an e-mail with the link to our secure upload form. We never ask for your documents as e-mail attachments. Your documents are used only to check your application."],
+  ['Is the €99 deducted if I then choose the full package?', "Yes. If, after the check, you prefer to entrust us with the whole application, the €99 is deducted from the €699 full package: you pay the remaining €600."],
+  ['Does the check guarantee that I will get the visa?', "No. The decision belongs solely to the Thai authorities. The check reduces the risk of a refusal caused by an incomplete or inconsistent application, but no service can guarantee a visa."],
+  ['Are the official visa fees included in the €99?', "No. With this service, you submit your application yourself on the official website thaievisa.go.th and pay the official visa fees directly (about 10,000 THB, roughly €350 in Paris). Official fees are only included in the full package."],
+  ['What if my documents change after the report?', "The report covers the documents you sent. If you have a question about a point in the report, simply reply to our e-mail. For a new full check of a substantially modified application, we tell you the terms before anything else."],
+];
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'DTV application document check',
+      serviceType: 'Visa application review',
+      provider: { '@type': 'ProfessionalService', name: 'MyVisaDTV', url: 'https://myvisadtv.com' },
+      offers: {
+        '@type': 'Offer',
+        price: '99',
+        priceCurrency: 'EUR',
+        url: 'https://myvisadtv.com/en/visa-dtv/verification-dossier/',
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="DTV visa document check — €99"
+  description="Preparing your DTV application yourself? For €99, we check all your documents: missing items, compliance with official requirements and consistency between documents. Written report within 48 business hours."
+  structuredData={structuredData}
+  lang="en"
+  translated
+>
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-24">
+      <p class="eyebrow mb-4">Document check</p>
+      <div class="grid gap-12 md:grid-cols-[1.1fr_0.9fr] md:items-start">
+        <div>
+          <h1 class="font-display text-4xl leading-tight text-indigo md:text-5xl">
+            Applying on your own? Have your file checked before you submit it
+          </h1>
+          <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+            You have gathered your documents for the DTV visa and plan to submit the application
+            yourself. Before you do, we review your entire file: that no document is missing, that
+            each one matches what the Thai authorities require, and that everything is consistent
+            from one document to the next.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-sable-light bg-white p-8">
+          <p class="font-mono text-xs uppercase tracking-wide text-sable">Single price</p>
+          <p class="mt-2 font-display text-5xl text-indigo">€99</p>
+          <p class="mt-2 font-sans text-sm text-encre/70">Written report within 48 business hours of receiving your complete file.</p>
+          <a href={PAY} target="_blank" rel="noopener noreferrer" class="btn-primary mt-6 w-full">
+            Order the check
+          </a>
+          <a href="https://cal.com/myvisadtv/appel-decouverte-dtv" target="_blank" rel="noopener noreferrer" class="btn-secondary mt-3 w-full">
+            A question? Free 10-min call
+          </a>
+          <p class="mt-4 font-sans text-xs text-sable">
+            €99 deducted if you then switch to the full package. Official visa fees not included in
+            this service.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <p class="eyebrow mb-3">What is checked</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">What we review for €99</h2>
+
+    <div class="mt-10 grid gap-12 md:grid-cols-2">
+      <div>
+        <h3 class="font-display text-xl text-indigo">1. Nothing is missing</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">The documents required for your profile (Workcation, Soft Power, medical or dependant), compared with what you send us</CheckItem>
+          <CheckItem variant="gold">The new documents required since 31 August 2026: proof of residence and criminal record certificate</CheckItem>
+          <CheckItem variant="gold">Additional documents specific to your situation (dependants, self-employment, Soft Power programme…)</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">2. Each document is compliant</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Passport: validity, readability of the identity page</CheckItem>
+          <CheckItem variant="gold">Bank statements: period covered, account holder, required minimum balance and stability of funds</CheckItem>
+          <CheckItem variant="gold">Proof of activity: contract, employer letter, invoices or enrolment letter, with the expected details</CheckItem>
+          <CheckItem variant="gold">Photo, issue dates, recent documents, language and any translations</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">3. Everything is consistent</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Same name, first names and date of birth on all documents</CheckItem>
+          <CheckItem variant="gold">Addresses, dates and amounts that match across your documents</CheckItem>
+          <CheckItem variant="gold">A file that tells a clear story: your activity, your income and your plans in Thailand</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-display text-xl text-indigo">4. A clear, actionable report</h3>
+        <ul class="mt-5 space-y-5">
+          <CheckItem variant="gold">Each document marked: compliant, to be corrected or missing</CheckItem>
+          <CheckItem variant="gold">For each point, what the problem is and what to provide instead</CheckItem>
+          <CheckItem variant="gold">The warning signs that often lead to refusals</CheckItem>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section border-t border-sable-light">
+    <div class="rounded-lg border border-sable-light bg-white/60 p-8 md:p-10">
+      <h2 class="font-display text-2xl text-indigo">What this service does not cover</h2>
+      <ul class="mt-6 space-y-4 font-sans text-sm leading-relaxed text-encre/80">
+        <li>— Preparing the file for you, submitting the application and follow-up until the decision: that is the role of the <a class="underline hover:text-or-dark" href="/en/visa-dtv/demande-accompagnee/">€699 full package</a>.</li>
+        <li>— Official visa fees, which you pay directly when you apply.</li>
+        <li>— Sworn translation or document legalisation fees.</li>
+        <li>— A guarantee of approval: the decision belongs to the Thai authorities.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">How it works</p>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">Step by step</h2>
+
+    <div class="mt-8 max-w-2xl">
+      <StepCard number="01" title="You order the check" duration="2 minutes">
+        Secure €99 card payment. You immediately receive an e-mail with the link to our upload
+        form.
+      </StepCard>
+      <StepCard number="02" title="You upload your documents" duration="When you are ready">
+        You send all the documents you plan to submit, through our secure form. Never by e-mail.
+      </StepCard>
+      <StepCard number="03" title="We check everything" duration="48 business hours">
+        Each document is checked against the official DTV requirements and your profile, then
+        compared with the others to spot inconsistencies.
+      </StepCard>
+      <StepCard number="04" title="You receive your report" duration="By e-mail">
+        Compliant, to be corrected, missing: you know exactly what to do before submitting.
+      </StepCard>
+      <StepCard number="05" title="You submit with peace of mind" duration="At your own pace">
+        You correct and submit yourself. Or you hand the rest over to us: the €99 is then deducted
+        from the full package.
+      </StepCard>
+    </div>
+  </section>
+
+  <section class="section border-t border-sable-light bg-jade-bg">
+    <p class="eyebrow mb-3">Questions about the check</p>
+    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">Before you order</h2>
+    <div class="max-w-2xl">
+      {faq.map(([q, a]) => <FaqItem question={q}>{a}</FaqItem>)}
+    </div>
+  </section>
+
+  <section class="border-t border-sable-light bg-indigo text-papier">
+    <div class="section text-center">
+      <h2 class="mx-auto max-w-xl font-display text-3xl text-papier">
+        A file checked before you submit, for €99
+      </h2>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href={PAY} target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex">Order the check</a>
+        <a href="/en/visa-dtv/demande-accompagnee/" class="btn-on-dark inline-flex">See the full package (€699)</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
