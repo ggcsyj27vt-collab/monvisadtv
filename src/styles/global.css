@@ -11,8 +11,14 @@
     color: #1F2430;
   }
   h1, h2, h3, h4 {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.015em;
     color: #16233F;
+  }
+  .font-display {
+    font-weight: 600;
+    letter-spacing: -0.015em;
   }
   a {
     text-underline-offset: 3px;
