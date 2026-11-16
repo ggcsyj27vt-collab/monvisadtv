@@ -18,10 +18,11 @@ Public cible : francophones souhaitant s'installer temporairement en Thaïlande 
 ## Stack technique
 
 - **Framework** : [Astro](https://docs.astro.build/) (site principalement statique / SSG)
-- **Styling** : à préciser (ex. Tailwind CSS recommandé pour la rapidité de mise en page)
-- **Déploiement** : à préciser (ex. Vercel, Netlify, Cloudflare Pages)
-- **Contenu** : à préciser (Markdown/MDX local via Content Collections, ou CMS headless)
-- **Formulaires** : à préciser (ex. service tiers type Formspree, ou fonction serverless)
+- **Styling** : Tailwind CSS (`tailwind.config.mjs`) + `src/styles/global.css` ; style « Apple » (en-tête translucide, retour à l'appui, FAQ animée) avec respect de `prefers-reduced-motion` / `prefers-reduced-transparency`
+- **Déploiement** : Netlify, publication automatique depuis la branche `main` du dépôt GitHub
+- **Contenu** : Markdown local via Content Collections (`src/content/blog/`), en FR/EN/DE
+- **Formulaires** : Formspree (fiche de renseignement)
+- **Mesure d'audience** : Umami, avec suivi des clics de conversion dans `BaseLayout.astro`
 
 > Cette section doit être tenue à jour au fur et à mesure des choix techniques réels du projet.
 
