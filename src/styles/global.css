@@ -3,16 +3,41 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Courbes « ressort » (amortissement critique, sans rebond) inspirées d'Apple */
+    --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-press: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
   html {
     scroll-behavior: smooth;
+    /* Permet d'animer la hauteur des <details> (FAQ) vers « auto » */
+    interpolate-size: allow-keywords;
   }
   body {
     background-color: #F7F3EA;
     color: #1F2430;
+    -webkit-tap-highlight-color: transparent;
   }
   h1, h2, h3, h4 {
     font-family: 'Fraunces', Georgia, serif;
     color: #16233F;
+    font-optical-sizing: auto;
+    text-wrap: balance;
+  }
+  /* Interlettrage dépendant de la taille : serré sur les grands titres, neutre sur le corps */
+  h1 {
+    letter-spacing: -0.022em;
+    line-height: 1.08;
+  }
+  h2 {
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+  }
+  h3 {
+    letter-spacing: -0.008em;
+  }
+  p {
+    text-wrap: pretty;
   }
   a {
     text-underline-offset: 3px;
@@ -25,13 +50,79 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm bg-or px-6 py-3 font-sans text-sm font-semibold tracking-wide text-indigo transition hover:bg-or-light;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-or px-6 py-3 font-sans text-sm font-semibold tracking-wide text-indigo hover:bg-or-light;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-indigo px-6 py-3 font-sans text-sm font-semibold tracking-wide text-indigo transition hover:bg-indigo hover:text-papier;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-indigo px-6 py-3 font-sans text-sm font-semibold tracking-wide text-indigo hover:bg-indigo hover:text-papier;
   }
   .btn-on-dark {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-papier/40 px-6 py-3 font-sans text-sm font-semibold tracking-wide text-papier transition hover:bg-papier hover:text-indigo;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-papier/40 px-6 py-3 font-sans text-sm font-semibold tracking-wide text-papier hover:bg-papier hover:text-indigo;
+  }
+  /* Retour tactile immédiat à l'appui (pointer-down), relâchement en douceur */
+  .btn-primary,
+  .btn-secondary,
+  .btn-on-dark,
+  .pressable {
+    transition:
+      transform 0.45s var(--ease-spring),
+      background-color 0.2s var(--ease-press),
+      color 0.2s var(--ease-press),
+      border-color 0.2s var(--ease-press),
+      box-shadow 0.3s var(--ease-press);
+    touch-action: manipulation;
+  }
+  .btn-primary:active,
+  .btn-secondary:active,
+  .btn-on-dark:active,
+  .pressable:active {
+    transform: scale(0.97);
+    transition-duration: 0.1s;
+  }
+
+  /* Matériau translucide (barre de navigation) */
+  .material-bar {
+    background-color: rgb(247 243 234 / 0.72);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 0 1px 0 rgb(220 213 196 / 0);
+    transition: box-shadow 0.3s var(--ease-press), background-color 0.3s var(--ease-press);
+  }
+  /* Séparation n'apparaissant que lorsque le contenu passe sous la barre */
+  .material-bar[data-scrolled] {
+    box-shadow:
+      0 1px 0 rgb(220 213 196 / 0.7),
+      0 8px 24px -12px rgb(22 35 63 / 0.18);
+  }
+
+  /* Apparition au défilement (activée seulement si JS est présent) */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.7s var(--ease-spring),
+      transform 0.9s var(--ease-spring);
+  }
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* FAQ : ouverture/fermeture fluide et interruptible */
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      block-size 0.45s var(--ease-spring),
+      opacity 0.3s var(--ease-press),
+      content-visibility 0.45s allow-discrete;
+  }
+  .faq-item[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+  .faq-icon {
+    transition: transform 0.45s var(--ease-spring);
   }
   .eyebrow {
     @apply font-mono text-xs uppercase tracking-[0.18em] text-or-dark;
@@ -77,5 +168,41 @@
   }
   .article-content th {
     @apply bg-sable-light font-display text-indigo;
+  }
+}
+
+/* Accessibilité : préférences système */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js .reveal {
+    transform: none;
+    transition: opacity 0.2s ease;
+  }
+  .btn-primary:active,
+  .btn-secondary:active,
+  .btn-on-dark:active,
+  .pressable:active {
+    transform: none;
+  }
+  .faq-item::details-content,
+  .faq-icon {
+    transition: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .material-bar {
+    background-color: #F7F3EA;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@media (prefers-contrast: more) {
+  .material-bar {
+    background-color: #F7F3EA;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: 0 1px 0 #16233F;
   }
 }
