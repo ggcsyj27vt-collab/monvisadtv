@@ -274,6 +274,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           steps.forEach((step) => {
             step.hidden = false;
           });
+
+          // Copie de la demande pour l'agent IA d'accueil (n8n).
+          // N'empeche pas l'envoi normal a Formspree.
+          try {
+            navigator.sendBeacon(
+              'https://alexdolax.app.n8n.cloud/webhook/myvisadtv-lead-7k3q9',
+              new URLSearchParams(new FormData(form) as unknown as Record<string, string>)
+            );
+          } catch {}
         });
 
         render();
