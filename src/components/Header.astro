@@ -63,15 +63,15 @@ const langLinks = {
       <button
         type="button"
         id="menu-toggle"
-        class="inline-flex h-11 w-11 items-center justify-center rounded-sm text-indigo transition hover:bg-sable-light/60 lg:hidden"
+        class="pressable relative inline-flex h-11 w-11 items-center justify-center rounded-full text-indigo hover:bg-sable-light/60 lg:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
         aria-label="Menu"
       >
-        <svg data-open xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6" aria-hidden="true">
+        <svg data-open xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="menu-icon absolute h-6 w-6" aria-hidden="true">
           <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
         </svg>
-        <svg data-close xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="hidden h-6 w-6" aria-hidden="true">
+        <svg data-close xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="menu-icon absolute h-6 w-6 rotate-[-90deg] scale-50 opacity-0" aria-hidden="true">
           <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
         </svg>
       </button>
@@ -81,11 +81,11 @@ const langLinks = {
       </a>
     </div>
   </div>
-  <nav id="mobile-menu" class="hidden max-h-[calc(100vh-5.5rem)] overflow-y-auto border-t border-sable-light/70 bg-papier lg:hidden" aria-label="Menu">
+  <nav id="mobile-menu" class="menu-panel max-h-[calc(100vh-6.5rem)] overflow-y-auto lg:hidden" aria-label="Menu">
     <ul class="mx-auto max-w-content px-6 py-2">
       {navItems.map((item) => (
         <li>
-          <a href={item.href} class="block border-b border-sable-light/60 py-3.5 font-sans text-base font-medium text-indigo">
+          <a href={item.href} class="block border-b border-indigo/[0.06] py-3.5 font-sans text-lg font-semibold tracking-tight text-indigo">
             {item.label}
           </a>
         </li>
@@ -104,14 +104,22 @@ const langLinks = {
       var btn = document.getElementById('menu-toggle');
       var menu = document.getElementById('mobile-menu');
       if (!btn || !menu) return;
+      var iconOpen = btn.querySelector('[data-open]');
+      var iconClose = btn.querySelector('[data-close]');
+      function isOpen() { return menu.hasAttribute('data-open'); }
       function set(open) {
-        menu.classList.toggle('hidden', !open);
+        menu.toggleAttribute('data-open', open);
+        menu.inert = !open;
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        btn.querySelector('[data-open]').classList.toggle('hidden', open);
-        btn.querySelector('[data-close]').classList.toggle('hidden', !open);
+        iconOpen.style.cssText = open ? 'transform: rotate(90deg) scale(.5); opacity: 0' : '';
+        iconClose.style.cssText = open ? 'transform: none; opacity: 1' : '';
       }
-      btn.addEventListener('click', function () { set(menu.classList.contains('hidden')); });
+      set(false);
+      btn.addEventListener('click', function () { set(!isOpen()); });
       menu.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+      document.addEventListener('click', function (e) {
+        if (isOpen() && !menu.contains(e.target) && !btn.contains(e.target)) set(false);
+      });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
     })();
   </script>

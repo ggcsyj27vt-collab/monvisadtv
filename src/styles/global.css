@@ -134,7 +134,109 @@
     @apply font-mono text-xs uppercase tracking-[0.18em] text-or-dark;
   }
   .section {
-    @apply mx-auto max-w-content px-6 py-20 md:px-10;
+    @apply mx-auto max-w-content px-6 py-24 md:px-10 md:py-32;
+  }
+
+  /* Titres plus affirmés : graisse, taille et interlettrage serré */
+  main h1 {
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+  main h2 {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+  }
+  @media (min-width: 768px) {
+    main section h1 {
+      font-size: clamp(3rem, 5.2vw, 4.25rem);
+    }
+    main section > h2,
+    main section > div > h2,
+    main section > div > div > h2 {
+      font-size: 2.5rem;
+    }
+  }
+
+  /* Sections séparées par l'espace, pas par des traits */
+  main > section.border-t,
+  main > section.border-y,
+  main > section.border-b {
+    border-color: transparent;
+  }
+
+  /* Cartes : surface blanche, coins continus, ombre douce en couches */
+  main .rounded-lg.border {
+    border-color: rgb(22 35 63 / 0.06);
+    box-shadow:
+      0 1px 2px rgb(22 35 63 / 0.04),
+      0 8px 24px -8px rgb(22 35 63 / 0.10);
+  }
+  main .rounded-lg.border-2.border-or {
+    border-color: #C9A24C;
+    box-shadow:
+      0 1px 2px rgb(22 35 63 / 0.05),
+      0 18px 40px -16px rgb(169 132 58 / 0.45);
+  }
+  /* Cartes cliquables : légère élévation au survol, enfoncement à l'appui */
+  main a.rounded-lg.border {
+    transition:
+      transform 0.45s var(--ease-spring),
+      box-shadow 0.45s var(--ease-spring),
+      border-color 0.2s ease;
+  }
+  @media (hover: hover) {
+    main a.rounded-lg.border:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 2px 4px rgb(22 35 63 / 0.05),
+        0 20px 40px -16px rgb(22 35 63 / 0.22);
+    }
+  }
+  main a.rounded-lg.border:active {
+    transform: scale(0.985);
+    transition-duration: 0.1s;
+  }
+
+  /* Menu mobile : matériau translucide qui s'ouvre depuis son bouton */
+  .menu-panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0.75rem;
+    left: 0.75rem;
+    border-radius: 1.375rem;
+    /* Fond plein : un matériau translucide ne doit pas se superposer à la barre translucide */
+    background-color: #FBF9F4;
+    box-shadow:
+      0 0 0 1px rgb(22 35 63 / 0.06),
+      0 24px 48px -16px rgb(22 35 63 / 0.30);
+    transform-origin: top right;
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+    filter: blur(4px);
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.25s ease,
+      transform 0.45s var(--ease-spring),
+      filter 0.3s ease,
+      visibility 0s linear 0.45s;
+  }
+  .menu-panel[data-open] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+      opacity 0.2s ease,
+      transform 0.45s var(--ease-spring),
+      filter 0.25s ease,
+      visibility 0s;
+  }
+  .menu-icon {
+    transition: transform 0.45s var(--ease-spring), opacity 0.2s ease;
   }
 
   /* Styles pour le contenu Markdown des articles de blog (Content Collections) */
@@ -193,11 +295,30 @@
     transform: none;
   }
   .faq-item::details-content,
-  .faq-icon {
+  .faq-icon,
+  .menu-icon {
     transition: none;
+  }
+  .menu-panel,
+  .menu-panel[data-open] {
+    transform: none;
+    filter: none;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+  .menu-panel[data-open] {
+    transition: opacity 0.2s ease, visibility 0s;
+  }
+  main a.rounded-lg.border:hover,
+  main a.rounded-lg.border:active {
+    transform: none;
   }
 }
 @media (prefers-reduced-transparency: reduce) {
+  .menu-panel {
+    background-color: #F7F3EA;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
   .material-bar {
     background-color: #F7F3EA;
     -webkit-backdrop-filter: none;
