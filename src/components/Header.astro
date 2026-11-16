@@ -10,6 +10,7 @@ const t = ui[lang];
 const navItems = [
   { href: localePath(lang, '/'), label: t.nav.home },
   { href: localePath(lang, '/visa-dtv/demande-accompagnee/'), label: t.nav.offer },
+  { href: localePath(lang, '/visa-dtv/verification-dossier/'), label: ({ fr: 'Vérification à 99 €', en: 'Document check (€99)', de: 'Prüfung (99 €)' })[lang] },
   { href: localePath(lang, '/visa-dtv/comprendre-le-dtv/'), label: t.nav.understand },
   { href: '/blog/', label: t.nav.blog },
   { href: localePath(lang, '/a-propos/'), label: t.nav.about },
