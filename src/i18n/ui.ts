@@ -38,7 +38,7 @@ export const ui: Record<Locale, UiStrings> = {
   fr: {
     nav: {
       home: 'Accueil',
-      offer: 'La formule à 700 €',
+      offer: 'La formule à 699 €',
       understand: 'Comprendre le DTV',
       blog: 'Blog',
       about: 'À propos',
@@ -61,7 +61,7 @@ export const ui: Record<Locale, UiStrings> = {
   en: {
     nav: {
       home: 'Home',
-      offer: 'The €700 package',
+      offer: 'The €699 package',
       understand: 'Understanding the DTV',
       blog: 'Blog',
       about: 'About',
@@ -84,7 +84,7 @@ export const ui: Record<Locale, UiStrings> = {
   de: {
     nav: {
       home: 'Startseite',
-      offer: 'Das 700-€-Paket',
+      offer: 'Das 699-€-Paket',
       understand: 'Das DTV verstehen',
       blog: 'Blog',
       about: 'Über uns',
