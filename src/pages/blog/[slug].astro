@@ -1,90 +1,14 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import DerniereMiseAJour from '../../components/DerniereMiseAJour.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import BlogPost from '../../components/BlogPost.astro';
+import { getCollection } from 'astro:content';
+import { postLang, postSlug } from '../../lib/blog';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
-}
-
-interface Props {
-  post: CollectionEntry<'blog'>;
+  const posts = (await getCollection('blog')).filter((p) => postLang(p) === 'fr');
+  return posts.map((post) => ({ params: { slug: postSlug(post) }, props: { post } }));
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
-// Articles lus par des personnes qui préparent leur dossier elles-mêmes : on leur propose la vérification à 99 €.
-const verifSlugs = ['documents-dtv-thailande-liste-complete', 'dtv-freelance-justificatifs', 'visa-dtv-refuse-que-faire', 'visa-dtv-thailande-guide-complet-2026'];
-const showVerif = verifSlugs.includes(post.slug);
-
-const articleSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: post.data.title,
-  description: post.data.description,
-  datePublished: post.data.pubDate.toISOString(),
-  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
-  author: {
-    '@type': 'Organization',
-    name: 'MyVisaDTV',
-  },
-  publisher: {
-    '@type': 'Organization',
-    name: 'MyVisaDTV',
-    logo: {
-      '@type': 'ImageObject',
-      url: 'https://myvisadtv.com/images/logo-dtv-thailand.png',
-    },
-  },
-};
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} structuredData={articleSchema}>
-  <article class="border-b border-sable-light bg-papier">
-    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-20">
-      <p class="eyebrow mb-4"><a href="/blog/" class="hover:text-indigo">Blog</a></p>
-      <h1 class="max-w-3xl font-display text-4xl leading-tight text-indigo md:text-5xl">
-        {post.data.title}
-      </h1>
-      <div class="mt-6">
-        <DerniereMiseAJour date={(post.data.updatedDate ?? post.data.pubDate).toISOString().slice(0, 10)} />
-      </div>
-    </div>
-  </article>
-
-  <section class="section">
-    <div class="mx-auto max-w-3xl">
-      <div class="article-content">
-        <Content />
-      </div>
-
-      {showVerif && (
-        <div class="mt-14 rounded-lg border-2 border-or bg-white p-8">
-          <p class="eyebrow mb-2">Vous préparez votre dossier vous-même ?</p>
-          <h2 class="font-display text-xl text-indigo">Faites-le vérifier avant de le déposer, pour 99 €</h2>
-          <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">
-            Nous contrôlons toutes vos pièces : documents manquants, conformité aux exigences
-            officielles et cohérence entre vos documents. Rapport écrit sous 48 h ouvrées, et les
-            99 € sont déduits si vous nous confiez ensuite la demande complète.
-          </p>
-          <a href="/visa-dtv/verification-dossier/" class="btn-primary mt-5 inline-flex">Découvrir la vérification à 99 €</a>
-        </div>
-      )}
-
-      <div class="mt-14 rounded-lg border border-sable-light bg-jade-bg p-8">
-        <h2 class="font-display text-lg text-indigo">Une question sur votre situation ?</h2>
-        <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">
-          Commencez par une fiche de renseignement de cinq minutes. Nous revenons vers vous avec
-          un premier avis sur votre éligibilité, sans engagement.
-        </p>
-        <a href="/fiche-renseignement/" class="btn-primary mt-5 inline-flex">
-          Remplir la fiche de renseignement
-        </a>
-      </div>
-    </div>
-  </section>
-</BaseLayout>
+<BlogPost post={post} />

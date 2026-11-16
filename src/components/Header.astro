@@ -22,7 +22,7 @@ const pathWithoutLangPrefix = rawPath.replace(/^\/(en|de)(\/|$)/, '/');
 // Le blog n'existe qu'en français pour l'instant : le sélecteur renvoie vers
 // l'accueil de la langue choisie plutôt que vers une URL de blog inexistante.
 const isBlogPage = pathWithoutLangPrefix.startsWith('/blog');
-const targetPath = isBlogPage ? '/' : pathWithoutLangPrefix;
+const targetPath = isBlogPage ? '/blog/' : pathWithoutLangPrefix;
 const langLinks = {
   fr: targetPath,
   en: `/en${targetPath}`.replace(/\/{2,}/g, '/'),

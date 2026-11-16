@@ -1,30 +1,29 @@
 import { getCollection } from 'astro:content';
+import { postUrl } from '../lib/blog';
 
 const SITE = 'https://myvisadtv.com';
 
-// Pages traduites en /en/ et /de/ (le blog reste français pour l'instant).
+// Pages qui existent en français, en /en/ et en /de/.
 const translatedPaths = [
   '/',
   '/a-propos/',
+  '/blog/',
   '/confidentialite/',
   '/fiche-renseignement/',
   '/mentions-legales/',
   '/visa-dtv/comprendre-le-dtv/',
   '/visa-dtv/demande-accompagnee/',
+  '/visa-dtv/verification-dossier/',
 ];
-
-// Pages françaises supplémentaires sans équivalent traduit.
-const frenchOnlyPaths = ['/blog/'];
 
 export async function GET() {
   const posts = await getCollection('blog');
-  const blogPaths = posts.map((post) => `/blog/${post.slug}/`);
+  const blogPaths = posts.map((post) => postUrl(post));
 
   const allPaths = [
     ...translatedPaths,
     ...translatedPaths.map((p) => `/en${p}`.replace(/\/{2,}/g, '/')),
     ...translatedPaths.map((p) => `/de${p}`.replace(/\/{2,}/g, '/')),
-    ...frenchOnlyPaths,
     ...blogPaths,
   ];
 
@@ -38,4 +37,3 @@ export async function GET() {
     headers: { 'Content-Type': 'application/xml' },
   });
 }
-

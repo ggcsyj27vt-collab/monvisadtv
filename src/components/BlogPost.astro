@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DerniereMiseAJour from './DerniereMiseAJour.astro';
+import type { CollectionEntry } from 'astro:content';
+import { postLang, postSlug, postUrl, BLOG_TXT, NO_VERIF } from '../lib/blog';
+import { localePath } from '../i18n/ui';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+const { post } = Astro.props;
+const lang = postLang(post);
+const t = BLOG_TXT[lang];
+const { Content } = await post.render();
+const showVerif = !NO_VERIF.includes(postSlug(post));
+const updated = (post.data.updatedDate ?? post.data.pubDate).toISOString().slice(0, 10);
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  inLanguage: lang,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  mainEntityOfPage: `https://myvisadtv.com${postUrl(post)}`,
+  author: {
+    '@type': 'Person',
+    name: 'Alexandre',
+    jobTitle: 'Fondateur de MyVisaDTV',
+    url: 'https://myvisadtv.com/a-propos/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'MyVisaDTV',
+    logo: { '@type': 'ImageObject', url: 'https://myvisadtv.com/images/logo-dtv-thailand.png' },
+  },
+};
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} structuredData={articleSchema} lang={lang}>
+  <article class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-20">
+      <p class="eyebrow mb-4"><a href={localePath(lang, '/blog/')} class="hover:text-indigo">Blog</a></p>
+      <h1 class="max-w-3xl font-display text-4xl leading-tight text-indigo md:text-5xl">{post.data.title}</h1>
+      <p class="mt-4 font-sans text-sm text-encre/70">{t.author}</p>
+      <div class="mt-4">
+        <DerniereMiseAJour date={updated} />
+      </div>
+    </div>
+  </article>
+
+  <section class="section">
+    <div class="mx-auto max-w-3xl">
+      <div class="article-content">
+        <Content />
+      </div>
+
+      {showVerif && (
+        <div class="mt-14 rounded-lg border-2 border-or bg-white p-8">
+          <p class="eyebrow mb-2">{t.verifEyebrow}</p>
+          <h2 class="font-display text-xl text-indigo">{t.verifTitle}</h2>
+          <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">{t.verifText}</p>
+          <a href={localePath(lang, '/visa-dtv/verification-dossier/')} class="btn-primary mt-5 inline-flex">{t.verifCta}</a>
+        </div>
+      )}
+
+      <div class="mt-14 rounded-lg border border-sable-light bg-jade-bg p-8">
+        <h2 class="font-display text-lg text-indigo">{t.qTitle}</h2>
+        <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">{t.qText}</p>
+        <a href={localePath(lang, '/fiche-renseignement/')} class="btn-primary mt-5 inline-flex">{t.qCta}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
