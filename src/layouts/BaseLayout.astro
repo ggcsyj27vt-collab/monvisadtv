@@ -53,6 +53,7 @@ const organizationSchema = {
 <!doctype html>
 <html lang={lang}>
   <head>
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.png" type="image/png" />
@@ -154,7 +155,7 @@ const organizationSchema = {
         .btn-primary,
         .btn-secondary,
         .btn-on-dark {
-          transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+          transition: transform 0.45s var(--ease-spring), box-shadow 0.3s ease, background-color 0.2s ease, color 0.2s ease;
         }
         .btn-primary:hover,
         .btn-secondary:hover,
@@ -163,6 +164,13 @@ const organizationSchema = {
         }
         .btn-primary:hover {
           box-shadow: 0 10px 22px -10px rgba(27, 38, 79, 0.45);
+        }
+        /* Retour immédiat à l'appui, prioritaire sur le survol */
+        .btn-primary:active,
+        .btn-secondary:active,
+        .btn-on-dark:active {
+          transform: scale(0.97);
+          transition-duration: 0.1s;
         }
       }
     </style>
@@ -196,6 +204,17 @@ const organizationSchema = {
           io.observe(el);
         });
       })();
+    </script>
+    <script>
+      // Barre de navigation : ombre discrète uniquement quand le contenu défile dessous
+      const header = document.getElementById('site-header');
+      const onScroll = () => {
+        if (!header) return;
+        if (window.scrollY > 4) header.setAttribute('data-scrolled', '');
+        else header.removeAttribute('data-scrolled');
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
     </script>
   </body>
 </html>
