@@ -8,7 +8,7 @@ const txt = {
   fr: {
     eyebrow: 'Appel découverte gratuit',
     title: 'Une question avant de vous lancer ? Réservez 10 minutes avec Alexandre',
-    text: "Choisissez directement un créneau ci-contre. Nous faisons le point sur votre situation et sur la formule adaptée, sans engagement. Vous recevez la confirmation par e-mail.",
+    text: "Choisissez directement un créneau ci-dessous. Nous faisons le point sur votre situation et sur la formule adaptée, sans engagement. Vous recevez la confirmation par e-mail.",
     points: ['10 minutes en visio', 'Gratuit et sans engagement', 'En français, anglais ou allemand'],
     fallback: "Le calendrier ne s'affiche pas ? Réserver sur Cal.com",
   },
@@ -30,29 +30,31 @@ const txt = {
 ---
 
 <section class="section border-t border-sable-light" id="reserver-appel">
-  <div class="grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:items-start">
+  <div class="grid gap-6 md:grid-cols-[1.3fr_0.7fr] md:items-end">
     <div>
       <p class="eyebrow mb-3">{txt.eyebrow}</p>
-      <h2 class="font-display text-3xl text-indigo">{txt.title}</h2>
-      <p class="mt-4 font-sans text-sm leading-relaxed text-encre/80">{txt.text}</p>
-      <ul class="mt-6 space-y-2 font-sans text-sm text-encre/80">
+      <h2 class="max-w-2xl font-display text-3xl text-indigo">{txt.title}</h2>
+      <p class="mt-4 max-w-2xl font-sans text-sm leading-relaxed text-encre/80">{txt.text}</p>
+    </div>
+    <div>
+      <ul class="space-y-2 font-sans text-sm text-encre/80">
         {txt.points.map((p) => <li>— {p}</li>)}
       </ul>
       <a
         href={`https://cal.com/${CAL_LINK}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="mt-6 inline-block font-sans text-xs text-sable underline hover:text-or-dark"
+        class="mt-4 inline-block font-sans text-xs text-sable underline hover:text-or-dark"
       >
         {txt.fallback}
       </a>
     </div>
-    <div
-      id="cal-inline"
-      data-cal-link={CAL_LINK}
-      class="min-h-[520px] w-full overflow-hidden rounded-lg border border-sable-light bg-white"
-    ></div>
   </div>
+  <div
+    id="cal-inline"
+    data-cal-link={CAL_LINK}
+    class="mt-10 min-h-[520px] w-full overflow-hidden rounded-lg border border-sable-light bg-white"
+  ></div>
 </section>
 
 <script is:inline>
