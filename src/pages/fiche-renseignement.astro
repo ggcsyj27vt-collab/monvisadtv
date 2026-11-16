@@ -284,14 +284,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             step.hidden = false;
           });
 
-          // Copie de la demande pour l'agent IA d'accueil (n8n).
-          // N'empeche pas l'envoi normal a Formspree.
-          try {
-            navigator.sendBeacon(
-              '/api/lead',
-              new URLSearchParams(new FormData(form) as unknown as Record<string, string>)
-            );
-          } catch {}
+          // Copie de la demande pour l'agent IA d'accueil (/api/lead -> n8n),
+          // puis envoi normal a Formspree (2,5 s maximum d'attente).
+          if (!form.dataset.leadSent) {
+            e.preventDefault();
+            form.dataset.leadSent = '1';
+            const leadData = new URLSearchParams(new FormData(form) as unknown as Record<string, string>);
+            const leadTimeout = new Promise((resolve) => setTimeout(resolve, 2500));
+            Promise.race([
+              fetch('/api/lead', { method: 'POST', body: leadData, keepalive: true }).catch(() => undefined),
+              leadTimeout,
+            ]).finally(() => form.submit());
+          }
         });
 
         render();
