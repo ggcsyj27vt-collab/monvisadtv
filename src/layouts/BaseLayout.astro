@@ -29,7 +29,7 @@ const hreflangLinks = translated
       { hreflang: 'fr', href: new URL(basePath, Astro.site).toString() },
       { hreflang: 'en', href: new URL(`/en${basePath}`.replace(/\/{2,}/g, '/'), Astro.site).toString() },
       { hreflang: 'de', href: new URL(`/de${basePath}`.replace(/\/{2,}/g, '/'), Astro.site).toString() },
-      { hreflang: 'x-default', href: new URL(basePath, Astro.site).toString() },
+      { hreflang: 'x-default', href: new URL(`/en${basePath}`.replace(/\/{2,}/g, '/'), Astro.site).toString() },
     ]
   : [];
 
@@ -54,6 +54,29 @@ const organizationSchema = {
 <html lang={lang}>
   <head>
     <script is:inline>document.documentElement.classList.add('js');</script>
+    {lang === 'fr' && Astro.url.pathname === '/' && (
+      <script is:inline>
+        // Langue principale : anglais. Sur l'accueil français, on envoie vers /en/
+        // (ou /de/) les visiteurs dont le navigateur n'est pas en français, sauf
+        // s'ils ont choisi le français dans le sélecteur de langue. Les robots
+        // des moteurs de recherche ne sont jamais redirigés.
+        (function () {
+          try {
+            if (/bot|crawl|spider|slurp|lighthouse|preview/i.test(navigator.userAgent)) return;
+            var choice = localStorage.getItem('lang-choice');
+            var target;
+            if (choice) {
+              target = choice;
+            } else {
+              var langs = (navigator.languages || [navigator.language || '']).map(function (l) { return String(l).slice(0, 2).toLowerCase(); });
+              target = langs.filter(function (l) { return l === 'fr' || l === 'en' || l === 'de'; })[0] || 'en';
+            }
+            if (target === 'fr') return;
+            location.replace((target === 'de' ? '/de/' : '/en/') + location.search + location.hash);
+          } catch (e) {}
+        })();
+      </script>
+    )}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.png" type="image/png" />

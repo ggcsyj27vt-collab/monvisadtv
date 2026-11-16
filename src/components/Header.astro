@@ -49,11 +49,11 @@ const langLinks = {
 
     <div class="flex items-center gap-4">
       <div class="hidden items-center gap-1 font-mono text-xs text-indigo/60 md:flex" aria-label={t.langSwitcher.label}>
-        <a href={langLinks.fr} class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'fr' ? 'font-bold text-indigo' : ''}`}>fr</a>
+        <a href={langLinks.fr} data-lang="fr" class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'fr' ? 'font-bold text-indigo' : ''}`}>fr</a>
         <span aria-hidden="true">·</span>
-        <a href={langLinks.en} class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'en' ? 'font-bold text-indigo' : ''}`}>en</a>
+        <a href={langLinks.en} data-lang="en" class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'en' ? 'font-bold text-indigo' : ''}`}>en</a>
         <span aria-hidden="true">·</span>
-        <a href={langLinks.de} class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'de' ? 'font-bold text-indigo' : ''}`}>de</a>
+        <a href={langLinks.de} data-lang="de" class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'de' ? 'font-bold text-indigo' : ''}`}>de</a>
       </div>
 
       <a href={localePath(lang, '/fiche-renseignement/')} class="btn-primary hidden whitespace-nowrap xl:inline-flex">
@@ -92,14 +92,18 @@ const langLinks = {
       ))}
     </ul>
     <div class="mx-auto flex max-w-content items-center gap-2 px-6 pb-5 pt-2 font-mono text-sm text-indigo/70">
-      <a href={langLinks.fr} class={`px-2 py-2 uppercase ${lang === 'fr' ? 'font-bold text-indigo' : ''}`}>fr</a>
+      <a href={langLinks.fr} data-lang="fr" class={`px-2 py-2 uppercase ${lang === 'fr' ? 'font-bold text-indigo' : ''}`}>fr</a>
       <span aria-hidden="true">·</span>
-      <a href={langLinks.en} class={`px-2 py-2 uppercase ${lang === 'en' ? 'font-bold text-indigo' : ''}`}>en</a>
+      <a href={langLinks.en} data-lang="en" class={`px-2 py-2 uppercase ${lang === 'en' ? 'font-bold text-indigo' : ''}`}>en</a>
       <span aria-hidden="true">·</span>
-      <a href={langLinks.de} class={`px-2 py-2 uppercase ${lang === 'de' ? 'font-bold text-indigo' : ''}`}>de</a>
+      <a href={langLinks.de} data-lang="de" class={`px-2 py-2 uppercase ${lang === 'de' ? 'font-bold text-indigo' : ''}`}>de</a>
     </div>
   </nav>
   <script is:inline>
+    // Mémorise la langue choisie dans le sélecteur (l'accueil ne redirige plus ensuite)
+    document.querySelectorAll('a[data-lang]').forEach(function (a) {
+      a.addEventListener('click', function () { try { localStorage.setItem('lang-choice', a.dataset.lang); } catch (e) {} });
+    });
     (function () {
       var btn = document.getElementById('menu-toggle');
       var menu = document.getElementById('mobile-menu');
