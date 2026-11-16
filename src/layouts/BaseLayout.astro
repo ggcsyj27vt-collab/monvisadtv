@@ -93,6 +93,17 @@ const organizationSchema = {
     <WhatsAppButton />
     <!-- Animations discrètes : apparition au défilement + survol des boutons -->
     <style is:global>
+      .article-content table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      @media (max-width: 767px) {
+        body > footer {
+          padding-bottom: 5.5rem;
+        }
+      }
       @media (prefers-reduced-motion: no-preference) {
         .reveal {
           opacity: 0;

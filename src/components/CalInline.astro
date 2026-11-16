@@ -75,7 +75,7 @@ const I18N = {
         href={`https://cal.com/${CAL_LINK}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="mt-6 inline-block font-sans text-xs text-sable underline hover:text-or-dark"
+        class="mt-4 inline-block py-2 font-sans text-xs text-sable underline hover:text-or-dark"
       >
         {txt.fallback}
       </a>
@@ -83,17 +83,17 @@ const I18N = {
 
     <div id="dtv-cal" class="w-full rounded-lg border border-sable-light bg-white p-5 shadow-sm">
       <div class="flex items-center justify-between">
-        <button type="button" data-nav="-1" aria-label={txt.prev} class="dtv-cal-nav rounded-sm px-2 py-1 text-indigo hover:bg-papier disabled:opacity-30">‹</button>
+        <button type="button" data-nav="-1" aria-label={txt.prev} class="dtv-cal-nav flex h-10 w-10 items-center justify-center rounded-sm text-lg text-indigo hover:bg-papier disabled:opacity-30">‹</button>
         <p data-month class="font-sans text-sm font-semibold capitalize text-indigo"></p>
-        <button type="button" data-nav="1" aria-label={txt.next} class="dtv-cal-nav rounded-sm px-2 py-1 text-indigo hover:bg-papier disabled:opacity-30">›</button>
+        <button type="button" data-nav="1" aria-label={txt.next} class="dtv-cal-nav flex h-10 w-10 items-center justify-center rounded-sm text-lg text-indigo hover:bg-papier disabled:opacity-30">›</button>
       </div>
-      <div data-weekdays class="mt-4 grid grid-cols-7 text-center font-mono text-[10px] uppercase tracking-wide text-sable"></div>
+      <div data-weekdays class="mt-4 grid grid-cols-7 text-center font-mono text-xs uppercase tracking-wide text-sable"></div>
       <div data-days class="mt-2 grid grid-cols-7 gap-1 text-center font-sans text-sm"></div>
       <div data-panel class="mt-5 border-t border-sable-light pt-4">
         <p data-status class="font-sans text-xs text-encre/70"></p>
         <div data-slots class="mt-3 grid max-h-56 grid-cols-4 gap-2 overflow-y-auto pr-1"></div>
       </div>
-      <p data-tz class="mt-4 font-sans text-[11px] text-sable"></p>
+      <p data-tz class="mt-4 font-sans text-xs text-sable"></p>
     </div>
   </div>
 </section>
@@ -179,7 +179,7 @@ const I18N = {
           var t = document.createElement('button');
           t.type = 'button';
           t.textContent = new Date(s.start).toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit', timeZone: tz });
-          t.className = 'rounded-sm border border-sable-light py-1.5 font-sans text-xs text-indigo transition hover:border-indigo hover:bg-indigo hover:text-papier';
+          t.className = 'rounded-sm border border-sable-light py-2 font-sans text-xs text-indigo transition hover:border-indigo hover:bg-indigo hover:text-papier';
           t.addEventListener('click', function () { book(selected, s.start); });
           slotsEl.appendChild(t);
         });

@@ -34,7 +34,7 @@ const langLinks = {
 <header class="sticky top-0 z-50 border-b border-sable-light/70 bg-papier/95 backdrop-blur">
   <div class="mx-auto flex max-w-content items-center justify-between px-6 py-4 md:px-10">
     <a href={localePath(lang, '/')} class="flex items-center gap-2" aria-label="MyVisaDTV">
-      <img src="/images/logo-dtv-thailand.png" alt="MyVisaDTV — DTV Thailand Visa Services" class="h-14 w-auto md:h-16" />
+      <img src="/images/logo-dtv-thailand.webp" width="300" height="200" fetchpriority="high" alt="MyVisaDTV — DTV Thailand Visa Services" class="h-14 w-auto md:h-16" />
     </a>
 
     <nav class="hidden items-center gap-5 lg:flex" aria-label="Navigation principale">
@@ -61,9 +61,59 @@ const langLinks = {
         {t.nav.startCta}
       </a>
 
+      <button
+        type="button"
+        id="menu-toggle"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-sm text-indigo transition hover:bg-sable-light/60 lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Menu"
+      >
+        <svg data-open xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        <svg data-close xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="hidden h-6 w-6" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </button>
+
       <a href={localePath(lang, '/fiche-renseignement/')} class="btn-primary text-xs xl:hidden">
         {t.nav.startCtaShort}
       </a>
     </div>
   </div>
+  <nav id="mobile-menu" class="hidden max-h-[calc(100vh-5.5rem)] overflow-y-auto border-t border-sable-light/70 bg-papier lg:hidden" aria-label="Menu">
+    <ul class="mx-auto max-w-content px-6 py-2">
+      {navItems.map((item) => (
+        <li>
+          <a href={item.href} class="block border-b border-sable-light/60 py-3.5 font-sans text-base font-medium text-indigo">
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="mx-auto flex max-w-content items-center gap-2 px-6 pb-5 pt-2 font-mono text-sm text-indigo/70">
+      <a href={langLinks.fr} class={`px-2 py-2 uppercase ${lang === 'fr' ? 'font-bold text-indigo' : ''}`}>fr</a>
+      <span aria-hidden="true">·</span>
+      <a href={langLinks.en} class={`px-2 py-2 uppercase ${lang === 'en' ? 'font-bold text-indigo' : ''}`}>en</a>
+      <span aria-hidden="true">·</span>
+      <a href={langLinks.de} class={`px-2 py-2 uppercase ${lang === 'de' ? 'font-bold text-indigo' : ''}`}>de</a>
+    </div>
+  </nav>
+  <script is:inline>
+    (function () {
+      var btn = document.getElementById('menu-toggle');
+      var menu = document.getElementById('mobile-menu');
+      if (!btn || !menu) return;
+      function set(open) {
+        menu.classList.toggle('hidden', !open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.querySelector('[data-open]').classList.toggle('hidden', open);
+        btn.querySelector('[data-close]').classList.toggle('hidden', !open);
+      }
+      btn.addEventListener('click', function () { set(menu.classList.contains('hidden')); });
+      menu.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+    })();
+  </script>
 </header>
