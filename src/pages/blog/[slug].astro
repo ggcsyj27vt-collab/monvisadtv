@@ -17,6 +17,9 @@ interface Props {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+// Articles lus par des personnes qui préparent leur dossier elles-mêmes : on leur propose la vérification à 99 €.
+const verifSlugs = ['documents-dtv-thailande-liste-complete', 'dtv-freelance-justificatifs', 'visa-dtv-refuse-que-faire', 'visa-dtv-thailande-guide-complet-2026'];
+const showVerif = verifSlugs.includes(post.slug);
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -58,6 +61,19 @@ const articleSchema = {
       <div class="article-content">
         <Content />
       </div>
+
+      {showVerif && (
+        <div class="mt-14 rounded-lg border-2 border-or bg-white p-8">
+          <p class="eyebrow mb-2">Vous préparez votre dossier vous-même ?</p>
+          <h2 class="font-display text-xl text-indigo">Faites-le vérifier avant de le déposer, pour 99 €</h2>
+          <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">
+            Nous contrôlons toutes vos pièces : documents manquants, conformité aux exigences
+            officielles et cohérence entre vos documents. Rapport écrit sous 48 h ouvrées, et les
+            99 € sont déduits si vous nous confiez ensuite la demande complète.
+          </p>
+          <a href="/visa-dtv/verification-dossier/" class="btn-primary mt-5 inline-flex">Découvrir la vérification à 99 €</a>
+        </div>
+      )}
 
       <div class="mt-14 rounded-lg border border-sable-light bg-jade-bg p-8">
         <h2 class="font-display text-lg text-indigo">Une question sur votre situation ?</h2>

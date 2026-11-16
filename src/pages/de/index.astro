@@ -82,7 +82,7 @@ const faqSchema = {
         </p>
         <div class="mt-9 flex flex-wrap gap-4">
           <a href="/de/fiche-renseignement/" class="btn-primary">Antrag jetzt starten</a>
-          <a href="/de/visa-dtv/demande-accompagnee/" class="btn-secondary">Das 699-€-Paket ansehen</a>
+          <a href="#formules" class="btn-secondary">Unsere Angebote ansehen (99 € und 699 €)</a>
         </div>
         <div class="mt-6 flex flex-wrap items-center gap-4">
           <p class="inline-flex items-center gap-2 rounded-sm bg-jade-bg px-3 py-1.5 font-mono text-xs text-jade">
@@ -103,6 +103,39 @@ const faqSchema = {
           <CheckItem>Vollständige Prüfung und Aufbereitung der Unterlagen</CheckItem>
           <CheckItem>Ein persönlicher Berater bis zur Entscheidung erreichbar</CheckItem>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nos formules (99 € / 699 €) -->
+  <section class="section scroll-mt-24" id="formules">
+    <p class="eyebrow mb-3">Unsere Angebote</p>
+    <h2 class="max-w-2xl font-display text-3xl text-indigo">Zwei Wege, je nach Ihrer Situation</h2>
+    <div class="mt-10 grid gap-8 md:grid-cols-2">
+      <div class="relative flex flex-col rounded-lg border-2 border-or bg-white p-8 shadow-sm">
+        <span class="absolute -top-3 left-6 rounded-full bg-or px-3 py-1 font-sans text-xs font-semibold text-indigo">Ideal für den Einstieg</span>
+        <p class="font-mono text-xs uppercase tracking-wide text-sable">Sie stellen Ihre Unterlagen selbst zusammen</p>
+        <h3 class="mt-2 font-display text-2xl text-indigo">Unterlagenprüfung</h3>
+        <p class="mt-3"><span class="font-display text-4xl text-indigo">99 €</span></p>
+        <ul class="mt-6 flex-1 space-y-3 font-sans text-sm leading-relaxed text-encre/80">
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Prüfung aller Unterlagen nach Ihrem Profil</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Stimmigkeit der Dokumente (Namen, Daten, Beträge)</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Schriftlicher Bericht innerhalb von 48 Arbeitsstunden</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>99 € werden beim Wechsel zum Komplettpaket angerechnet</span></li>
+        </ul>
+        <a href="/de/visa-dtv/verification-dossier/" class="btn-primary mt-8 w-full">Zur Unterlagenprüfung</a>
+      </div>
+      <div class="relative flex flex-col rounded-lg border border-sable-light bg-white p-8">
+        <p class="font-mono text-xs uppercase tracking-wide text-sable">Wir kümmern uns um alles</p>
+        <h3 class="mt-2 font-display text-2xl text-indigo">Komplettpaket</h3>
+        <p class="mt-3"><span class="font-sans text-lg text-sable line-through">1.000 €</span> <span class="font-display text-4xl text-indigo">699 €</span></p>
+        <ul class="mt-6 flex-1 space-y-3 font-sans text-sm leading-relaxed text-encre/80">
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Ausführliche Eignungsprüfung</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Vollständige Zusammenstellung der Unterlagen</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Einreichung und Begleitung bis zur Entscheidung</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Offizielle Visumgebühren inbegriffen</span></li>
+        </ul>
+        <a href="/de/visa-dtv/demande-accompagnee/" class="btn-secondary mt-8 w-full">Zum Komplettpaket</a>
       </div>
     </div>
   </section>
@@ -163,33 +196,6 @@ const faqSchema = {
         </li>
       ))}
     </ol>
-  </section>
-
-  <!-- Offre -->
-  <section class="border-y border-sable-light bg-indigo text-papier">
-    <div class="section flex flex-wrap items-center justify-between gap-10">
-      <div class="max-w-xl">
-        <p class="eyebrow mb-3">Das Komplettpaket</p>
-        <h2 class="font-display text-3xl text-papier md:text-4xl">699 € statt 1.000 € für eine Rundum-Betreuung Ihrer Unterlagen</h2>
-        <p class="mt-4 font-sans text-sm leading-relaxed text-papier/75">
-          Offizielle Visumgebühren inbegriffen, für die gesamte Begleitung: von der
-          Eignungsprüfung bis zur Entscheidung.
-        </p>
-      </div>
-      <a href="/de/visa-dtv/demande-accompagnee/" class="btn-primary">Angebot im Detail ansehen</a>
-    </div>
-  </section>
-
-  <!-- Vérification du dossier (99 €) -->
-  <section class="section">
-    <div class="flex flex-wrap items-center justify-between gap-6 rounded-lg border border-sable-light bg-white p-8 md:p-10">
-      <div class="max-w-xl">
-        <p class="eyebrow mb-2">Sie beantragen selbst?</p>
-        <h2 class="font-display text-2xl text-indigo">Lassen Sie Ihre Unterlagen für 99 € prüfen</h2>
-        <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">Fehlende Dokumente, Übereinstimmung mit den offiziellen Anforderungen, Stimmigkeit Ihrer Unterlagen: schriftlicher Bericht innerhalb von 48 Arbeitsstunden. Die 99 € werden angerechnet, wenn Sie danach das Komplettpaket wählen.</p>
-      </div>
-      <a href="/de/visa-dtv/verification-dossier/" class="btn-secondary">Zur Unterlagenprüfung</a>
-    </div>
   </section>
 
   <!-- Réservation appel (Cal.com intégré) -->
