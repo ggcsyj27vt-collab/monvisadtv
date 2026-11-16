@@ -180,6 +180,7 @@ const I18N = {
           t.type = 'button';
           t.textContent = new Date(s.start).toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit', timeZone: tz });
           t.className = 'rounded-sm border border-sable-light py-2 font-sans text-xs text-indigo transition hover:border-indigo hover:bg-indigo hover:text-papier';
+          t.setAttribute('data-umami-event', 'Créneau choisi (calendrier)');
           t.addEventListener('click', function () { book(selected, s.start); });
           slotsEl.appendChild(t);
         });
@@ -218,6 +219,10 @@ const I18N = {
           })(window, 'https://app.cal.com/embed/embed.js', 'init');
         }
         if (!window.Cal.ns || !window.Cal.ns.dtv) window.Cal('init', 'dtv', { origin: 'https://app.cal.com' });
+        if (!window.__dtvBookingHook) {
+          window.__dtvBookingHook = true;
+          window.Cal.ns.dtv('on', { action: 'bookingSuccessful', callback: function () { if (window.umami) window.umami.track('Rendez-vous réservé'); } });
+        }
         window.Cal.ns.dtv('modal', { calLink: CAL_LINK, config: { date: date, slot: iso, theme: 'light' } });
       } catch (e) {
         window.open(direct, '_blank', 'noopener');

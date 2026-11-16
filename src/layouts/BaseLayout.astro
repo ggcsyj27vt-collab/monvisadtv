@@ -80,6 +80,7 @@ const organizationSchema = {
     <meta property="og:locale" content={ogLocale} />
     <meta name="twitter:card" content="summary" />
 
+    <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="503817a4-f79c-4a11-8dc4-d749e98276e7"></script>
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
   </head>
@@ -91,6 +92,42 @@ const organizationSchema = {
     <Footer lang={lang} />
     <CalButton lang={lang} />
     <WhatsAppButton />
+    <!-- Mesure d'audience Umami : suivi automatique des clics importants (conversions) -->
+    <script is:inline>
+      (function () {
+        var rules = [
+          [/buy\.stripe\.com\/7sY5kE2oogXg4r1fQc14403/, 'Paiement 99 € (clic)'],
+          [/buy\.stripe\.com\/aFafZiaUU6iC9LlfQc14402/, 'Paiement 699 € (clic)'],
+          [/buy\.stripe\.com\/aFa00ke768qKaPp33q14404/, 'Paiement 600 € (clic)'],
+          [/cal\.com\//, 'Réserver un appel (lien)'],
+          [/wa\.me\//, 'WhatsApp'],
+          [/\/fiche-renseignement\/$/, 'Ouvrir la fiche'],
+          [/\/visa-dtv\/verification-dossier\/$/, 'Voir offre 99 €'],
+          [/\/visa-dtv\/demande-accompagnee\/$/, 'Voir offre 699 €'],
+        ];
+        function tag() {
+          document.querySelectorAll('a[href]').forEach(function (a) {
+            if (a.hasAttribute('data-umami-event')) return;
+            var href = a.getAttribute('href') || '';
+            for (var i = 0; i < rules.length; i++) {
+              if (rules[i][0].test(href)) {
+                a.setAttribute('data-umami-event', rules[i][1]);
+                a.setAttribute('data-umami-event-page', location.pathname);
+                break;
+              }
+            }
+          });
+          document.querySelectorAll('form').forEach(function (f) {
+            if (f.dataset.umamiTracked) return;
+            f.dataset.umamiTracked = '1';
+            f.addEventListener('submit', function () {
+              if (window.umami) window.umami.track('Fiche envoyée', { page: location.pathname });
+            });
+          });
+        }
+        tag();
+      })();
+    </script>
     <!-- Animations discrètes : apparition au défilement + survol des boutons -->
     <style is:global>
       .article-content table {
