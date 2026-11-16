@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CheckItem from '../../components/CheckItem.astro';
 import FaqItem from '../../components/FaqItem.astro';
+import CalInline from '../../components/CalInline.astro';
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -190,6 +191,9 @@ const faqSchema = {
       <a href="/de/visa-dtv/verification-dossier/" class="btn-secondary">Zur Unterlagenprüfung</a>
     </div>
   </section>
+
+  <!-- Réservation appel (Cal.com intégré) -->
+  <CalInline lang="de" />
 
   <!-- FAQ courte -->
   <section class="section">

@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CheckItem from '../../components/CheckItem.astro';
 import StepCard from '../../components/StepCard.astro';
 import FaqItem from '../../components/FaqItem.astro';
+import CalInline from '../../components/CalInline.astro';
 import DerniereMiseAJour from '../../components/DerniereMiseAJour.astro';
 
 const structuredData = {
@@ -259,6 +260,9 @@ const structuredData = {
       </FaqItem>
     </div>
   </section>
+
+  <!-- Réservation appel (Cal.com intégré) -->
+  <CalInline lang="fr" />
 
   <!-- CTA final -->
   <section class="border-t border-sable-light bg-indigo text-papier">

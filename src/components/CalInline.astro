@@ -1,0 +1,99 @@
+---
+interface Props {
+  lang?: 'fr' | 'en' | 'de';
+}
+const { lang = 'fr' } = Astro.props;
+const CAL_LINK = 'myvisadtv/appel-decouverte-dtv';
+const txt = {
+  fr: {
+    eyebrow: 'Appel découverte gratuit',
+    title: 'Une question avant de vous lancer ? Réservez 10 minutes avec Alexandre',
+    text: "Choisissez directement un créneau ci-contre. Nous faisons le point sur votre situation et sur la formule adaptée, sans engagement. Vous recevez la confirmation par e-mail.",
+    points: ['10 minutes en visio', 'Gratuit et sans engagement', 'En français, anglais ou allemand'],
+    fallback: "Le calendrier ne s'affiche pas ? Réserver sur Cal.com",
+  },
+  en: {
+    eyebrow: 'Free discovery call',
+    title: 'A question before you start? Book 10 minutes with Alexandre',
+    text: 'Pick a time slot right here. We review your situation and the right package, with no commitment. You receive the confirmation by e-mail.',
+    points: ['10-minute video call', 'Free, no commitment', 'In English, French or German'],
+    fallback: 'Calendar not showing? Book on Cal.com',
+  },
+  de: {
+    eyebrow: 'Kostenloses Erstgespräch',
+    title: 'Eine Frage vor dem Start? Buchen Sie 10 Minuten mit Alexandre',
+    text: 'Wählen Sie direkt hier einen Termin. Wir besprechen Ihre Situation und das passende Angebot, unverbindlich. Die Bestätigung erhalten Sie per E-Mail.',
+    points: ['10 Minuten per Video', 'Kostenlos und unverbindlich', 'Auf Deutsch, Englisch oder Französisch'],
+    fallback: 'Kalender wird nicht angezeigt? Auf Cal.com buchen',
+  },
+}[lang];
+---
+
+<section class="section border-t border-sable-light" id="reserver-appel">
+  <div class="grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:items-start">
+    <div>
+      <p class="eyebrow mb-3">{txt.eyebrow}</p>
+      <h2 class="font-display text-3xl text-indigo">{txt.title}</h2>
+      <p class="mt-4 font-sans text-sm leading-relaxed text-encre/80">{txt.text}</p>
+      <ul class="mt-6 space-y-2 font-sans text-sm text-encre/80">
+        {txt.points.map((p) => <li>— {p}</li>)}
+      </ul>
+      <a
+        href={`https://cal.com/${CAL_LINK}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-6 inline-block font-sans text-xs text-sable underline hover:text-or-dark"
+      >
+        {txt.fallback}
+      </a>
+    </div>
+    <div
+      id="cal-inline"
+      data-cal-link={CAL_LINK}
+      class="min-h-[520px] w-full overflow-hidden rounded-lg border border-sable-light bg-white"
+    ></div>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var el = document.getElementById('cal-inline');
+    if (!el) return;
+    var started = false;
+    function load() {
+      if (started) return;
+      started = true;
+      (function (C, A, L) {
+        var p = function (a, ar) { a.q.push(ar); };
+        var d = C.document;
+        C.Cal = C.Cal || function () {
+          var cal = C.Cal; var ar = arguments;
+          if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
+          if (ar[0] === L) {
+            var api = function () { p(api, arguments); };
+            var namespace = ar[1]; api.q = api.q || [];
+            if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); }
+            else p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+      })(window, 'https://app.cal.com/embed/embed.js', 'init');
+      window.Cal('init', 'dtv', { origin: 'https://app.cal.com' });
+      window.Cal.ns.dtv('inline', {
+        elementOrSelector: '#cal-inline',
+        calLink: el.getAttribute('data-cal-link'),
+        config: { layout: 'month_view', theme: 'light' },
+      });
+      window.Cal.ns.dtv('ui', { hideEventTypeDetails: false, layout: 'month_view', theme: 'light' });
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); load(); }
+      }, { rootMargin: '400px' });
+      io.observe(el);
+    } else {
+      load();
+    }
+  })();
+</script>
