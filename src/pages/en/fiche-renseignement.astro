@@ -279,7 +279,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           // N'empeche pas l'envoi normal a Formspree.
           try {
             navigator.sendBeacon(
-              'https://alexdolax.app.n8n.cloud/webhook/myvisadtv-lead-7k3q9',
+              '/api/lead',
               new URLSearchParams(new FormData(form) as unknown as Record<string, string>)
             );
           } catch {}
