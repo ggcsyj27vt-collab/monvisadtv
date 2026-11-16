@@ -37,11 +37,11 @@ const langLinks = {
       <img src="/images/logo-dtv-thailand.png" alt="MyVisaDTV — DTV Thailand Visa Services" class="h-14 w-auto md:h-16" />
     </a>
 
-    <nav class="hidden items-center gap-6 lg:flex" aria-label="Navigation principale">
+    <nav class="hidden items-center gap-5 lg:flex" aria-label="Navigation principale">
       {navItems.map((item) => (
         <a
           href={item.href}
-          class="font-sans text-sm font-medium text-indigo/80 transition hover:text-indigo"
+          class="whitespace-nowrap font-sans text-sm font-medium text-indigo/80 transition hover:text-indigo"
         >
           {item.label}
         </a>
@@ -57,11 +57,11 @@ const langLinks = {
         <a href={langLinks.de} class={`px-1.5 py-1 uppercase transition hover:text-indigo ${lang === 'de' ? 'font-bold text-indigo' : ''}`}>de</a>
       </div>
 
-      <a href={localePath(lang, '/fiche-renseignement/')} class="btn-primary hidden lg:inline-flex">
+      <a href={localePath(lang, '/fiche-renseignement/')} class="btn-primary hidden whitespace-nowrap xl:inline-flex">
         {t.nav.startCta}
       </a>
 
-      <a href={localePath(lang, '/fiche-renseignement/')} class="btn-primary text-xs lg:hidden">
+      <a href={localePath(lang, '/fiche-renseignement/')} class="btn-primary text-xs xl:hidden">
         {t.nav.startCtaShort}
       </a>
     </div>
