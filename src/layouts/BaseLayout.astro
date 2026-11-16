@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
+import CalButton from '../components/CalButton.astro';
 import type { Locale } from '../i18n/ui';
 import '../styles/global.css';
 
@@ -88,6 +89,7 @@ const organizationSchema = {
       <slot />
     </main>
     <Footer lang={lang} />
+    <CalButton lang={lang} />
     <WhatsAppButton />
   </body>
 </html>
