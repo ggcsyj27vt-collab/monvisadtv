@@ -1,2 +1,4 @@
 /blog/visa-dtv-conditions-eligibilite-documents/  /blog/visa-dtv-thailande-guide-complet-2026/  301
 /blog/dtv-conditions-criteres-eligibilite-2026/   /blog/visa-dtv-thailande-guide-complet-2026/  301
+# Formulaire -> agent IA (n8n), via le site pour ne pas etre bloque par les anti-pubs
+/api/lead  https://alexdolax.app.n8n.cloud/webhook/myvisadtv-lead-7k3q9  200
