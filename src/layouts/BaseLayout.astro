@@ -91,5 +91,63 @@ const organizationSchema = {
     <Footer lang={lang} />
     <CalButton lang={lang} />
     <WhatsAppButton />
+    <!-- Animations discrètes : apparition au défilement + survol des boutons -->
+    <style is:global>
+      @media (prefers-reduced-motion: no-preference) {
+        .reveal {
+          opacity: 0;
+          transform: translateY(18px);
+          transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+        .reveal.is-visible {
+          opacity: 1;
+          transform: none;
+        }
+        .btn-primary,
+        .btn-secondary,
+        .btn-on-dark {
+          transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+        .btn-primary:hover,
+        .btn-secondary:hover,
+        .btn-on-dark:hover {
+          transform: translateY(-2px);
+        }
+        .btn-primary:hover {
+          box-shadow: 0 10px 22px -10px rgba(27, 38, 79, 0.45);
+        }
+      }
+    </style>
+    <script is:inline>
+      (function () {
+        if (!('IntersectionObserver' in window)) return;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var sel = 'main section h1, main section h2, main section .eyebrow, main section > div > p, main .grid > *, main ol > li, main .max-w-2xl > *, main .max-w-xl > p';
+        var all = Array.prototype.slice.call(document.querySelectorAll(sel));
+        var set = new Set(all);
+        var targets = all.filter(function (el) {
+          var p = el.parentElement;
+          while (p && p.tagName !== 'MAIN') {
+            if (set.has(p)) return false;
+            p = p.parentElement;
+          }
+          return !el.closest('#cal-inline');
+        });
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-visible');
+              io.unobserve(e.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
+        targets.forEach(function (el) {
+          var i = Array.prototype.indexOf.call(el.parentElement.children, el);
+          el.style.transitionDelay = Math.min(i, 5) * 70 + 'ms';
+          el.classList.add('reveal');
+          io.observe(el);
+        });
+      })();
+    </script>
   </body>
 </html>

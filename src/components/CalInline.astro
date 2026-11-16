@@ -4,98 +4,242 @@ interface Props {
 }
 const { lang = 'fr' } = Astro.props;
 const CAL_LINK = 'myvisadtv/appel-decouverte-dtv';
+const LOCALE = { fr: 'fr-FR', en: 'en-GB', de: 'de-DE' }[lang];
 const txt = {
   fr: {
     eyebrow: 'Appel découverte gratuit',
     title: 'Une question avant de vous lancer ? Réservez 10 minutes avec Alexandre',
-    text: "Choisissez directement un créneau ci-dessous. Nous faisons le point sur votre situation et sur la formule adaptée, sans engagement. Vous recevez la confirmation par e-mail.",
+    text: "Choisissez un jour, puis l'heure qui vous convient. Nous faisons le point sur votre situation et sur la formule adaptée, sans engagement. Vous recevez la confirmation par e-mail.",
     points: ['10 minutes en visio', 'Gratuit et sans engagement', 'En français, anglais ou allemand'],
-    fallback: "Le calendrier ne s'affiche pas ? Réserver sur Cal.com",
+    fallback: 'Réserver directement sur Cal.com',
+    pickDay: 'Choisissez un jour pour voir les horaires disponibles.',
+    slotsFor: 'Horaires disponibles le',
+    tz: 'Heures affichées dans votre fuseau horaire',
+    loading: 'Chargement des disponibilités…',
+    none: 'Aucune disponibilité ce mois-ci.',
+    error: 'Impossible de charger le calendrier.',
+    prev: 'Mois précédent',
+    next: 'Mois suivant',
   },
   en: {
     eyebrow: 'Free discovery call',
     title: 'A question before you start? Book 10 minutes with Alexandre',
-    text: 'Pick a time slot right here. We review your situation and the right package, with no commitment. You receive the confirmation by e-mail.',
+    text: 'Pick a day, then the time that suits you. We review your situation and the right package, with no commitment. You receive the confirmation by e-mail.',
     points: ['10-minute video call', 'Free, no commitment', 'In English, French or German'],
-    fallback: 'Calendar not showing? Book on Cal.com',
+    fallback: 'Book directly on Cal.com',
+    pickDay: 'Pick a day to see the available times.',
+    slotsFor: 'Available times on',
+    tz: 'Times shown in your time zone',
+    loading: 'Loading availability…',
+    none: 'No availability this month.',
+    error: 'The calendar could not be loaded.',
+    prev: 'Previous month',
+    next: 'Next month',
   },
   de: {
     eyebrow: 'Kostenloses Erstgespräch',
     title: 'Eine Frage vor dem Start? Buchen Sie 10 Minuten mit Alexandre',
-    text: 'Wählen Sie direkt hier einen Termin. Wir besprechen Ihre Situation und das passende Angebot, unverbindlich. Die Bestätigung erhalten Sie per E-Mail.',
+    text: 'Wählen Sie einen Tag und dann die passende Uhrzeit. Wir besprechen Ihre Situation und das passende Angebot, unverbindlich. Die Bestätigung erhalten Sie per E-Mail.',
     points: ['10 Minuten per Video', 'Kostenlos und unverbindlich', 'Auf Deutsch, Englisch oder Französisch'],
-    fallback: 'Kalender wird nicht angezeigt? Auf Cal.com buchen',
+    fallback: 'Direkt auf Cal.com buchen',
+    pickDay: 'Wählen Sie einen Tag, um die freien Uhrzeiten zu sehen.',
+    slotsFor: 'Freie Uhrzeiten am',
+    tz: 'Uhrzeiten in Ihrer Zeitzone',
+    loading: 'Verfügbarkeiten werden geladen…',
+    none: 'Keine Verfügbarkeit in diesem Monat.',
+    error: 'Der Kalender konnte nicht geladen werden.',
+    prev: 'Vorheriger Monat',
+    next: 'Nächster Monat',
   },
 }[lang];
+const I18N = {
+  pickDay: txt.pickDay,
+  slotsFor: txt.slotsFor,
+  tz: txt.tz,
+  loading: txt.loading,
+  none: txt.none,
+  error: txt.error,
+};
 ---
 
 <section class="section border-t border-sable-light" id="reserver-appel">
-  <div class="grid gap-6 md:grid-cols-[1.3fr_0.7fr] md:items-end">
+  <div class="grid gap-10 md:grid-cols-[1fr_minmax(0,420px)] md:items-start">
     <div>
       <p class="eyebrow mb-3">{txt.eyebrow}</p>
-      <h2 class="max-w-2xl font-display text-3xl text-indigo">{txt.title}</h2>
-      <p class="mt-4 max-w-2xl font-sans text-sm leading-relaxed text-encre/80">{txt.text}</p>
-    </div>
-    <div>
-      <ul class="space-y-2 font-sans text-sm text-encre/80">
+      <h2 class="max-w-xl font-display text-3xl text-indigo">{txt.title}</h2>
+      <p class="mt-4 max-w-xl font-sans text-sm leading-relaxed text-encre/80">{txt.text}</p>
+      <ul class="mt-6 space-y-2 font-sans text-sm text-encre/80">
         {txt.points.map((p) => <li>— {p}</li>)}
       </ul>
       <a
         href={`https://cal.com/${CAL_LINK}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="mt-4 inline-block font-sans text-xs text-sable underline hover:text-or-dark"
+        class="mt-6 inline-block font-sans text-xs text-sable underline hover:text-or-dark"
       >
         {txt.fallback}
       </a>
     </div>
+
+    <div id="dtv-cal" class="w-full rounded-lg border border-sable-light bg-white p-5 shadow-sm">
+      <div class="flex items-center justify-between">
+        <button type="button" data-nav="-1" aria-label={txt.prev} class="dtv-cal-nav rounded-sm px-2 py-1 text-indigo hover:bg-papier disabled:opacity-30">‹</button>
+        <p data-month class="font-sans text-sm font-semibold capitalize text-indigo"></p>
+        <button type="button" data-nav="1" aria-label={txt.next} class="dtv-cal-nav rounded-sm px-2 py-1 text-indigo hover:bg-papier disabled:opacity-30">›</button>
+      </div>
+      <div data-weekdays class="mt-4 grid grid-cols-7 text-center font-mono text-[10px] uppercase tracking-wide text-sable"></div>
+      <div data-days class="mt-2 grid grid-cols-7 gap-1 text-center font-sans text-sm"></div>
+      <div data-panel class="mt-5 border-t border-sable-light pt-4">
+        <p data-status class="font-sans text-xs text-encre/70"></p>
+        <div data-slots class="mt-3 grid max-h-56 grid-cols-4 gap-2 overflow-y-auto pr-1"></div>
+      </div>
+      <p data-tz class="mt-4 font-sans text-[11px] text-sable"></p>
+    </div>
   </div>
-  <div
-    id="cal-inline"
-    data-cal-link={CAL_LINK}
-    class="mt-10 min-h-[520px] w-full overflow-hidden rounded-lg border border-sable-light bg-white"
-  ></div>
 </section>
 
-<script is:inline>
+<script define:vars={{ CAL_LINK, LOCALE, I18N }}>
   (function () {
-    var el = document.getElementById('cal-inline');
-    if (!el) return;
-    var started = false;
-    function load() {
-      if (started) return;
-      started = true;
-      (function (C, A, L) {
-        var p = function (a, ar) { a.q.push(ar); };
-        var d = C.document;
-        C.Cal = C.Cal || function () {
-          var cal = C.Cal; var ar = arguments;
-          if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
-          if (ar[0] === L) {
-            var api = function () { p(api, arguments); };
-            var namespace = ar[1]; api.q = api.q || [];
-            if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); }
-            else p(cal, ar);
-            return;
-          }
-          p(cal, ar);
-        };
-      })(window, 'https://app.cal.com/embed/embed.js', 'init');
-      window.Cal('init', 'dtv', { origin: 'https://app.cal.com' });
-      window.Cal.ns.dtv('inline', {
-        elementOrSelector: '#cal-inline',
-        calLink: el.getAttribute('data-cal-link'),
-        config: { layout: 'month_view', theme: 'light' },
-      });
-      window.Cal.ns.dtv('ui', { hideEventTypeDetails: false, layout: 'month_view', theme: 'light' });
+    var root = document.getElementById('dtv-cal');
+    if (!root) return;
+    var tz = 'UTC';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (e) {}
+    var monthEl = root.querySelector('[data-month]');
+    var daysEl = root.querySelector('[data-days]');
+    var statusEl = root.querySelector('[data-status]');
+    var slotsEl = root.querySelector('[data-slots]');
+    root.querySelector('[data-tz]').textContent = I18N.tz + ' : ' + tz;
+
+    var wd = root.querySelector('[data-weekdays]');
+    for (var i = 0; i < 7; i++) {
+      var d0 = new Date(Date.UTC(2024, 0, 1 + i));
+      var s = document.createElement('span');
+      s.textContent = d0.toLocaleDateString(LOCALE, { weekday: 'short', timeZone: 'UTC' }).replace('.', '').slice(0, 3);
+      wd.appendChild(s);
     }
+
+    var today = new Date();
+    var view = new Date(today.getFullYear(), today.getMonth(), 1);
+    var cache = {};
+    var selected = null;
+    var started = false;
+
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+
+    function fetchMonth(d) {
+      var key = d.getFullYear() + '-' + d.getMonth();
+      if (cache[key]) return Promise.resolve(cache[key]);
+      var first = new Date(d.getFullYear(), d.getMonth(), 1);
+      var start = first < today ? today : first;
+      var last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+      var url = 'https://api.cal.com/v2/slots?username=myvisadtv&eventTypeSlug=appel-decouverte-dtv' +
+        '&start=' + ymd(start) + '&end=' + ymd(last) + '&timeZone=' + encodeURIComponent(tz);
+      return fetch(url, { headers: { 'cal-api-version': '2024-09-04' } })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (j) { cache[key] = (j && j.data) || {}; return cache[key]; });
+    }
+
+    function render() {
+      monthEl.textContent = view.toLocaleDateString(LOCALE, { month: 'long', year: 'numeric' });
+      root.querySelector('[data-nav="-1"]').disabled =
+        view.getFullYear() === today.getFullYear() && view.getMonth() === today.getMonth();
+      daysEl.innerHTML = '';
+      slotsEl.innerHTML = '';
+      statusEl.textContent = I18N.loading;
+      fetchMonth(view).then(function (data) {
+        daysEl.innerHTML = '';
+        var offset = (new Date(view.getFullYear(), view.getMonth(), 1).getDay() + 6) % 7;
+        for (var k = 0; k < offset; k++) daysEl.appendChild(document.createElement('span'));
+        var n = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+        var any = false;
+        for (var day = 1; day <= n; day++) {
+          var date = view.getFullYear() + '-' + pad(view.getMonth() + 1) + '-' + pad(day);
+          var has = data[date] && data[date].length;
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = day;
+          b.className = 'aspect-square rounded-md text-sm transition ' + (has
+            ? (selected === date ? 'bg-indigo font-semibold text-papier' : 'bg-or/20 font-semibold text-indigo hover:bg-or/40')
+            : 'cursor-default text-encre/30');
+          if (has) {
+            any = true;
+            b.setAttribute('data-date', date);
+            b.addEventListener('click', function () { selected = this.getAttribute('data-date'); render(); });
+          } else {
+            b.disabled = true;
+          }
+          daysEl.appendChild(b);
+        }
+        if (!any) { statusEl.textContent = I18N.none; return; }
+        if (!selected || !data[selected]) { statusEl.textContent = I18N.pickDay; return; }
+        var label = new Date(selected + 'T12:00:00').toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'long' });
+        statusEl.textContent = I18N.slotsFor + ' ' + label + ' :';
+        data[selected].forEach(function (s) {
+          var t = document.createElement('button');
+          t.type = 'button';
+          t.textContent = new Date(s.start).toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit', timeZone: tz });
+          t.className = 'rounded-sm border border-sable-light py-1.5 font-sans text-xs text-indigo transition hover:border-indigo hover:bg-indigo hover:text-papier';
+          t.addEventListener('click', function () { book(selected, s.start); });
+          slotsEl.appendChild(t);
+        });
+      }).catch(function () {
+        statusEl.innerHTML = '';
+        var a = document.createElement('a');
+        a.href = 'https://cal.com/' + CAL_LINK;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'underline';
+        a.textContent = I18N.error + ' → Cal.com';
+        statusEl.appendChild(a);
+      });
+    }
+
+    function book(date, start) {
+      var iso = new Date(start).toISOString();
+      var direct = 'https://cal.com/' + CAL_LINK + '?date=' + date + '&slot=' + encodeURIComponent(iso);
+      try {
+        if (!window.Cal) {
+          (function (C, A, L) {
+            var p = function (a, ar) { a.q.push(ar); };
+            var d = C.document;
+            C.Cal = C.Cal || function () {
+              var cal = C.Cal; var ar = arguments;
+              if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
+              if (ar[0] === L) {
+                var api = function () { p(api, arguments); };
+                var namespace = ar[1]; api.q = api.q || [];
+                if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); }
+                else p(cal, ar);
+                return;
+              }
+              p(cal, ar);
+            };
+          })(window, 'https://app.cal.com/embed/embed.js', 'init');
+        }
+        if (!window.Cal.ns || !window.Cal.ns.dtv) window.Cal('init', 'dtv', { origin: 'https://app.cal.com' });
+        window.Cal.ns.dtv('modal', { calLink: CAL_LINK, config: { date: date, slot: iso, theme: 'light' } });
+      } catch (e) {
+        window.open(direct, '_blank', 'noopener');
+      }
+    }
+
+    root.querySelectorAll('.dtv-cal-nav').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        view = new Date(view.getFullYear(), view.getMonth() + Number(btn.getAttribute('data-nav')), 1);
+        selected = null;
+        render();
+      });
+    });
+
+    function start() { if (started) return; started = true; render(); }
     if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); load(); }
+      var io = new IntersectionObserver(function (es) {
+        if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); start(); }
       }, { rootMargin: '400px' });
-      io.observe(el);
+      io.observe(root);
     } else {
-      load();
+      start();
     }
   })();
 </script>
