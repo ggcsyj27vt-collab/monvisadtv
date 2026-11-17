@@ -180,7 +180,7 @@ const I18N = {
           t.type = 'button';
           t.textContent = new Date(s.start).toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit', timeZone: tz });
           t.className = 'rounded-sm border border-sable-light py-2 font-sans text-xs text-indigo transition hover:border-indigo hover:bg-indigo hover:text-papier';
-          t.setAttribute('data-umami-event', 'Créneau choisi (calendrier)');
+          t.setAttribute('data-track', 'Créneau choisi (calendrier)');
           t.addEventListener('click', function () { book(selected, s.start); });
           slotsEl.appendChild(t);
         });

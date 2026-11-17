@@ -22,7 +22,9 @@ const pathWithoutLangPrefix = rawPath.replace(/^\/(en|de)(\/|$)/, '/');
 // Le blog n'existe qu'en français pour l'instant : le sélecteur renvoie vers
 // l'accueil de la langue choisie plutôt que vers une URL de blog inexistante.
 const isBlogPage = pathWithoutLangPrefix.startsWith('/blog');
-const targetPath = isBlogPage ? '/blog/' : pathWithoutLangPrefix;
+// L'espace client et l'admin n'existent qu'en français : le sélecteur renvoie vers l'accueil.
+const isFrOnlyPage = /^\/(dossier|admin)(\/|$)/.test(pathWithoutLangPrefix);
+const targetPath = isBlogPage ? '/blog/' : isFrOnlyPage ? '/' : pathWithoutLangPrefix;
 const langLinks = {
   fr: targetPath,
   en: `/en${targetPath}`.replace(/\/{2,}/g, '/'),
@@ -120,7 +122,8 @@ const langLinks = {
       }
       set(false);
       btn.addEventListener('click', function () { set(!isOpen()); });
-      menu.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+      // Fermer le menu APRÈS le clic : le rendre inactif (inert) pendant le clic annulait la navigation
+      menu.addEventListener('click', function (e) { if (e.target.closest('a')) setTimeout(function () { set(false); }, 0); });
       document.addEventListener('click', function (e) {
         if (isOpen() && !menu.contains(e.target) && !btn.contains(e.target)) set(false);
       });

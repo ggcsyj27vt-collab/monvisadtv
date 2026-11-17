@@ -351,8 +351,8 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
         <h1 class="mt-6 font-display text-[2.6rem] font-semibold leading-[1.05] tracking-tight text-indigo md:text-6xl">{c.h1}</h1>
         <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-slate-600">{c.sub}</p>
         <div class="mt-9 flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row">
-          <a href="#eligibilite" class="hm-btn hm-btn-primary" data-umami-event="Accueil : bouton test (haut)">{c.cta1}</a>
-          <a href="#reserver-appel" class="hm-btn hm-btn-ghost" data-umami-event="Accueil : bouton appel (haut)">{c.cta2}</a>
+          <a href="#eligibilite" class="hm-btn hm-btn-primary" data-track="Accueil : bouton test (haut)">{c.cta1}</a>
+          <a href="#reserver-appel" class="hm-btn hm-btn-ghost" data-track="Accueil : bouton appel (haut)">{c.cta2}</a>
         </div>
         <ul class="mt-10 grid gap-3 lg:grid-cols-3" role="list">
           {c.chips.map((chip) => (
@@ -555,7 +555,7 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
       <h2 class="mx-auto max-w-2xl font-display text-3xl font-semibold tracking-tight text-white md:text-4xl">{c.finalTitle}</h2>
       <p class="mx-auto mt-4 max-w-md font-sans text-base text-white/75">{c.finalText}</p>
       <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-        <a href="#eligibilite" class="hm-btn hm-btn-gold" data-umami-event="Accueil : bouton test (bas)">{c.finalCta1}</a>
+        <a href="#eligibilite" class="hm-btn hm-btn-gold" data-track="Accueil : bouton test (bas)">{c.finalCta1}</a>
         <a href={waLink} target="_blank" rel="noopener noreferrer" class="hm-btn hm-btn-outline-light">{c.finalCta2}</a>
       </div>
       <p class="mx-auto mt-8 max-w-xl font-sans text-xs leading-relaxed text-white/60">{c.legal}</p>

@@ -125,18 +125,20 @@ const organizationSchema = {
           [/buy\.stripe\.com\/aFa00ke768qKaPp33q14404/, 'Paiement 600 € (clic)'],
           [/cal\.com\//, 'Réserver un appel (lien)'],
           [/wa\.me\//, 'WhatsApp'],
-          [/\/fiche-renseignement\/$/, 'Ouvrir la fiche'],
+          [/\/fiche-renseignement\/(\?|$)/, 'Ouvrir la fiche'],
           [/\/visa-dtv\/verification-dossier\/$/, 'Voir offre 99 €'],
           [/\/visa-dtv\/demande-accompagnee\/$/, 'Voir offre 699 €'],
         ];
+        // On n'utilise PAS data-umami-event sur les liens : le script Umami bloque alors la
+        // navigation jusqu'à l'envoi de la mesure, et si l'envoi échoue (bloqueur de pub,
+        // réseau lent…) le clic ne mène nulle part. On mesure le clic sans jamais le retenir.
         function tag() {
           document.querySelectorAll('a[href]').forEach(function (a) {
-            if (a.hasAttribute('data-umami-event')) return;
+            if (a.hasAttribute('data-track')) return;
             var href = a.getAttribute('href') || '';
             for (var i = 0; i < rules.length; i++) {
               if (rules[i][0].test(href)) {
-                a.setAttribute('data-umami-event', rules[i][1]);
-                a.setAttribute('data-umami-event-page', location.pathname);
+                a.setAttribute('data-track', rules[i][1]);
                 break;
               }
             }
@@ -145,10 +147,15 @@ const organizationSchema = {
             if (f.dataset.umamiTracked) return;
             f.dataset.umamiTracked = '1';
             f.addEventListener('submit', function () {
-              if (window.umami) window.umami.track('Fiche envoyée', { page: location.pathname });
+              try { if (window.umami) window.umami.track('Fiche envoyée', { page: location.pathname }); } catch (e) {}
             });
           });
         }
+        document.addEventListener('click', function (e) {
+          var el = e.target.closest && e.target.closest('[data-track]');
+          if (!el) return;
+          try { if (window.umami) window.umami.track(el.getAttribute('data-track'), { page: location.pathname }); } catch (err) {}
+        }, true);
         tag();
       })();
     </script>
