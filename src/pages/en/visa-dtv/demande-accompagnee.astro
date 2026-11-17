@@ -3,7 +3,6 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CheckItem from '../../../components/CheckItem.astro';
 import StepCard from '../../../components/StepCard.astro';
 import FaqItem from '../../../components/FaqItem.astro';
-import CalInline from '../../../components/CalInline.astro';
 import DerniereMiseAJour from '../../../components/DerniereMiseAJour.astro';
 
 const structuredData = {
@@ -280,8 +279,14 @@ const structuredData = {
     </div>
   </section>
 
-  <!-- Réservation appel (Cal.com intégré) -->
-  <CalInline lang="en" />
+  <!-- Contact WhatsApp (remplace le calendrier sur les pages d'achat) -->
+  <section class="section border-t border-sable-light">
+    <div class="mx-auto flex max-w-2xl flex-col items-center rounded-lg border border-sable-light bg-white px-8 py-12 text-center shadow-sm">
+      <h2 class="max-w-md font-display text-2xl text-indigo md:text-3xl">A question before you start?</h2>
+      <p class="mt-4 max-w-md font-sans text-sm leading-relaxed text-encre/75">Message us on WhatsApp: Alexandre replies to you directly, in English or French.</p>
+      <a href="https://wa.me/66631747492?text=Hello%2C%20I%20have%20a%20question%20about%20the%20%E2%82%AC699%20full%20package." target="_blank" rel="noopener noreferrer" class="btn-primary mt-7 inline-flex">Message us on WhatsApp</a>
+    </div>
+  </section>
 
   <!-- CTA final -->
   <section class="border-t border-sable-light bg-indigo text-papier">

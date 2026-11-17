@@ -114,7 +114,7 @@ const organizationSchema = {
       <slot />
     </main>
     <Footer lang={lang} />
-    <CalButton lang={lang} />
+    {!/\/visa-dtv\/(verification-dossier|demande-accompagnee)\/$/.test(Astro.url.pathname) && <CalButton lang={lang} />}
     <WhatsAppButton />
     <!-- Mesure d'audience Umami : suivi automatique des clics importants (conversions) -->
     <script is:inline>
