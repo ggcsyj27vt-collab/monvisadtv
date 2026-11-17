@@ -30,7 +30,7 @@ const c = {
     h1: 'Votre visa DTV, préparé et déposé pour vous.',
     sub: "Jusqu'à 5 ans en Thaïlande pour télétravailler, travailler en freelance ou pratiquer une activité Soft Power. Nous préparons votre dossier, le déposons et le suivons jusqu'à la décision.",
     cta1: 'Suis-je éligible ? (2 min)',
-    cta2: 'Parler à Alexandre (10 min, gratuit)',
+    cta2: 'Appel gratuit de 10 min',
     chips: ['Premier avis gratuit sous 48 h ouvrées', 'Frais officiels du visa inclus (formule complète)', 'En français ou en anglais'],
     legal: "Cabinet indépendant, pas un organisme gouvernemental. Aucun visa n'est garanti : la décision appartient aux autorités thaïlandaises.",
     photoAlt: 'Alexandre, fondateur de MyVisaDTV',
@@ -129,7 +129,7 @@ const c = {
     h1: 'Your DTV visa, prepared and filed for you.',
     sub: 'Up to 5 years in Thailand to work remotely, freelance or take part in a Soft Power activity. We prepare your file, submit it and follow it through to the decision.',
     cta1: 'Am I eligible? (2 min)',
-    cta2: 'Talk to Alexandre (10 min, free)',
+    cta2: 'Free 10-min call',
     chips: ['Free first assessment within 48 business hours', 'Official visa fee included (full package)', 'In English or French'],
     legal: 'Independent consultancy, not a government body. No visa is guaranteed: the decision belongs to the Thai authorities.',
     photoAlt: 'Alexandre, founder of MyVisaDTV',
@@ -228,7 +228,7 @@ const c = {
     h1: 'Ihr DTV-Visum, vorbereitet und für Sie eingereicht.',
     sub: 'Bis zu 5 Jahre in Thailand für Remote-Arbeit, Freelancing oder eine Soft-Power-Aktivität. Wir bereiten Ihre Unterlagen vor, reichen den Antrag ein und begleiten ihn bis zur Entscheidung.',
     cta1: 'Bin ich berechtigt? (2 Min.)',
-    cta2: 'Mit Alexandre sprechen (10 Min., kostenlos)',
+    cta2: 'Kostenloses 10-Min.-Gespräch',
     chips: ['Kostenlose Ersteinschätzung in 48 Werktagsstunden', 'Offizielle Visumgebühr inklusive (Komplettpaket)', 'Auf Englisch oder Französisch'],
     legal: 'Unabhängige Beratung, keine Behörde. Kein Visum ist garantiert: Die Entscheidung liegt bei den thailändischen Behörden.',
     photoAlt: 'Alexandre, Gründer von MyVisaDTV',
@@ -324,6 +324,13 @@ const c = {
 // Correspondance entre le profil du test et le champ « statut » de la fiche de renseignement
 const STATUT = { remote: 'teletravailleur', freelance: 'independant', softpower: 'activite-encadree', family: 'autre', other: 'autre' };
 
+// Textes de la carte « dossier » (illustration du haut de page) et du bandeau de confiance
+const card = {
+  fr: { title: 'Votre demande de visa DTV', status: 'En bonne voie', fee: 'Frais officiels du visa inclus', steps: [['Test d’éligibilité', 'done'], ['Dossier préparé et vérifié', 'done'], ['Déposé par MyVisaDTV', 'now'], ['Décision des autorités', 'todo']], trustbar: ['Paiement sécurisé par Stripe', 'Dépôt sur le portail officiel e-Visa', 'Réponse en français ou en anglais'] },
+  en: { title: 'Your DTV visa application', status: 'On track', fee: 'Official visa fee included', steps: [['Eligibility test', 'done'], ['File prepared and checked', 'done'], ['Filed by MyVisaDTV', 'now'], ['Authorities’ decision', 'todo']], trustbar: ['Secure payment by Stripe', 'Filed on the official e-Visa portal', 'Answers in English or French'] },
+  de: { title: 'Ihr DTV-Visumantrag', status: 'Auf gutem Weg', fee: 'Offizielle Visumgebühr inklusive', steps: [['Eignungstest', 'done'], ['Unterlagen vorbereitet und geprüft', 'done'], ['Eingereicht durch MyVisaDTV', 'now'], ['Entscheidung der Behörden', 'todo']], trustbar: ['Sichere Zahlung über Stripe', 'Einreichung über das offizielle e-Visa-Portal', 'Antworten auf Englisch oder Französisch'] },
+}[lang];
+
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -333,64 +340,94 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
 ---
 
 <BaseLayout title={c.title} description={c.description} structuredData={structuredData} lang={lang} translated>
-  <!-- 1. Hero : promesse, 2 actions, réassurance, visage -->
-  <section class="border-b border-sable-light bg-papier" data-no-reveal>
-    <div class="mx-auto grid max-w-content gap-12 px-6 py-16 md:grid-cols-[1.15fr_0.85fr] md:items-center md:px-10 md:py-24">
+  <div class="home-modern">
+  <!-- 1. Hero : promesse + carte « dossier » façon application -->
+  <section class="bg-white" data-no-reveal>
+    <div class="mx-auto grid max-w-content items-center gap-14 px-6 pb-20 pt-14 md:grid-cols-[1.1fr_0.9fr] md:px-10 md:pb-28 md:pt-20">
       <div>
-        <p class="eyebrow mb-5">{c.eyebrow}</p>
-        <h1 class="font-display text-4xl leading-tight text-indigo md:text-5xl">{c.h1}</h1>
-        <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">{c.sub}</p>
-        <div class="mt-9 flex flex-wrap gap-3">
-          <a href="#eligibilite" class="btn-primary" data-umami-event="Accueil : bouton test (haut)">{c.cta1}</a>
-          <a href="#reserver-appel" class="btn-secondary" data-umami-event="Accueil : bouton appel (haut)">{c.cta2}</a>
+        <p class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-sans text-xs font-medium text-slate-600">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>{c.eyebrow}
+        </p>
+        <h1 class="mt-6 font-display text-[2.6rem] font-semibold leading-[1.05] tracking-tight text-indigo md:text-6xl">{c.h1}</h1>
+        <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-slate-600">{c.sub}</p>
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row">
+          <a href="#eligibilite" class="hm-btn hm-btn-primary" data-umami-event="Accueil : bouton test (haut)">{c.cta1}</a>
+          <a href="#reserver-appel" class="hm-btn hm-btn-ghost" data-umami-event="Accueil : bouton appel (haut)">{c.cta2}</a>
         </div>
-        <ul class="mt-8 flex flex-wrap gap-2" role="list">
+        <ul class="mt-10 grid gap-3 lg:grid-cols-3" role="list">
           {c.chips.map((chip) => (
-            <li class="inline-flex items-center gap-2 rounded-full bg-jade-bg px-3 py-1.5 font-sans text-xs font-medium text-jade">
-              <span aria-hidden="true">✓</span>{chip}
+            <li class="flex items-start gap-2 font-sans text-sm text-slate-600">
+              <svg viewBox="0 0 20 20" class="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L8 14.5L16 5.5" /></svg>
+              {chip}
             </li>
           ))}
         </ul>
-        <p class="mt-6 max-w-xl font-sans text-xs leading-relaxed text-encre/70">{c.legal}</p>
       </div>
 
-      <figure class="mx-auto w-full max-w-sm">
-        <img
-          src="/images/alexandre-fondateur.jpg"
-          alt={c.photoAlt}
-          width="922"
-          height="1229"
-          fetchpriority="high"
-          class="aspect-[4/5] w-full rounded-lg object-cover object-[center_30%] shadow-sm"
-        />
-        <figcaption class="-mt-10 mx-4 relative rounded-md border border-sable-light bg-white px-5 py-4 shadow-sm">
-          <p class="font-display text-base text-indigo">{c.photoName}</p>
-          <p class="mt-1 font-sans text-sm leading-snug text-encre/75">{c.photoText}</p>
-        </figcaption>
-      </figure>
+      <!-- Carte produit : suivi d'un dossier (illustration, pas un vrai dossier) -->
+      <div class="relative" aria-hidden="true">
+        <div class="absolute -inset-6 -z-0 rounded-[2.5rem] bg-gradient-to-br from-amber-50 via-white to-slate-100"></div>
+        <div class="relative rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_30px_60px_-30px_rgba(22,35,63,0.35)] md:p-8">
+          <div class="flex items-center justify-between">
+            <p class="font-sans text-sm font-semibold text-indigo">{card.title}</p>
+            <span class="rounded-full bg-emerald-50 px-2.5 py-1 font-sans text-xs font-medium text-emerald-700">{card.status}</span>
+          </div>
+          <ol class="mt-6 space-y-4">
+            {card.steps.map(([label, state]) => (
+              <li class="flex items-center gap-3">
+                {state === 'done' ? (
+                  <span class="flex h-7 w-7 items-center justify-center rounded-full bg-indigo text-white"><svg viewBox="0 0 20 20" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L8 14.5L16 5.5" /></svg></span>
+                ) : state === 'now' ? (
+                  <span class="flex h-7 w-7 items-center justify-center rounded-full border-2 border-or bg-amber-50"><span class="h-2 w-2 rounded-full bg-or"></span></span>
+                ) : (
+                  <span class="h-7 w-7 rounded-full border-2 border-slate-200"></span>
+                )}
+                <span class={`font-sans text-sm ${state === 'todo' ? 'text-slate-400' : 'font-medium text-indigo'}`}>{label}</span>
+              </li>
+            ))}
+          </ol>
+          <div class="mt-7 flex items-end justify-between rounded-2xl bg-slate-50 px-5 py-4">
+            <div>
+              <p class="font-sans text-xs text-slate-500">{c.full.name}</p>
+              <p class="font-display text-3xl font-semibold tracking-tight text-indigo">{c.full.price}</p>
+            </div>
+            <p class="max-w-[11rem] text-right font-sans text-xs leading-snug text-slate-500">{card.fee}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- 2. Test d'éligibilité (sans JS : le formulaire reste lisible et mène à la fiche) -->
-  <section class="section scroll-mt-24" id="eligibilite">
-    <div class="mx-auto max-w-3xl">
-      <p class="eyebrow mb-3">{c.quizEyebrow}</p>
-      <h2 class="font-display text-3xl text-indigo">{c.quizTitle}</h2>
-      <p class="mt-3 font-sans text-sm text-encre/75">{c.quizIntro}</p>
+  <!-- Bandeau de confiance -->
+  <section class="border-y border-slate-200 bg-slate-50">
+    <ul class="mx-auto grid max-w-content gap-4 px-6 py-6 font-sans text-sm text-slate-600 sm:grid-cols-3 md:px-10" role="list">
+      {card.trustbar.map((t) => (
+        <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-or" aria-hidden="true"></span>{t}</li>
+      ))}
+    </ul>
+  </section>
 
-      <form id="quiz" class="mt-8 space-y-8 rounded-lg border border-sable-light bg-white p-6 md:p-8" novalidate>
+  <!-- 2. Test d'éligibilité -->
+  <section class="bg-white scroll-mt-24" id="eligibilite">
+    <div class="mx-auto max-w-3xl px-6 py-20 md:px-10 md:py-28">
+      <p class="hm-kicker">{c.quizEyebrow}</p>
+      <h2 class="hm-h2">{c.quizTitle}</h2>
+      <p class="mt-3 font-sans text-base text-slate-600">{c.quizIntro}</p>
+
+      <form id="quiz" data-no-reveal class="mt-10 space-y-9 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_20px_50px_-30px_rgba(22,35,63,0.25)] md:p-10" novalidate>
         {[
           ['profil', c.q1, c.q1o],
           ['epargne', c.q2, c.q2o],
           ['lieu', c.q3, c.q3o],
         ].map(([name, question, options], qi) => (
           <fieldset>
-            <legend class="font-display text-lg text-indigo">
-              <span class="mr-2 font-mono text-sm text-or-dark">{`0${qi + 1}`}</span>{question}
+            <legend class="flex items-start gap-3 font-display text-lg font-semibold text-indigo">
+              <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo font-sans text-xs text-white">{qi + 1}</span>
+              <span>{question}</span>
             </legend>
-            <div class="mt-4 grid gap-2">
+            <div class="mt-4 grid gap-2 sm:pl-9">
               {(options as string[][]).map(([value, label]) => (
-                <label class="quiz-option flex cursor-pointer items-start gap-3 rounded-md border border-sable-light px-4 py-3 font-sans text-sm text-encre/90">
+                <label class="quiz-option flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 px-4 py-3 font-sans text-sm text-slate-700">
                   <input type="radio" name={name as string} value={value} class="mt-0.5 h-4 w-4 shrink-0 accent-indigo" />
                   <span>{label}</span>
                 </label>
@@ -399,132 +436,220 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
           </fieldset>
         ))}
         <p id="quiz-missing" class="hidden font-sans text-sm text-red-700" role="alert">{c.missing}</p>
-        <button type="submit" class="btn-primary w-full sm:w-auto">{c.submit}</button>
+        <button type="submit" class="hm-btn hm-btn-primary w-full sm:w-auto">{c.submit}</button>
       </form>
 
       <div id="quiz-result" class="mt-6" aria-live="polite" tabindex="-1">
-        <div data-result="ok" hidden class="rounded-lg border-2 border-or bg-white p-6 md:p-8">
-          <h3 class="font-display text-2xl text-indigo">{c.res.ok[0]}</h3>
-          <p class="mt-3 font-sans text-sm text-encre/80">{c.res.ok[1]} <strong class="text-indigo" data-cat></strong></p>
-          <p class="mt-2 font-sans text-sm text-encre/80">{c.res.ok[2]}</p>
-          <a href={L('/fiche-renseignement/')} data-fiche class="btn-primary mt-6 inline-flex">{c.res.ok[3]}</a>
+        <div data-result="ok" hidden class="rounded-3xl bg-indigo p-8 text-white">
+          <h3 class="font-display text-2xl font-semibold">{c.res.ok[0]}</h3>
+          <p class="mt-3 font-sans text-sm text-white/80">{c.res.ok[1]} <strong class="text-or-light" data-cat></strong></p>
+          <p class="mt-2 font-sans text-sm text-white/80">{c.res.ok[2]}</p>
+          <a href={L('/fiche-renseignement/')} data-fiche class="hm-btn hm-btn-gold mt-6">{c.res.ok[3]}</a>
         </div>
         {(['savings', 'inside', 'unsure'] as const).map((k) => (
-          <div data-result={k} hidden class="rounded-lg border border-sable-light bg-white p-6 md:p-8">
-            <h3 class="font-display text-2xl text-indigo">{c.res[k][0]}</h3>
-            <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">{c.res[k][1]}</p>
+          <div data-result={k} hidden class="rounded-3xl border border-slate-200 bg-slate-50 p-8">
+            <h3 class="font-display text-2xl font-semibold text-indigo">{c.res[k][0]}</h3>
+            <p class="mt-3 font-sans text-sm leading-relaxed text-slate-600">{c.res[k][1]}</p>
             {k === 'unsure' ? (
-              <a href={L('/fiche-renseignement/')} data-fiche class="btn-primary mt-6 inline-flex">{c.res[k][2]}</a>
+              <a href={L('/fiche-renseignement/')} data-fiche class="hm-btn hm-btn-primary mt-6">{c.res[k][2]}</a>
             ) : (
-              <a href="#reserver-appel" class="btn-primary mt-6 inline-flex">{c.res[k][2]}</a>
+              <a href="#reserver-appel" class="hm-btn hm-btn-primary mt-6">{c.res[k][2]}</a>
             )}
           </div>
         ))}
-        <p data-note hidden class="mt-4 font-sans text-xs leading-relaxed text-encre/70">{c.quizNote}</p>
+        <p data-note hidden class="mt-4 font-sans text-xs leading-relaxed text-slate-500">{c.quizNote}</p>
       </div>
     </div>
   </section>
 
   <!-- 3. Comment ça marche -->
-  <section class="section border-t border-sable-light">
-    <p class="eyebrow mb-3">{c.howEyebrow}</p>
-    <h2 class="max-w-2xl font-display text-3xl text-indigo">{c.howTitle}</h2>
-    <ol class="mt-12 grid gap-8 md:grid-cols-4">
-      {c.how.map(([tag, title, text], i) => (
-        <li>
-          <span class="font-display text-2xl text-or-dark">{`0${i + 1}`}</span>
-          <p class="mt-2 font-mono text-xs uppercase tracking-wide text-jade">{tag}</p>
-          <h3 class="mt-1 font-display text-lg text-indigo">{title}</h3>
-          <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">{text}</p>
-        </li>
-      ))}
-    </ol>
+  <section class="bg-slate-50">
+    <div class="mx-auto max-w-content px-6 py-20 md:px-10 md:py-28">
+      <p class="hm-kicker">{c.howEyebrow}</p>
+      <h2 class="hm-h2 max-w-2xl">{c.howTitle}</h2>
+      <ol class="mt-12 grid gap-4 md:grid-cols-4">
+        {c.how.map(([tag, title, text], i) => (
+          <li class="rounded-2xl border border-slate-200 bg-white p-6">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-indigo font-sans text-sm font-semibold text-white">{i + 1}</span>
+            <p class="mt-5 font-sans text-xs font-semibold uppercase tracking-wide text-or-dark">{tag}</p>
+            <h3 class="mt-1 font-display text-lg font-semibold text-indigo">{title}</h3>
+            <p class="mt-2 font-sans text-sm leading-relaxed text-slate-600">{text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
   </section>
 
   <!-- 4. Les deux formules -->
-  <section class="section scroll-mt-24" id="formules">
-    <p class="eyebrow mb-3">{c.offersEyebrow}</p>
-    <h2 class="max-w-2xl font-display text-3xl text-indigo">{c.offersTitle}</h2>
-    <div class="mt-10 grid gap-8 md:grid-cols-2">
-      <div class="flex flex-col rounded-lg border border-sable-light bg-white p-8">
-        <p class="font-mono text-xs uppercase tracking-wide text-encre/70">{c.check.tag}</p>
-        <h3 class="mt-2 font-display text-2xl text-indigo">{c.check.name}</h3>
-        <p class="mt-3 font-display text-4xl text-indigo">{c.check.price}</p>
-        <ul class="mt-6 flex-1 space-y-3">
-          {c.check.items.map((it) => <CheckItem>{it}</CheckItem>)}
-        </ul>
-        <p class="mt-6 border-t border-sable-light pt-4 font-sans text-sm text-encre/75">{c.check.excl}</p>
-        <a href={L('/visa-dtv/verification-dossier/')} class="btn-secondary mt-6 w-full">{c.check.cta}</a>
-      </div>
-      <div class="relative order-first flex flex-col rounded-lg border-2 border-or bg-white p-8 md:order-none">
-        <span class="absolute -top-3 left-6 rounded-full bg-or px-3 py-1 font-sans text-xs font-semibold text-indigo">{c.full.badge}</span>
-        <p class="font-mono text-xs uppercase tracking-wide text-encre/70">{c.full.tag}</p>
-        <h3 class="mt-2 font-display text-2xl text-indigo">{c.full.name}</h3>
-        <p class="mt-3 font-display text-4xl text-indigo">{c.full.price}</p>
-        <p class="mt-1 font-sans text-sm font-medium text-jade">{c.full.value}</p>
-        <ul class="mt-6 flex-1 space-y-3">
-          {c.full.items.map((it) => <CheckItem variant="gold">{it}</CheckItem>)}
-        </ul>
-        <p class="mt-6 border-t border-sable-light pt-4 font-sans text-sm text-encre/75">{c.full.excl}</p>
-        <a href={L('/visa-dtv/demande-accompagnee/')} class="btn-primary mt-6 w-full">{c.full.cta}</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. Confiance (sans témoignages tant qu'il n'y en a pas de réels) -->
-  <section class="section border-t border-sable-light">
-    <p class="eyebrow mb-3">{c.trustEyebrow}</p>
-    <h2 class="max-w-2xl font-display text-3xl text-indigo">{c.trustTitle}</h2>
-    <div class="mt-10 grid gap-8 md:grid-cols-2">
-      {c.trust.map(([title, text]) => (
-        <div>
-          <h3 class="font-display text-xl text-indigo">{title}</h3>
-          <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">{text}</p>
+  <section class="bg-white scroll-mt-24" id="formules">
+    <div class="mx-auto max-w-content px-6 py-20 md:px-10 md:py-28">
+      <p class="hm-kicker">{c.offersEyebrow}</p>
+      <h2 class="hm-h2 max-w-2xl">{c.offersTitle}</h2>
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        <div class="flex flex-col rounded-3xl border border-slate-200 bg-white p-8 md:p-10">
+          <p class="font-sans text-sm text-slate-500">{c.check.tag}</p>
+          <h3 class="mt-1 font-display text-2xl font-semibold text-indigo">{c.check.name}</h3>
+          <p class="mt-6 font-display text-5xl font-semibold tracking-tight text-indigo">{c.check.price}</p>
+          <ul class="mt-8 flex-1 space-y-3">
+            {c.check.items.map((it) => (
+              <li class="flex items-start gap-3 font-sans text-sm text-slate-700"><svg viewBox="0 0 20 20" class="mt-0.5 h-4 w-4 shrink-0 text-indigo" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L8 14.5L16 5.5" /></svg>{it}</li>
+            ))}
+          </ul>
+          <p class="mt-8 font-sans text-sm text-slate-500">{c.check.excl}</p>
+          <a href={L('/visa-dtv/verification-dossier/')} class="hm-btn hm-btn-ghost mt-6 w-full">{c.check.cta}</a>
         </div>
-      ))}
+        <div class="relative order-first flex flex-col rounded-3xl bg-indigo p-8 text-white shadow-[0_30px_60px_-30px_rgba(22,35,63,0.6)] md:order-none md:p-10">
+          <span class="absolute right-6 top-6 rounded-full bg-or px-3 py-1 font-sans text-xs font-semibold text-indigo">{c.full.badge}</span>
+          <p class="font-sans text-sm text-white/70">{c.full.tag}</p>
+          <h3 class="mt-1 font-display text-2xl font-semibold text-white">{c.full.name}</h3>
+          <p class="mt-6 font-display text-5xl font-semibold tracking-tight text-white">{c.full.price}</p>
+          <p class="mt-2 font-sans text-sm text-or-light">{c.full.value}</p>
+          <ul class="mt-8 flex-1 space-y-3">
+            {c.full.items.map((it) => (
+              <li class="flex items-start gap-3 font-sans text-sm text-white/90"><svg viewBox="0 0 20 20" class="mt-0.5 h-4 w-4 shrink-0 text-or-light" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L8 14.5L16 5.5" /></svg>{it}</li>
+            ))}
+          </ul>
+          <p class="mt-8 font-sans text-sm text-white/60">{c.full.excl}</p>
+          <a href={L('/visa-dtv/demande-accompagnee/')} class="hm-btn hm-btn-gold mt-6 w-full">{c.full.cta}</a>
+        </div>
+      </div>
     </div>
-    <a href={L('/a-propos/')} class="mt-8 inline-block font-sans text-sm font-semibold text-indigo underline decoration-or underline-offset-4 hover:text-or-dark">{c.about}</a>
   </section>
 
-  <!-- 6. Appel découverte (Cal.com intégré, id #reserver-appel) -->
-  <CalInline lang={lang} />
+  <!-- 5. Confiance -->
+  <section class="bg-slate-50">
+    <div class="mx-auto max-w-content px-6 py-20 md:px-10 md:py-28">
+      <p class="hm-kicker">{c.trustEyebrow}</p>
+      <h2 class="hm-h2 max-w-2xl">{c.trustTitle}</h2>
+      <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {c.trust.map(([title, text]) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 class="font-display text-lg font-semibold text-indigo">{title}</h3>
+            <p class="mt-2 font-sans text-sm leading-relaxed text-slate-600">{text}</p>
+          </div>
+        ))}
+      </div>
+      <a href={L('/a-propos/')} class="mt-8 inline-flex items-center gap-2 font-sans text-sm font-semibold text-indigo hover:text-or-dark">{c.about} <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
 
-  <!-- 7. FAQ centrée sur les objections -->
-  <section class="section">
-    <p class="eyebrow mb-3">{c.faqEyebrow}</p>
-    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">{c.faqTitle}</h2>
-    <div class="max-w-2xl">
-      {c.faqs.map(([q, a]) => <FaqItem question={q}>{a}</FaqItem>)}
+  <!-- 6. Appel découverte (#reserver-appel) -->
+  <div class="bg-white"><CalInline lang={lang} /></div>
+
+  <!-- 7. FAQ -->
+  <section class="bg-white">
+    <div class="mx-auto grid max-w-content gap-10 px-6 pb-20 md:grid-cols-[0.8fr_1.2fr] md:px-10 md:pb-28">
+      <div>
+        <p class="hm-kicker">{c.faqEyebrow}</p>
+        <h2 class="hm-h2">{c.faqTitle}</h2>
+      </div>
+      <div>
+        {c.faqs.map(([q, a]) => <FaqItem question={q}>{a}</FaqItem>)}
+      </div>
     </div>
   </section>
 
   <!-- 8. Dernier appel à l'action -->
-  <section class="border-t border-sable-light bg-indigo text-papier">
-    <div class="section text-center">
-      <h2 class="mx-auto max-w-xl font-display text-3xl text-papier">{c.finalTitle}</h2>
-      <p class="mx-auto mt-4 max-w-md font-sans text-sm text-papier/80">{c.finalText}</p>
-      <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <a href="#eligibilite" class="btn-primary inline-flex" data-umami-event="Accueil : bouton test (bas)">{c.finalCta1}</a>
-        <a href={waLink} target="_blank" rel="noopener noreferrer" class="btn-on-dark inline-flex">{c.finalCta2}</a>
+  <section class="bg-white px-6 pb-20 md:px-10 md:pb-28">
+    <div class="mx-auto max-w-content rounded-[2rem] bg-indigo px-8 py-16 text-center md:py-20">
+      <h2 class="mx-auto max-w-2xl font-display text-3xl font-semibold tracking-tight text-white md:text-4xl">{c.finalTitle}</h2>
+      <p class="mx-auto mt-4 max-w-md font-sans text-base text-white/75">{c.finalText}</p>
+      <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+        <a href="#eligibilite" class="hm-btn hm-btn-gold" data-umami-event="Accueil : bouton test (bas)">{c.finalCta1}</a>
+        <a href={waLink} target="_blank" rel="noopener noreferrer" class="hm-btn hm-btn-outline-light">{c.finalCta2}</a>
       </div>
+      <p class="mx-auto mt-8 max-w-xl font-sans text-xs leading-relaxed text-white/60">{c.legal}</p>
     </div>
   </section>
+  </div>
 </BaseLayout>
 
 <style>
+  .home-modern :global(h1),
+  .home-modern :global(h2),
+  .home-modern :global(h3) {
+    font-weight: 600;
+  }
+  .hm-kicker {
+    margin-bottom: 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #a9843a;
+  }
+  .hm-h2 {
+    font-size: clamp(1.9rem, 3.6vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: #16233f;
+  }
+  .hm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.25rem;
+    padding: 0 1.75rem;
+    white-space: nowrap;
+    border-radius: 9999px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, box-shadow 0.3s ease;
+    touch-action: manipulation;
+  }
+  .hm-btn:active {
+    transform: scale(0.97);
+    transition-duration: 0.1s;
+  }
+  .hm-btn-primary {
+    background: #16233f;
+    color: #fff;
+    box-shadow: 0 10px 24px -12px rgba(22, 35, 63, 0.6);
+  }
+  .hm-btn-primary:hover {
+    background: #22335a;
+  }
+  .hm-btn-ghost {
+    border: 1px solid #cbd5e1;
+    color: #16233f;
+    background: #fff;
+  }
+  .hm-btn-ghost:hover {
+    border-color: #16233f;
+  }
+  .hm-btn-gold {
+    background: #c9a24c;
+    color: #16233f;
+  }
+  .hm-btn-gold:hover {
+    background: #ddbe7a;
+  }
+  .hm-btn-outline-light {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+  }
+  .hm-btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
   .quiz-option {
     transition: border-color 0.2s ease, background-color 0.2s ease;
   }
   .quiz-option:hover {
-    border-color: #c9a24c;
+    border-color: #94a3b8;
   }
   .quiz-option:has(input:checked) {
     border-color: #16233f;
-    background-color: #f7f3ea;
+    background-color: #f8fafc;
+    box-shadow: inset 0 0 0 1px #16233f;
   }
   .quiz-option:has(input:focus-visible) {
     outline: 2px solid #16233f;
     outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hm-btn,
+    .hm-btn:active {
+      transition: none;
+      transform: none;
+    }
   }
 </style>
 
