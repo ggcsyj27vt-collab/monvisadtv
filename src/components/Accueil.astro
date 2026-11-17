@@ -39,7 +39,7 @@ const c = {
 
     quizEyebrow: "Test d'éligibilité",
     quizTitle: 'Le DTV est-il fait pour vous ? Réponse en 3 questions.',
-    quizIntro: 'Gratuit, anonyme et immédiat. Aucune donnée personnelle demandée.',
+    quizIntro: 'Gratuit et sans engagement. Alexandre vous envoie ensuite votre résultat personnalisé, par e-mail ou WhatsApp.',
     q1: 'Quelle est votre situation ?',
     q1o: [
       ['remote', 'Salarié en télétravail pour une entreprise hors de Thaïlande'],
@@ -139,7 +139,7 @@ const c = {
 
     quizEyebrow: 'Eligibility test',
     quizTitle: 'Is the DTV right for you? Find out in 3 questions.',
-    quizIntro: 'Free, anonymous and instant. No personal details needed.',
+    quizIntro: 'Free, no obligation. Alexandre then sends you your personal result, by email or WhatsApp.',
     q1: "What's your situation?",
     q1o: [
       ['remote', 'Remote employee working for a company outside Thailand'],
@@ -239,7 +239,7 @@ const c = {
 
     quizEyebrow: 'Eignungstest',
     quizTitle: 'Passt das DTV zu Ihnen? Antwort in 3 Fragen.',
-    quizIntro: 'Kostenlos, anonym und sofort. Keine persönlichen Daten nötig.',
+    quizIntro: 'Kostenlos und unverbindlich. Alexandre schickt Ihnen danach Ihr persönliches Ergebnis per E-Mail oder WhatsApp.',
     q1: 'Wie ist Ihre Situation?',
     q1o: [
       ['remote', 'Angestellt im Homeoffice für ein Unternehmen außerhalb Thailands'],
@@ -332,6 +332,14 @@ const card = {
   fr: { title: 'Vérification de votre dossier', status: 'Rapport sous 48 h', fee: 'Rapport écrit sous 48 h ouvrées', steps: [['Documents envoyés', 'done'], ['Contrôle pièce par pièce', 'done'], ['Rapport écrit de l’expert', 'now'], ['Vous déposez en toute sérénité', 'todo']], trustbar: ['Paiement sécurisé par Stripe', 'Dépôt sur le portail officiel e-Visa', 'Réponse en français ou en anglais'] },
   en: { title: 'Your document check', status: 'Report in 48 h', fee: 'Written report within 48 business hours', steps: [['Documents sent', 'done'], ['Checked one by one', 'done'], ['Expert written report', 'now'], ['You file with confidence', 'todo']], trustbar: ['Secure payment by Stripe', 'Filed on the official e-Visa portal', 'Answers in English or French'] },
   de: { title: 'Prüfung Ihrer Unterlagen', status: 'Bericht in 48 Std.', fee: 'Schriftlicher Bericht in 48 Werktagsstunden', steps: [['Unterlagen gesendet', 'done'], ['Dokument für Dokument geprüft', 'done'], ['Schriftlicher Expertenbericht', 'now'], ['Sie reichen sicher ein', 'todo']], trustbar: ['Sichere Zahlung über Stripe', 'Einreichung über das offizielle e-Visa-Portal', 'Antworten auf Englisch oder Französisch'] },
+}[lang];
+
+// Étape « coordonnées » du test : le résultat est envoyé par Alexandre (e-mail ou WhatsApp)
+const FORMSPREE = 'https://formspree.io/f/mgaegdgv';
+const lead = {
+  fr: { title: 'Où vous envoyer votre résultat ?', text: "Alexandre analyse vos réponses et vous envoie votre résultat personnalisé sous 48 h ouvrées.", name: 'Prénom', via: 'Recevoir le résultat par', email: 'E-mail', whatsapp: 'WhatsApp', emailPh: 'vous@exemple.com', waPh: '+33 6 12 34 56 78', consent: "J'accepte que MyVisaDTV utilise ces informations pour m'envoyer mon résultat et me recontacter.", privacy: 'Politique de confidentialité', submit: 'Recevoir mon résultat', sending: 'Envoi…', thanks: 'Merci ! Votre demande est bien reçue.', thanksText: "Alexandre vous envoie votre résultat personnalisé sous 48 h ouvrées. En attendant, voici une première indication :", error: "L'envoi n'a pas fonctionné. Réessayez ou écrivez-nous directement sur WhatsApp." },
+  en: { title: 'Where should we send your result?', text: 'Alexandre reviews your answers and sends you your personal result within 48 business hours.', name: 'First name', via: 'Get my result by', email: 'Email', whatsapp: 'WhatsApp', emailPh: 'you@example.com', waPh: '+44 7700 900123', consent: 'I agree that MyVisaDTV may use this information to send me my result and contact me.', privacy: 'Privacy policy', submit: 'Get my result', sending: 'Sending…', thanks: 'Thank you! We have your request.', thanksText: 'Alexandre will send you your personal result within 48 business hours. In the meantime, here is a first indication:', error: "Sending didn't work. Please try again or message us directly on WhatsApp." },
+  de: { title: 'Wohin sollen wir Ihr Ergebnis schicken?', text: 'Alexandre prüft Ihre Antworten und schickt Ihnen Ihr persönliches Ergebnis innerhalb von 48 Werktagsstunden.', name: 'Vorname', via: 'Ergebnis erhalten per', email: 'E-Mail', whatsapp: 'WhatsApp', emailPh: 'sie@beispiel.de', waPh: '+49 151 23456789', consent: 'Ich bin einverstanden, dass MyVisaDTV diese Angaben nutzt, um mir mein Ergebnis zu senden und mich zu kontaktieren.', privacy: 'Datenschutzerklärung', submit: 'Ergebnis erhalten', sending: 'Wird gesendet…', thanks: 'Danke! Ihre Anfrage ist eingegangen.', thanksText: 'Alexandre schickt Ihnen Ihr persönliches Ergebnis innerhalb von 48 Werktagsstunden. Hier schon eine erste Einschätzung:', error: 'Das Senden hat nicht funktioniert. Bitte erneut versuchen oder direkt per WhatsApp schreiben.' },
 }[lang];
 
 const structuredData = {
@@ -441,6 +449,43 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
         <p id="quiz-missing" class="hidden font-sans text-sm text-red-700" role="alert">{c.missing}</p>
         <button type="submit" class="hm-btn hm-btn-primary w-full sm:w-auto">{c.submit}</button>
       </form>
+
+      <form id="quiz-lead" hidden data-no-reveal class="mt-6 space-y-5 rounded-3xl border-2 border-indigo bg-white p-6 md:p-10" novalidate>
+        <div>
+          <h3 class="font-display text-2xl font-semibold text-indigo">{lead.title}</h3>
+          <p class="mt-2 font-sans text-sm text-slate-600">{lead.text}</p>
+        </div>
+        <div>
+          <label for="lead-name" class="font-sans text-sm font-medium text-indigo">{lead.name}</label>
+          <input id="lead-name" name="prenom" type="text" required autocomplete="given-name" class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 font-sans text-sm" />
+        </div>
+        <fieldset>
+          <legend class="font-sans text-sm font-medium text-indigo">{lead.via}</legend>
+          <div class="mt-2 flex gap-2">
+            <label class="quiz-option flex flex-1 cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 font-sans text-sm"><input type="radio" name="canal" value="email" checked class="accent-indigo" />{lead.email}</label>
+            <label class="quiz-option flex flex-1 cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 font-sans text-sm"><input type="radio" name="canal" value="whatsapp" class="accent-indigo" />{lead.whatsapp}</label>
+          </div>
+        </fieldset>
+        <div data-canal="email">
+          <label for="lead-email" class="sr-only">{lead.email}</label>
+          <input id="lead-email" name="email" type="email" required autocomplete="email" placeholder={lead.emailPh} class="w-full rounded-xl border border-slate-300 px-4 py-3 font-sans text-sm" />
+        </div>
+        <div data-canal="whatsapp" hidden>
+          <label for="lead-wa" class="sr-only">{lead.whatsapp}</label>
+          <input id="lead-wa" name="whatsapp" type="tel" autocomplete="tel" placeholder={lead.waPh} pattern="[+0-9 ().-]{8,}" class="w-full rounded-xl border border-slate-300 px-4 py-3 font-sans text-sm" />
+        </div>
+        <div class="flex items-start gap-3">
+          <input type="checkbox" id="lead-rgpd" name="rgpd" required class="mt-1 h-4 w-4 accent-indigo" />
+          <label for="lead-rgpd" class="font-sans text-xs leading-relaxed text-slate-600">{lead.consent} <a href={L('/confidentialite/')} class="underline">{lead.privacy}</a></label>
+        </div>
+        <p id="lead-error" hidden class="font-sans text-sm text-red-700" role="alert">{lead.error}</p>
+        <button type="submit" class="hm-btn hm-btn-primary w-full sm:w-auto" data-label={lead.submit} data-sending={lead.sending}>{lead.submit}</button>
+      </form>
+
+      <div id="quiz-thanks" hidden class="mt-6 rounded-3xl bg-emerald-50 p-6 md:p-8" tabindex="-1">
+        <h3 class="font-display text-xl font-semibold text-emerald-800">{lead.thanks}</h3>
+        <p class="mt-2 font-sans text-sm text-emerald-900/80">{lead.thanksText}</p>
+      </div>
 
       <div id="quiz-result" class="mt-6" aria-live="polite" tabindex="-1">
         <div data-result="ok" hidden class="rounded-3xl bg-indigo p-8 text-white">
@@ -657,17 +702,23 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
   }
 </style>
 
-<script define:vars={{ cats: c.cats, statut: STATUT }}>
+<script define:vars={{ cats: c.cats, statut: STATUT, FORMSPREE, lang }}>
   (function () {
     var form = document.getElementById('quiz');
+    var leadForm = document.getElementById('quiz-lead');
+    var thanks = document.getElementById('quiz-thanks');
     var box = document.getElementById('quiz-result');
-    if (!form || !box) return;
+    if (!form || !box || !leadForm) return;
+    var track = function (n, d) { try { if (window.umami) window.umami.track(n, d); } catch (e) {} };
+    var answers = null;
     var started = false;
     form.addEventListener('change', function () {
-      if (!started && window.umami) window.umami.track('Test éligibilité : commencé');
+      if (!started) track('Test éligibilité : commencé');
       started = true;
       document.getElementById('quiz-missing').classList.add('hidden');
     });
+
+    // 1. Réponses du test -> étape coordonnées
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var get = function (n) { var el = form.querySelector('input[name="' + n + '"]:checked'); return el ? el.value : null; };
@@ -677,18 +728,78 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
         return;
       }
       var result = epargne === 'no' ? 'savings' : lieu === 'inside' ? 'inside' : (profil === 'other' || epargne === 'unsure') ? 'unsure' : 'ok';
-      box.querySelectorAll('[data-result]').forEach(function (el) { el.hidden = el.getAttribute('data-result') !== result; });
+      answers = { profil: profil, epargne: epargne, lieu: lieu, result: result };
+      leadForm.hidden = false;
+      form.querySelector('button[type="submit"]').hidden = true;
+      track('Test éligibilité : réponses', { resultat: result, profil: profil });
+      leadForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(function () { document.getElementById('lead-name').focus({ preventScroll: true }); }, 400);
+    });
+
+    // E-mail ou WhatsApp : un seul champ obligatoire à la fois
+    leadForm.querySelectorAll('input[name="canal"]').forEach(function (r) {
+      r.addEventListener('change', function () {
+        var wa = leadForm.querySelector('input[name="canal"]:checked').value === 'whatsapp';
+        leadForm.querySelector('[data-canal="email"]').hidden = wa;
+        leadForm.querySelector('[data-canal="whatsapp"]').hidden = !wa;
+        document.getElementById('lead-email').required = !wa;
+        document.getElementById('lead-wa').required = wa;
+      });
+    });
+
+    function showResult() {
+      var r = answers.result;
+      box.querySelectorAll('[data-result]').forEach(function (el) { el.hidden = el.getAttribute('data-result') !== r; });
       box.querySelector('[data-note]').hidden = false;
       var cat = box.querySelector('[data-cat]');
-      if (cat) cat.textContent = cats[profil] || '';
+      if (cat) cat.textContent = cats[answers.profil] || '';
       box.querySelectorAll('[data-fiche]').forEach(function (a) {
         var url = new URL(a.getAttribute('href'), location.href);
-        url.searchParams.set('statut', statut[profil]);
+        url.searchParams.set('statut', statut[answers.profil]);
         a.setAttribute('href', url.pathname + url.search);
       });
-      if (window.umami) window.umami.track('Test éligibilité : résultat', { resultat: result, profil: profil });
-      box.focus({ preventScroll: true });
-      box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // 2. Envoi des coordonnées (Formspree), puis affichage du résultat indicatif
+    leadForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var err = document.getElementById('lead-error');
+      err.hidden = true;
+      var fields = leadForm.querySelectorAll('input');
+      for (var i = 0; i < fields.length; i++) {
+        if (!fields[i].closest('[hidden]') && !fields[i].checkValidity()) { fields[i].reportValidity(); return; }
+      }
+      var btn = leadForm.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = btn.dataset.sending;
+      var canal = leadForm.querySelector('input[name="canal"]:checked').value;
+      var data = {
+        _subject: "Test d'éligibilité DTV : " + document.getElementById('lead-name').value + ' (' + answers.result + ')',
+        source: "Test d'éligibilité (accueil)",
+        langue: lang,
+        prenom: document.getElementById('lead-name').value,
+        canal: canal,
+        email: canal === 'email' ? document.getElementById('lead-email').value : '',
+        whatsapp: canal === 'whatsapp' ? document.getElementById('lead-wa').value : '',
+        profil: answers.profil,
+        epargne_500k_thb: answers.epargne,
+        lieu_de_demande: answers.lieu,
+        resultat_indicatif: answers.result,
+        rgpd: 'accepté',
+      };
+      fetch(FORMSPREE, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) })
+        .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); })
+        .then(function () {
+          track('Test éligibilité : coordonnées envoyées', { canal: canal, resultat: answers.result });
+          leadForm.hidden = true;
+          thanks.hidden = false;
+          showResult();
+          thanks.focus({ preventScroll: true });
+          thanks.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        })
+        .catch(function () {
+          err.hidden = false;
+          btn.disabled = false; btn.textContent = btn.dataset.label;
+        });
     });
   })();
 </script>
