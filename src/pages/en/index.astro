@@ -18,10 +18,10 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'Can I submit my application myself after the diagnostic?',
+      name: "Can I submit my application myself?",
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. The initial eligibility diagnostic can be done independently of the full package. We make this clear before any commitment.',
+        text: "Yes. If you'd rather file it yourself, our €99 document check is made for you: we review your documents before you send them. With the €699 full package, we file the application for you.",
       },
     },
     {
@@ -42,10 +42,10 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'Can I start this process before leaving my home country?',
+      name: "Can I start this process before leaving my home country?",
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. Most of the file preparation — diagnostic, gathering documents, verification — can be done remotely, wherever you are. Only certain filing steps depend on your place of residence at the time of the application.',
+        text: "Yes. Everything is done remotely: preparing the file, then the online filing we do for you. The only condition is to be outside Thailand when the application is filed.",
       },
     },
     {
@@ -127,11 +127,11 @@ const faqSchema = {
       <div class="relative flex flex-col rounded-lg border border-sable-light bg-white p-8">
         <p class="font-mono text-xs uppercase tracking-wide text-sable">We take care of everything</p>
         <h3 class="mt-2 font-display text-2xl text-indigo">Full package</h3>
-        <p class="mt-3"><span class="font-sans text-lg text-sable line-through">€1,000</span> <span class="font-display text-4xl text-indigo">€699</span></p>
+        <p class="mt-3"><span class="font-display text-4xl text-indigo">€699</span></p>
         <ul class="mt-6 flex-1 space-y-3 font-sans text-sm leading-relaxed text-encre/80">
-          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Detailed eligibility diagnostic</span></li>
-          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Complete preparation of your file</span></li>
-          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Submission and follow-up until the decision</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Complete file preparation</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Application filed by us</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Follow-up until the decision</span></li>
           <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Official visa fees included</span></li>
         </ul>
         <a href="/en/visa-dtv/demande-accompagnee/" class="btn-secondary mt-8 w-full">See the full package</a>
@@ -182,11 +182,11 @@ const faqSchema = {
 
     <ol class="mt-12 grid gap-8 md:grid-cols-5">
       {[
-        ['01', 'Diagnostic'],
-        ['02', 'Building the file'],
-        ['03', 'Review'],
-        ['04', 'Filing the application'],
-        ['05', 'Follow-up to decision'],
+        ['01', "Diagnostic"],
+        ['02', "Preparing the file"],
+        ['03', "Your approval"],
+        ['04', "Filed by us"],
+        ['05', "Follow-up to decision"],
       ].map(([n, label]) => (
         <li>
           <span class="font-display text-2xl text-or-dark">{n}</span>
@@ -210,9 +210,10 @@ const faqSchema = {
         maximise the quality and compliance of your file, not to guarantee a decision that
         is not ours to make.
       </FaqItem>
-      <FaqItem question="Can I submit my application myself after the diagnostic?">
-        Yes. The initial eligibility diagnostic can be done independently of the full
-        package. We make this clear before any commitment.
+      <FaqItem question="Can I submit my application myself?">
+        Yes. If you'd rather file it yourself, our €99 document check is made for you: we review
+        your documents before you send them. With the €699 full package, we file the application
+        for you.
       </FaqItem>
       <FaqItem question="How long does the support process take?">
         It depends on the availability of your supporting documents and consular processing
@@ -225,9 +226,8 @@ const faqSchema = {
         you, before any commitment.
       </FaqItem>
       <FaqItem question="Can I start this process before leaving my home country?">
-        Yes. Most of the file preparation — diagnostic, gathering documents, verification —
-        can be done remotely, wherever you are. Only certain filing steps depend on your
-        place of residence at the time of the application.
+        Yes. Everything is done remotely: preparing the file, then the online filing we do for
+        you. The only condition is to be outside Thailand when the application is filed.
       </FaqItem>
       <FaqItem question="What happens if my professional situation changes during the process?">
         We adapt the file to your actual situation at the time of filing. If something

@@ -80,10 +80,10 @@ const structuredData = {
         },
         {
           '@type': 'Question',
-          name: 'Kommuniziert der Berater bei Bedarf direkt mit der thailändischen Verwaltung?',
+          name: "Wer reicht den Antrag ein und kommuniziert mit der Botschaft?",
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Ihr Berater unterstützt Sie bei der Vorbereitung und der Terminvereinbarung, aber die Einreichung und der Austausch mit der Verwaltung müssen je nach geltenden Verfahren in der Regel vom Antragsteller selbst vorgenommen werden. Wir begleiten Sie bei jedem Schritt, damit es einfach bleibt.',
+            text: "Das übernehmen wir. Wir reichen Ihren Antrag über das offizielle e-Visa-Portal ein und beantworten Anfragen der Botschaft, die über dieses Portal kommen, etwa Nachforderungen. Das Einzige, was wir nicht für Sie tun können: persönlich erscheinen, wenn die Botschaft Sie einlädt. In diesem Fall bereiten wir Sie auf den Termin vor.",
           },
         },
       ],
@@ -94,7 +94,7 @@ const structuredData = {
 
 <BaseLayout
   title="Begleiteter DTV-Visumantrag — 699 €"
-  description="Das vollständige MyVisaDTV-Paket: Diagnose, Zusammenstellung der Unterlagen, Prüfung und Begleitung bis zur Entscheidung, offizielle Visumgebühren inbegriffen. 699 € statt 1.000 €."
+  description="Das MyVisaDTV-Komplettpaket für 699 €: vollständige Vorbereitung der Unterlagen, Einreichung des Antrags durch uns und Begleitung bis zur Entscheidung. Offizielle Visumgebühren inbegriffen."
   structuredData={structuredData}
   lang="de"
   translated
@@ -109,18 +109,17 @@ const structuredData = {
             DTV-Visumantrag, von Anfang bis Ende begleitet
           </h1>
           <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
-            Ein einziger Berater übernimmt Ihre Unterlagen von der Eignungsprüfung bis zur
-            Entscheidung der thailändischen Behörden. Sie müssen das Verfahren nicht mehr
-            allein bewältigen, behalten aber bei jedem Schritt die Entscheidungshoheit.
+            Wir bereiten Ihre vollständigen Unterlagen vor, reichen den Antrag für Sie ein und
+            begleiten ihn bis zur Entscheidung der thailändischen Behörden. Sie schicken uns Ihre
+            Dokumente und geben die Unterlagen vor der Einreichung frei.
           </p>
           <div class="mt-8">
-            <DerniereMiseAJour date="2026-09-15" />
+            <DerniereMiseAJour date="2026-11-17" />
           </div>
         </div>
 
         <div class="rounded-lg border border-sable-light bg-white p-8">
           <p class="font-mono text-xs uppercase tracking-wide text-sable">Aktuelles Angebot</p>
-          <p class="mt-2 font-sans text-lg text-sable line-through">1.000 €</p>
           <p class="-mt-1 font-display text-5xl text-indigo">699 €</p>
           <p class="mt-2 font-sans text-sm text-encre/70">Offizielle Visumgebühren inbegriffen, im Rahmen des zum Zeitpunkt der Einreichung geltenden Satzes.</p>
           <a href="/de/fiche-renseignement/" class="btn-primary mt-6 w-full">Antrag jetzt starten</a>
@@ -144,21 +143,47 @@ const structuredData = {
   <!-- Ce qui est inclus -->
   <section class="section">
     <p class="eyebrow mb-3">Leistungsumfang</p>
-    <h2 class="max-w-xl font-display text-3xl text-indigo">Das ist in den 699 € enthalten</h2>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">Was wir für Sie übernehmen, in 3 Schritten</h2>
 
-    <div class="mt-10 grid gap-12 md:grid-cols-2">
-      <ul class="space-y-5">
-        <CheckItem variant="gold">Ausführliche Eignungsprüfung Ihrer Situation (Berufsstatus, Einkommen, familiäre Situation)</CheckItem>
-        <CheckItem variant="gold">Individuelle Liste der zu beschaffenden Unterlagen</CheckItem>
-        <CheckItem variant="gold">Überprüfung und Aufbereitung jedes Dokuments</CheckItem>
-        <CheckItem variant="gold">Vollständige Zusammenstellung Ihres Antragsdossiers</CheckItem>
-        <CheckItem variant="gold">Offizielle DTV-Visumgebühren inbegriffen, im Rahmen des für Ihren Antrag geltenden Satzes</CheckItem>
-      </ul>
-      <ul class="space-y-5">
-        <CheckItem variant="gold">Unterstützung bei der Terminvereinbarung beim Konsulat oder beim Online-Verfahren</CheckItem>
-        <CheckItem variant="gold">Ein persönlicher Berater, während des gesamten Verfahrens per E-Mail erreichbar</CheckItem>
-        <CheckItem variant="gold">Verfolgung Ihres Antrags bis zur Bekanntgabe der Entscheidung</CheckItem>
-        <CheckItem variant="gold">Bei Bedarf eine Vorbereitungssitzung vor der Einreichung oder dem Interview</CheckItem>
+    <div class="mt-10 grid gap-10 md:grid-cols-3">
+      <div>
+        <p class="font-display text-2xl text-or-dark">01</p>
+        <h3 class="mt-2 font-display text-xl text-indigo">Vollständige Vorbereitung der Unterlagen</h3>
+        <ul class="mt-5 space-y-4">
+          <CheckItem variant="gold">Ausführliche Eignungsprüfung (Berufsstatus, Einkommen, familiäre Situation)</CheckItem>
+          <CheckItem variant="gold">Individuelle Liste der zu beschaffenden Unterlagen</CheckItem>
+          <CheckItem variant="gold">Prüfung und Aufbereitung jedes Dokuments</CheckItem>
+          <CheckItem variant="gold">Vollständiges Antragsdossier, bereit zur Einreichung</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <p class="font-display text-2xl text-or-dark">02</p>
+        <h3 class="mt-2 font-display text-xl text-indigo">Einreichung des Antrags</h3>
+        <ul class="mt-5 space-y-4">
+          <CheckItem variant="gold">Wir reichen Ihren Antrag über das offizielle thailändische e-Visa-Portal ein</CheckItem>
+          <CheckItem variant="gold">Wir bezahlen die offiziellen Visumgebühren, in den 699 € enthalten</CheckItem>
+          <CheckItem variant="gold">Sie werden informiert, sobald der Antrag eingereicht ist</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <p class="font-display text-2xl text-or-dark">03</p>
+        <h3 class="mt-2 font-display text-xl text-indigo">Begleitung bis zur Entscheidung</h3>
+        <ul class="mt-5 space-y-4">
+          <CheckItem variant="gold">Verfolgung des Antrags bis zur Bekanntgabe der Entscheidung</CheckItem>
+          <CheckItem variant="gold">Beantwortung von Nachforderungen der Botschaft</CheckItem>
+          <CheckItem variant="gold">Ein persönlicher Berater, während des gesamten Verfahrens per E-Mail erreichbar</CheckItem>
+          <CheckItem variant="gold">Vorbereitung auf ein Gespräch, falls die Botschaft eines verlangt</CheckItem>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 rounded-lg border border-sable-light bg-white p-8">
+      <h3 class="font-display text-xl text-indigo">Was Sie selbst tun</h3>
+      <ul class="mt-4 space-y-2 font-sans text-sm leading-relaxed text-encre/80">
+        <li>— Die angeforderten Dokumente beschaffen und uns über Ihren sicheren Bereich senden.</li>
+        <li>— Die vollständigen Unterlagen prüfen und uns vor der Einreichung Ihre Freigabe geben.</li>
+        <li>— Sich bei der Einreichung außerhalb Thailands aufhalten, wie es das Verfahren verlangt.</li>
+        <li>— Nur dann persönlich zur Botschaft gehen, wenn sie Sie einlädt.</li>
       </ul>
     </div>
   </section>
@@ -197,21 +222,21 @@ const structuredData = {
         Sie füllen das Kontaktformular aus. Wir analysieren es und melden uns mit einer
         ersten begründeten Einschätzung Ihrer Situation, vor jeder Zahlung.
       </StepCard>
-      <StepCard number="02" title="Zusammenstellung der Unterlagen" duration="1 bis 3 Wochen">
-        Ihr Berater übermittelt Ihnen die genaue Liste der zu beschaffenden Dokumente und
-        begleitet Sie Dokument für Dokument, sobald diese verfügbar sind.
+      <StepCard number="02" title="Vorbereitung der Unterlagen" duration="1 bis 3 Wochen">
+        Ihr Berater schickt Ihnen die genaue Liste der Dokumente und prüft, ordnet und
+        bereitet jedes Dokument auf, sobald es vorliegt.
       </StepCard>
-      <StepCard number="03" title="Prüfung und Aufbereitung" duration="Einige Tage">
-        Jedes Dokument wird geprüft, geordnet und vor der Einreichung mit den erwarteten
-        Anforderungen in Einklang gebracht.
+      <StepCard number="03" title="Ihre Freigabe" duration="1 bis 2 Tage">
+        Wir zeigen Ihnen die vollständigen Unterlagen. Sie prüfen sie und geben uns die
+        Freigabe zur Einreichung.
       </StepCard>
-      <StepCard number="04" title="Einreichung des Antrags" duration="Je nach Einreichungsort">
-        Wir begleiten Sie bei der Terminvereinbarung oder dem Online-Verfahren, gemäß dem
-        in Ihrer Region geltenden Verfahren.
+      <StepCard number="04" title="Einreichung durch uns" duration="Sobald Sie freigeben">
+        Wir reichen den Antrag über das offizielle e-Visa-Portal ein und bezahlen die
+        offiziellen Visumgebühren. Sie werden sofort informiert.
       </StepCard>
-      <StepCard number="05" title="Begleitung bis zur Entscheidung" duration="Je nach konsularischen Fristen">
-        Ihr Berater bleibt bis zur Bekanntgabe der Entscheidung Ihr einziger Ansprechpartner
-        und beantwortet Ihre Fragen während der Wartezeit.
+      <StepCard number="05" title="Begleitung bis zur Entscheidung" duration="Je nach Fristen der Botschaft">
+        Wir verfolgen den Antrag, beantworten Nachforderungen und halten Sie bis zur
+        Entscheidung der thailändischen Behörden auf dem Laufenden.
       </StepCard>
     </div>
   </section>
@@ -251,11 +276,11 @@ const structuredData = {
         des Verfahrens werden Ihnen vor der Zahlung mitgeteilt, damit Sie in voller Kenntnis
         der Sachlage zustimmen.
       </FaqItem>
-      <FaqItem question="Kommuniziert der Berater bei Bedarf direkt mit der thailändischen Verwaltung?">
-        Ihr Berater unterstützt Sie bei der Vorbereitung und der Terminvereinbarung, aber
-        die Einreichung und der Austausch mit der Verwaltung müssen je nach geltenden
-        Verfahren in der Regel vom Antragsteller selbst vorgenommen werden. Wir begleiten
-        Sie bei jedem Schritt, damit es einfach bleibt.
+      <FaqItem question="Wer reicht den Antrag ein und kommuniziert mit der Botschaft?">
+        Das übernehmen wir. Wir reichen Ihren Antrag über das offizielle e-Visa-Portal ein und
+        beantworten Anfragen der Botschaft, die über dieses Portal kommen, etwa Nachforderungen.
+        Das Einzige, was wir nicht für Sie tun können: persönlich erscheinen, wenn die Botschaft
+        Sie einlädt. In diesem Fall bereiten wir Sie auf den Termin vor.
       </FaqItem>
     </div>
   </section>

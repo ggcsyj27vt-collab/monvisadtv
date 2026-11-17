@@ -80,10 +80,10 @@ const structuredData = {
         },
         {
           '@type': 'Question',
-          name: 'Does the advisor communicate directly with the Thai administration if needed?',
+          name: "Who files the application and deals with the embassy?",
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Your advisor supports you in preparing your file and booking appointments, but filing and communicating with the administration usually has to be done by the applicant themselves, depending on current procedures. We guide you at every step to keep it simple.',
+            text: "We do. We submit your application on the official e-Visa portal and answer the embassy's requests made through that portal, such as additional documents. The only thing we can't do for you is appear in person if the embassy asks to see you. In that case, we prepare you for the appointment.",
           },
         },
       ],
@@ -94,7 +94,7 @@ const structuredData = {
 
 <BaseLayout
   title="Assisted DTV visa application — €699"
-  description="The full MyVisaDTV package: diagnostic, building the file, review and follow-up through to the decision, official visa fees included. €699 instead of €1,000."
+  description="The full MyVisaDTV package for €699: complete file preparation, application filed by us and follow-up until the decision. Official visa fees included."
   structuredData={structuredData}
   lang="en"
   translated
@@ -109,18 +109,17 @@ const structuredData = {
             DTV visa application, supported from start to finish
           </h1>
           <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
-            A single advisor handles your file from the eligibility diagnostic through to
-            the Thai authorities' decision. You no longer manage the process alone, but you
-            remain in control at every step.
+            We prepare your complete file, file it for you, then follow it through to the Thai
+            authorities' decision. On your side, you send us your documents and approve the file
+            before we submit it.
           </p>
           <div class="mt-8">
-            <DerniereMiseAJour date="2026-09-15" />
+            <DerniereMiseAJour date="2026-11-17" />
           </div>
         </div>
 
         <div class="rounded-lg border border-sable-light bg-white p-8">
           <p class="font-mono text-xs uppercase tracking-wide text-sable">Current offer</p>
-          <p class="mt-2 font-sans text-lg text-sable line-through">€1,000</p>
           <p class="-mt-1 font-display text-5xl text-indigo">€699</p>
           <p class="mt-2 font-sans text-sm text-encre/70">Official visa fees included, within the rate applicable at the time of filing.</p>
           <a href="/en/fiche-renseignement/" class="btn-primary mt-6 w-full">Start my application</a>
@@ -144,21 +143,47 @@ const structuredData = {
   <!-- Ce qui est inclus -->
   <section class="section">
     <p class="eyebrow mb-3">What's included</p>
-    <h2 class="max-w-xl font-display text-3xl text-indigo">What's included in the €699</h2>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">What we do for you, in 3 steps</h2>
 
-    <div class="mt-10 grid gap-12 md:grid-cols-2">
-      <ul class="space-y-5">
-        <CheckItem variant="gold">Detailed eligibility diagnostic based on your situation (professional status, income, family situation)</CheckItem>
-        <CheckItem variant="gold">Personalised list of supporting documents to gather</CheckItem>
-        <CheckItem variant="gold">Review and formatting of every document</CheckItem>
-        <CheckItem variant="gold">Full preparation of your application file</CheckItem>
-        <CheckItem variant="gold">Official DTV visa fees included, within the rate applicable to your application</CheckItem>
-      </ul>
-      <ul class="space-y-5">
-        <CheckItem variant="gold">Support booking your consular appointment or completing the online process</CheckItem>
-        <CheckItem variant="gold">A dedicated advisor, reachable by email throughout the process</CheckItem>
-        <CheckItem variant="gold">Follow-up on your file until the decision is notified</CheckItem>
-        <CheckItem variant="gold">A preparation session before filing or your interview, if needed</CheckItem>
+    <div class="mt-10 grid gap-10 md:grid-cols-3">
+      <div>
+        <p class="font-display text-2xl text-or-dark">01</p>
+        <h3 class="mt-2 font-display text-xl text-indigo">Complete file preparation</h3>
+        <ul class="mt-5 space-y-4">
+          <CheckItem variant="gold">Detailed eligibility diagnostic (professional status, income, family situation)</CheckItem>
+          <CheckItem variant="gold">Personalised list of documents to gather</CheckItem>
+          <CheckItem variant="gold">Review and compliance check of every document</CheckItem>
+          <CheckItem variant="gold">Complete application file, ready to be submitted</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <p class="font-display text-2xl text-or-dark">02</p>
+        <h3 class="mt-2 font-display text-xl text-indigo">Filing the application</h3>
+        <ul class="mt-5 space-y-4">
+          <CheckItem variant="gold">We submit your application on the official Thai e-Visa portal</CheckItem>
+          <CheckItem variant="gold">We pay the official visa fees, included in the €699</CheckItem>
+          <CheckItem variant="gold">You're notified as soon as the application is filed</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <p class="font-display text-2xl text-or-dark">03</p>
+        <h3 class="mt-2 font-display text-xl text-indigo">Follow-up until the decision</h3>
+        <ul class="mt-5 space-y-4">
+          <CheckItem variant="gold">Follow-up of your application until the decision is notified</CheckItem>
+          <CheckItem variant="gold">Answers to the embassy's requests for additional documents</CheckItem>
+          <CheckItem variant="gold">A dedicated advisor, reachable by email throughout the process</CheckItem>
+          <CheckItem variant="gold">Interview preparation, if the embassy asks for one</CheckItem>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 rounded-lg border border-sable-light bg-white p-8">
+      <h3 class="font-display text-xl text-indigo">What you do on your side</h3>
+      <ul class="mt-4 space-y-2 font-sans text-sm leading-relaxed text-encre/80">
+        <li>— Gather the requested documents and send them to us through your secure space.</li>
+        <li>— Review the complete file and give us your go-ahead before we submit it.</li>
+        <li>— Be outside Thailand when the application is filed, as the procedure requires.</li>
+        <li>— Go to the embassy only if it asks to see you in person.</li>
       </ul>
     </div>
   </section>
@@ -197,21 +222,21 @@ const structuredData = {
         You fill in the intake form. We analyse it and get back to you with an initial,
         reasoned view of your situation, before any payment.
       </StepCard>
-      <StepCard number="02" title="Building the file" duration="1 to 3 weeks">
-        Your advisor sends you the precise list of documents to gather and guides you
-        through each one as it becomes available.
+      <StepCard number="02" title="Preparing the file" duration="1 to 3 weeks">
+        Your advisor sends you the precise list of documents, then reviews, organises and
+        checks each one as it comes in.
       </StepCard>
-      <StepCard number="03" title="Review and formatting" duration="A few days">
-        Every document is reviewed, organised and brought in line with expected
-        requirements before submission.
+      <StepCard number="03" title="Your approval" duration="1 to 2 days">
+        We show you the complete file. You review it and give us your go-ahead to submit
+        it.
       </StepCard>
-      <StepCard number="04" title="Filing the application" duration="Depending on your filing location">
-        We support you in booking an appointment or completing the online process,
-        according to the procedure in force in your jurisdiction.
+      <StepCard number="04" title="Filed by us" duration="As soon as you approve">
+        We submit the application on the official e-Visa portal and pay the official visa
+        fees. You're notified as soon as it's done.
       </StepCard>
-      <StepCard number="05" title="Follow-up to the decision" duration="Depending on consular timelines">
-        Your advisor remains your single point of contact until the decision is notified,
-        and answers your questions while you wait.
+      <StepCard number="05" title="Follow-up until the decision" duration="Depending on the embassy's timelines">
+        We follow the application, answer requests for additional documents and keep you
+        informed until the Thai authorities' decision.
       </StepCard>
     </div>
   </section>
@@ -247,11 +272,11 @@ const structuredData = {
         Yes, you remain free to do so at any time. The terms of any cancellation during the
         process are specified before payment, so you can commit with full knowledge.
       </FaqItem>
-      <FaqItem question="Does the advisor communicate directly with the Thai administration if needed?">
-        Your advisor supports you in preparing your file and booking appointments, but
-        filing and communicating with the administration usually has to be done by the
-        applicant themselves, depending on current procedures. We guide you at every step
-        to keep it simple.
+      <FaqItem question="Who files the application and deals with the embassy?">
+        We do. We submit your application on the official e-Visa portal and answer the embassy's
+        requests made through that portal, such as additional documents. The only thing we can't
+        do for you is appear in person if the embassy asks to see you. In that case, we prepare
+        you for the appointment.
       </FaqItem>
     </div>
   </section>

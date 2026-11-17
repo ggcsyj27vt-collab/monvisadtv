@@ -18,10 +18,10 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'Puis-je déposer ma demande moi-même après le diagnostic ?',
+      name: "Puis-je déposer ma demande moi-même ?",
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Oui. Le diagnostic d'éligibilité initial peut être réalisé indépendamment de la formule complète. Nous vous l'indiquons clairement avant tout engagement.",
+        text: "Oui. Si vous préférez déposer vous-même, la vérification du dossier à 99 € est faite pour vous : nous contrôlons vos pièces avant que vous les envoyiez. Avec la formule complète à 699 €, c'est nous qui déposons la demande.",
       },
     },
     {
@@ -42,10 +42,10 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'Puis-je faire cette démarche depuis la France, avant mon départ ?',
+      name: "Puis-je faire cette démarche depuis la France, avant mon départ ?",
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Oui. La majorité de la préparation du dossier — diagnostic, réunion des justificatifs, vérification — peut se faire à distance, où que vous soyez. Seules certaines étapes de dépôt dépendent de votre lieu de résidence au moment de la demande.",
+        text: "Oui. Tout se fait à distance : la préparation du dossier, puis le dépôt en ligne que nous effectuons pour vous. La seule condition est d'être hors de Thaïlande au moment du dépôt.",
       },
     },
     {
@@ -127,11 +127,11 @@ const faqSchema = {
       <div class="relative flex flex-col rounded-lg border border-sable-light bg-white p-8">
         <p class="font-mono text-xs uppercase tracking-wide text-sable">Nous nous occupons de tout</p>
         <h3 class="mt-2 font-display text-2xl text-indigo">Formule complète</h3>
-        <p class="mt-3"><span class="font-sans text-lg text-sable line-through">1 000 €</span> <span class="font-display text-4xl text-indigo">699 €</span></p>
+        <p class="mt-3"><span class="font-display text-4xl text-indigo">699 €</span></p>
         <ul class="mt-6 flex-1 space-y-3 font-sans text-sm leading-relaxed text-encre/80">
-          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Diagnostic d'éligibilité détaillé</span></li>
-          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Constitution complète du dossier</span></li>
-          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Dépôt de la demande et suivi jusqu'à la décision</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Préparation complète du dossier</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Dépôt du dossier par nos soins</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Suivi jusqu'à la décision</span></li>
           <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Frais officiels du visa inclus</span></li>
         </ul>
         <a href="/visa-dtv/demande-accompagnee/" class="btn-secondary mt-8 w-full">Voir la formule complète</a>
@@ -182,11 +182,11 @@ const faqSchema = {
 
     <ol class="mt-12 grid gap-8 md:grid-cols-5">
       {[
-        ['01', 'Diagnostic'],
-        ['02', 'Constitution du dossier'],
-        ['03', 'Vérification'],
-        ['04', 'Dépôt de la demande'],
-        ['05', 'Suivi jusqu\u2019à décision'],
+        ['01', "Diagnostic"],
+        ['02', "Préparation du dossier"],
+        ['03', "Validation par vous"],
+        ['04', "Dépôt par nos soins"],
+        ['05', "Suivi jusqu’à décision"],
       ].map(([n, label]) => (
         <li>
           <span class="font-display text-2xl text-or-dark">{n}</span>
@@ -210,9 +210,10 @@ const faqSchema = {
         est de maximiser la qualité et la conformité de votre dossier, pas de garantir une
         décision qui ne nous appartient pas.
       </FaqItem>
-      <FaqItem question="Puis-je déposer ma demande moi-même après le diagnostic ?">
-        Oui. Le diagnostic d'éligibilité initial peut être réalisé indépendamment de la formule
-        complète. Nous vous l'indiquons clairement avant tout engagement.
+      <FaqItem question="Puis-je déposer ma demande moi-même ?">
+        Oui. Si vous préférez déposer vous-même, la vérification du dossier à 99 € est faite
+        pour vous : nous contrôlons vos pièces avant que vous les envoyiez. Avec la formule
+        complète à 699 €, c'est nous qui déposons la demande.
       </FaqItem>
       <FaqItem question="Combien de temps dure l'accompagnement ?">
         Cela dépend de la disponibilité de vos justificatifs et des délais consulaires, qui
@@ -226,9 +227,9 @@ const faqSchema = {
         concerne, avant tout engagement.
       </FaqItem>
       <FaqItem question="Puis-je faire cette démarche depuis la France, avant mon départ ?">
-        Oui. La majorité de la préparation du dossier — diagnostic, réunion des justificatifs,
-        vérification — peut se faire à distance, où que vous soyez. Seules certaines étapes de
-        dépôt dépendent de votre lieu de résidence au moment de la demande.
+        Oui. Tout se fait à distance : la préparation du dossier, puis le dépôt en ligne que
+        nous effectuons pour vous. La seule condition est d'être hors de Thaïlande au moment du
+        dépôt.
       </FaqItem>
       <FaqItem question="Que se passe-t-il si ma situation professionnelle change en cours de dossier ?">
         Nous adaptons le dossier à votre situation réelle au moment du dépôt. Si un changement

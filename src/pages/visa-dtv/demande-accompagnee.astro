@@ -80,10 +80,10 @@ const structuredData = {
         },
         {
           '@type': 'Question',
-          name: 'Le conseiller communique-t-il directement avec l\'administration thaïlandaise si besoin ?',
+          name: "Qui dépose la demande et échange avec l'ambassade ?",
           acceptedAnswer: {
             '@type': 'Answer',
-            text: "Votre conseiller vous accompagne dans la préparation et la prise de rendez-vous, mais le dépôt et les échanges avec l'administration restent, selon les procédures en vigueur, généralement à réaliser par le demandeur lui-même. Nous vous guidons à chaque étape pour que cela reste simple.",
+            text: "C'est nous. Nous déposons votre demande sur le portail officiel e-Visa et nous répondons aux demandes de l'ambassade qui passent par ce portail, comme les pièces complémentaires. La seule chose que nous ne pouvons pas faire à votre place : vous présenter en personne si l'ambassade vous convoque. Dans ce cas, nous vous préparons au rendez-vous.",
           },
         },
       ],
@@ -94,7 +94,7 @@ const structuredData = {
 
 <BaseLayout
   title="Demande de visa DTV accompagnée — 699 €"
-  description="La formule complète MyVisaDTV : diagnostic, constitution du dossier, vérification et suivi jusqu'à la décision, frais officiels du visa inclus. 699 € au lieu de 1 000 €."
+  description="Formule complète MyVisaDTV à 699 € : préparation complète du dossier, dépôt de la demande par nos soins et suivi jusqu'à la décision. Frais officiels du visa inclus."
   structuredData={structuredData}
   lang="fr"
   translated
@@ -109,18 +109,17 @@ const structuredData = {
             Demande de visa DTV, accompagnée de bout en bout
           </h1>
           <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
-            Un conseiller unique prend en charge votre dossier depuis le diagnostic
-            d'éligibilité jusqu'à la décision des autorités thaïlandaises. Vous ne gérez plus la
-            procédure seul, mais vous restez décisionnaire à chaque étape.
+            Nous préparons votre dossier complet, nous le déposons pour vous, puis nous le suivons
+            jusqu'à la décision des autorités thaïlandaises. De votre côté, vous nous transmettez
+            vos documents et vous validez le dossier avant le dépôt.
           </p>
           <div class="mt-8">
-            <DerniereMiseAJour date="2026-09-15" />
+            <DerniereMiseAJour date="2026-11-17" />
           </div>
         </div>
 
         <div class="rounded-lg border border-sable-light bg-white p-8">
           <p class="font-mono text-xs uppercase tracking-wide text-sable">Offre actuelle</p>
-          <p class="mt-2 font-sans text-lg text-sable line-through">1 000 €</p>
           <p class="-mt-1 font-display text-5xl text-indigo">699 €</p>
           <p class="mt-2 font-sans text-sm text-encre/70">Frais officiels du visa inclus, dans la limite du tarif applicable au moment du dépôt.</p>
           <a href="/fiche-renseignement/" class="btn-primary mt-6 w-full">Démarrer ma demande</a>
@@ -144,21 +143,47 @@ const structuredData = {
   <!-- Ce qui est inclus -->
   <section class="section">
     <p class="eyebrow mb-3">Contenu de la formule</p>
-    <h2 class="max-w-xl font-display text-3xl text-indigo">Ce qui est inclus dans les 699 €</h2>
+    <h2 class="max-w-xl font-display text-3xl text-indigo">Ce que nous faisons pour vous, en 3 étapes</h2>
 
-    <div class="mt-10 grid gap-12 md:grid-cols-2">
-      <ul class="space-y-5">
-        <CheckItem variant="gold">Diagnostic d'éligibilité détaillé sur votre situation (statut professionnel, revenus, situation familiale)</CheckItem>
-        <CheckItem variant="gold">Liste personnalisée des pièces justificatives à réunir</CheckItem>
-        <CheckItem variant="gold">Relecture et mise en conformité de chaque document</CheckItem>
-        <CheckItem variant="gold">Constitution complète du dossier de demande</CheckItem>
-        <CheckItem variant="gold">Frais officiels du visa DTV inclus, dans la limite du tarif applicable à votre demande</CheckItem>
-      </ul>
-      <ul class="space-y-5">
-        <CheckItem variant="gold">Accompagnement à la prise de rendez-vous consulaire ou à la démarche en ligne</CheckItem>
-        <CheckItem variant="gold">Un conseiller dédié, joignable par email pendant toute la procédure</CheckItem>
-        <CheckItem variant="gold">Suivi du dossier jusqu'à la notification de décision</CheckItem>
-        <CheckItem variant="gold">Une session de préparation avant le dépôt ou l'entretien si nécessaire</CheckItem>
+    <div class="mt-10 grid gap-10 md:grid-cols-3">
+      <div>
+        <p class="font-display text-2xl text-or-dark">01</p>
+        <h3 class="mt-2 font-display text-xl text-indigo">Préparation complète du dossier</h3>
+        <ul class="mt-5 space-y-4">
+          <CheckItem variant="gold">Diagnostic d'éligibilité détaillé (statut professionnel, revenus, situation familiale)</CheckItem>
+          <CheckItem variant="gold">Liste personnalisée des pièces à réunir</CheckItem>
+          <CheckItem variant="gold">Relecture et mise en conformité de chaque document</CheckItem>
+          <CheckItem variant="gold">Constitution du dossier complet, prêt à être déposé</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <p class="font-display text-2xl text-or-dark">02</p>
+        <h3 class="mt-2 font-display text-xl text-indigo">Dépôt du dossier</h3>
+        <ul class="mt-5 space-y-4">
+          <CheckItem variant="gold">Dépôt de votre demande par nos soins sur le portail officiel e-Visa thaïlandais</CheckItem>
+          <CheckItem variant="gold">Paiement des frais officiels du visa, inclus dans les 699 €</CheckItem>
+          <CheckItem variant="gold">Vous êtes informé dès que la demande est déposée</CheckItem>
+        </ul>
+      </div>
+      <div>
+        <p class="font-display text-2xl text-or-dark">03</p>
+        <h3 class="mt-2 font-display text-xl text-indigo">Suivi jusqu'à la décision</h3>
+        <ul class="mt-5 space-y-4">
+          <CheckItem variant="gold">Suivi de la demande jusqu'à la notification de la décision</CheckItem>
+          <CheckItem variant="gold">Réponse aux demandes de pièces complémentaires de l'ambassade</CheckItem>
+          <CheckItem variant="gold">Un conseiller dédié, joignable par e-mail pendant toute la procédure</CheckItem>
+          <CheckItem variant="gold">Préparation à l'entretien, si l'ambassade en demande un</CheckItem>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 rounded-lg border border-sable-light bg-white p-8">
+      <h3 class="font-display text-xl text-indigo">Ce que vous faites de votre côté</h3>
+      <ul class="mt-4 space-y-2 font-sans text-sm leading-relaxed text-encre/80">
+        <li>— Réunir les documents demandés et nous les transmettre dans votre espace sécurisé.</li>
+        <li>— Relire le dossier complet et nous donner votre accord avant le dépôt.</li>
+        <li>— Être hors de Thaïlande au moment du dépôt, comme l'exige la procédure.</li>
+        <li>— Vous présenter à l'ambassade uniquement si elle vous convoque en personne.</li>
       </ul>
     </div>
   </section>
@@ -197,21 +222,21 @@ const structuredData = {
         Vous répondez à la fiche de renseignement. Nous l'analysons et revenons vers vous avec
         un premier avis motivé sur votre situation, avant tout paiement.
       </StepCard>
-      <StepCard number="02" title="Constitution du dossier" duration="1 à 3 semaines">
-        Votre conseiller vous transmet la liste précise des pièces à réunir et vous guide
-        document par document, au fur et à mesure de leur disponibilité.
+      <StepCard number="02" title="Préparation du dossier" duration="1 à 3 semaines">
+        Votre conseiller vous envoie la liste précise des pièces, puis relit, ordonne et met en
+        conformité chaque document au fur et à mesure.
       </StepCard>
-      <StepCard number="03" title="Vérification et mise en forme" duration="Quelques jours">
-        Chaque pièce est relue, ordonnée et mise en conformité avec les exigences attendues
-        avant la soumission.
+      <StepCard number="03" title="Validation par vous" duration="1 à 2 jours">
+        Nous vous présentons le dossier complet. Vous le relisez et vous nous donnez votre
+        accord pour le dépôt.
       </StepCard>
-      <StepCard number="04" title="Dépôt de la demande" duration="Selon votre lieu de dépôt">
-        Nous vous accompagnons dans la prise de rendez-vous ou la démarche en ligne, selon la
-        procédure en vigueur dans votre juridiction.
+      <StepCard number="04" title="Dépôt par nos soins" duration="Dès votre accord">
+        Nous déposons la demande sur le portail officiel e-Visa et réglons les frais officiels
+        du visa. Vous êtes informé dès que c'est fait.
       </StepCard>
-      <StepCard number="05" title="Suivi jusqu'à la décision" duration="Selon délais consulaires">
-        Votre conseiller reste votre point de contact unique jusqu'à la notification de la
-        décision, et répond à vos questions pendant l'attente.
+      <StepCard number="05" title="Suivi jusqu'à la décision" duration="Selon les délais de l'ambassade">
+        Nous suivons la demande, répondons aux demandes de pièces complémentaires et vous
+        tenons informé jusqu'à la décision des autorités thaïlandaises.
       </StepCard>
     </div>
   </section>
@@ -252,11 +277,12 @@ const structuredData = {
         cours de procédure vous sont précisées avant le paiement, pour que vous vous engagiez en
         toute connaissance de cause.
       </FaqItem>
-      <FaqItem question="Le conseiller communique-t-il directement avec l'administration thaïlandaise si besoin ?">
-        Votre conseiller vous accompagne dans la préparation et la prise de rendez-vous, mais le
-        dépôt et les échanges avec l'administration restent, selon les procédures en vigueur,
-        généralement à réaliser par le demandeur lui-même. Nous vous guidons à chaque étape pour
-        que cela reste simple.
+      <FaqItem question="Qui dépose la demande et échange avec l'ambassade ?">
+        C'est nous. Nous déposons votre demande sur le portail officiel e-Visa et nous répondons
+        aux demandes de l'ambassade qui passent par ce portail, comme les pièces
+        complémentaires. La seule chose que nous ne pouvons pas faire à votre place : vous
+        présenter en personne si l'ambassade vous convoque. Dans ce cas, nous vous préparons au
+        rendez-vous.
       </FaqItem>
     </div>
   </section>

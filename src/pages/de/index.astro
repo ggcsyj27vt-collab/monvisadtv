@@ -18,10 +18,10 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'Kann ich meinen Antrag nach der Diagnose selbst einreichen?',
+      name: "Kann ich meinen Antrag selbst einreichen?",
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Ja. Die anfängliche Eignungsprüfung kann unabhängig vom Komplettpaket durchgeführt werden. Wir weisen Sie vor jeder Verpflichtung klar darauf hin.',
+        text: "Ja. Wenn Sie lieber selbst einreichen, ist unsere Prüfung für 99 € genau das Richtige: Wir prüfen Ihre Unterlagen, bevor Sie sie absenden. Mit dem Komplettpaket für 699 € reichen wir den Antrag für Sie ein.",
       },
     },
     {
@@ -42,10 +42,10 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'Kann ich diesen Prozess schon vor meiner Abreise beginnen?',
+      name: "Kann ich diesen Prozess schon vor meiner Abreise beginnen?",
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Ja. Der größte Teil der Vorbereitung — Diagnose, Zusammenstellung der Unterlagen, Prüfung — kann aus der Ferne erfolgen, egal wo Sie sich befinden. Nur bestimmte Schritte der Einreichung hängen von Ihrem Wohnort zum Zeitpunkt des Antrags ab.',
+        text: "Ja. Alles läuft aus der Ferne: die Vorbereitung der Unterlagen und anschließend die Online-Einreichung, die wir für Sie übernehmen. Einzige Bedingung: Sie müssen sich bei der Einreichung außerhalb Thailands aufhalten.",
       },
     },
     {
@@ -127,11 +127,11 @@ const faqSchema = {
       <div class="relative flex flex-col rounded-lg border border-sable-light bg-white p-8">
         <p class="font-mono text-xs uppercase tracking-wide text-sable">Wir kümmern uns um alles</p>
         <h3 class="mt-2 font-display text-2xl text-indigo">Komplettpaket</h3>
-        <p class="mt-3"><span class="font-sans text-lg text-sable line-through">1.000 €</span> <span class="font-display text-4xl text-indigo">699 €</span></p>
+        <p class="mt-3"><span class="font-display text-4xl text-indigo">699 €</span></p>
         <ul class="mt-6 flex-1 space-y-3 font-sans text-sm leading-relaxed text-encre/80">
-          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Ausführliche Eignungsprüfung</span></li>
-          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Vollständige Zusammenstellung der Unterlagen</span></li>
-          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Einreichung und Begleitung bis zur Entscheidung</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Vollständige Vorbereitung der Unterlagen</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Einreichung durch uns</span></li>
+          <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Begleitung bis zur Entscheidung</span></li>
           <li class="flex gap-3"><span class="mt-0.5 text-or-dark" aria-hidden="true">✓</span><span>Offizielle Visumgebühren inbegriffen</span></li>
         </ul>
         <a href="/de/visa-dtv/demande-accompagnee/" class="btn-secondary mt-8 w-full">Zum Komplettpaket</a>
@@ -183,11 +183,11 @@ const faqSchema = {
 
     <ol class="mt-12 grid gap-8 md:grid-cols-5">
       {[
-        ['01', 'Eignungsprüfung'],
-        ['02', 'Zusammenstellung der Unterlagen'],
-        ['03', 'Prüfung'],
-        ['04', 'Einreichung des Antrags'],
-        ['05', 'Begleitung bis zur Entscheidung'],
+        ['01', "Eignungsprüfung"],
+        ['02', "Vorbereitung der Unterlagen"],
+        ['03', "Ihre Freigabe"],
+        ['04', "Einreichung durch uns"],
+        ['05', "Begleitung bis zur Entscheidung"],
       ].map(([n, label]) => (
         <li>
           <span class="font-display text-2xl text-or-dark">{n}</span>
@@ -212,9 +212,10 @@ const faqSchema = {
         zu maximieren, nicht eine Entscheidung zu garantieren, die nicht in unserer Hand
         liegt.
       </FaqItem>
-      <FaqItem question="Kann ich meinen Antrag nach der Diagnose selbst einreichen?">
-        Ja. Die anfängliche Eignungsprüfung kann unabhängig vom Komplettpaket durchgeführt
-        werden. Wir weisen Sie vor jeder Verpflichtung klar darauf hin.
+      <FaqItem question="Kann ich meinen Antrag selbst einreichen?">
+        Ja. Wenn Sie lieber selbst einreichen, ist unsere Prüfung für 99 € genau das Richtige:
+        Wir prüfen Ihre Unterlagen, bevor Sie sie absenden. Mit dem Komplettpaket für 699 €
+        reichen wir den Antrag für Sie ein.
       </FaqItem>
       <FaqItem question="Wie lange dauert die Begleitung?">
         Das hängt von der Verfügbarkeit Ihrer Unterlagen und den konsularischen
@@ -229,9 +230,9 @@ const faqSchema = {
         Verpflichtung.
       </FaqItem>
       <FaqItem question="Kann ich diesen Prozess schon vor meiner Abreise beginnen?">
-        Ja. Der größte Teil der Vorbereitung — Diagnose, Zusammenstellung der Unterlagen,
-        Prüfung — kann aus der Ferne erfolgen, egal wo Sie sich befinden. Nur bestimmte
-        Schritte der Einreichung hängen von Ihrem Wohnort zum Zeitpunkt des Antrags ab.
+        Ja. Alles läuft aus der Ferne: die Vorbereitung der Unterlagen und anschließend die
+        Online-Einreichung, die wir für Sie übernehmen. Einzige Bedingung: Sie müssen sich bei
+        der Einreichung außerhalb Thailands aufhalten.
       </FaqItem>
       <FaqItem question="Was passiert, wenn sich meine berufliche Situation während des Verfahrens ändert?">
         Wir passen die Unterlagen an Ihre tatsächliche Situation zum Zeitpunkt der
