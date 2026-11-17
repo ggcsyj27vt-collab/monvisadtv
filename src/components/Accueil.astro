@@ -1,0 +1,565 @@
+---
+// Page d'accueil (FR/EN/DE), pensée pour la conversion :
+// promesse claire + test d'éligibilité + 2 formules + confiance + FAQ objections + appel.
+// Les données réglementaires sont datées (RULES_DATE) : à revérifier à chaque évolution du DTV.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CheckItem from './CheckItem.astro';
+import FaqItem from './FaqItem.astro';
+import CalInline from './CalInline.astro';
+import { localePath, type Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+
+const RULES_DATE = '2026-11-17';
+const rulesDate = new Date(RULES_DATE).toLocaleDateString({ fr: 'fr-FR', en: 'en-GB', de: 'de-DE' }[lang], {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+const L = (p: string) => localePath(lang, p);
+
+const c = {
+  fr: {
+    title: 'Visa DTV Thaïlande : préparé et déposé pour vous',
+    description:
+      "MyVisaDTV prépare votre dossier de visa DTV, le dépose pour vous et le suit jusqu'à la décision. Test d'éligibilité gratuit, premier avis sous 48 h, en français ou en anglais.",
+    eyebrow: 'Destination Thailand Visa (DTV)',
+    h1: 'Votre visa DTV, préparé et déposé pour vous.',
+    sub: "Jusqu'à 5 ans en Thaïlande pour télétravailler, travailler en freelance ou pratiquer une activité Soft Power. Nous préparons votre dossier, le déposons et le suivons jusqu'à la décision.",
+    cta1: 'Suis-je éligible ? (2 min)',
+    cta2: 'Parler à Alexandre (10 min, gratuit)',
+    chips: ['Premier avis gratuit sous 48 h ouvrées', 'Frais officiels du visa inclus (formule complète)', 'En français ou en anglais'],
+    legal: "Cabinet indépendant, pas un organisme gouvernemental. Aucun visa n'est garanti : la décision appartient aux autorités thaïlandaises.",
+    photoAlt: 'Alexandre, fondateur de MyVisaDTV',
+    photoName: 'Alexandre, fondateur',
+    photoText: "Installé en Thaïlande, c'est lui qui vous répond lors de l'appel découverte.",
+
+    quizEyebrow: "Test d'éligibilité",
+    quizTitle: 'Le DTV est-il fait pour vous ? Réponse en 3 questions.',
+    quizIntro: 'Gratuit, anonyme et immédiat. Aucune donnée personnelle demandée.',
+    q1: 'Quelle est votre situation ?',
+    q1o: [
+      ['remote', 'Salarié en télétravail pour une entreprise hors de Thaïlande'],
+      ['freelance', 'Freelance ou indépendant avec des clients hors de Thaïlande'],
+      ['softpower', 'Activité Soft Power (Muay Thai, cuisine thaïe, cours, soins médicaux…)'],
+      ['family', "Conjoint ou enfant d'un demandeur ou titulaire du DTV"],
+      ['other', 'Autre situation'],
+    ],
+    q2: "Disposez-vous d'au moins 500 000 THB d'épargne (ou l'équivalent dans votre devise), conservés depuis environ 3 mois ?",
+    q2o: [['yes', 'Oui'], ['no', 'Non'], ['unsure', 'Je ne suis pas sûr']],
+    q3: "D'où ferez-vous votre demande ?",
+    q3o: [['outside', 'De l’extérieur de la Thaïlande'], ['inside', 'Je suis actuellement en Thaïlande']],
+    submit: 'Voir mon résultat',
+    missing: 'Merci de répondre aux 3 questions.',
+    cats: { remote: 'Workcation (télétravail)', freelance: 'Workcation (freelance)', softpower: 'Soft Power', family: 'Membre de la famille (personne à charge)' },
+    res: {
+      ok: ['Votre profil semble compatible avec le DTV', 'Catégorie probable :', 'Prochaine étape : un premier avis gratuit sur votre dossier, sous 48 h ouvrées.', 'Recevoir mon avis gratuit'],
+      savings: ["Le critère financier est le point à vérifier", "Le DTV demande au moins 500 000 THB d'épargne, conservés quelques mois. C'est le motif de refus le plus fréquent : parlons-en avant de vous lancer.", 'Réserver un appel gratuit'],
+      inside: ['La demande se fait hors de Thaïlande', "Le DTV se demande en ligne pendant que vous êtes à l'extérieur du pays, par exemple depuis un pays voisin. Organisons le bon calendrier ensemble.", 'Réserver un appel gratuit'],
+      unsure: ['Votre cas mérite un regard attentif', "Certaines situations sont éligibles avec les bons justificatifs. Décrivez-nous votre projet : premier avis gratuit sous 48 h ouvrées.", 'Recevoir mon avis gratuit'],
+    },
+    quizNote: `Résultat indicatif, basé sur les règles connues au ${rulesDate}. Il ne remplace pas l'examen de votre dossier ni la décision des autorités thaïlandaises.`,
+
+    howEyebrow: 'Comment ça marche',
+    howTitle: "De la première question à la décision, en 4 étapes.",
+    how: [
+      ['Gratuit', 'Test, premier avis et appel', "Vous faites le test, recevez un premier avis sous 48 h ouvrées et posez vos questions lors d'un appel de 10 minutes."],
+      ['Paiement unique', 'Vous choisissez votre formule', 'Vérification à 99 € ou formule complète à 699 €, réglée en une fois par carte avant le début du travail.'],
+      ['Préparation et dépôt', 'Nous préparons votre dossier', "Liste des pièces, relecture, mise en conformité. Avec la formule complète, c'est nous qui déposons la demande."],
+      ['Suivi', "Jusqu'à la décision", "Nous suivons la demande, répondons aux demandes de l'ambassade et vous tenons informé jusqu'au résultat."],
+    ],
+
+    offersEyebrow: 'Nos formules',
+    offersTitle: 'Deux formules, un prix clair, payé une seule fois.',
+    check: {
+      tag: 'Vous déposez vous-même',
+      name: 'Vérification du dossier',
+      price: '99 €',
+      items: ['Contrôle de toutes vos pièces selon votre profil', 'Cohérence entre vos documents (noms, dates, montants)', 'Rapport écrit sous 48 h ouvrées', '99 € déduits si vous passez ensuite à la formule complète'],
+      excl: 'Frais officiels du visa à régler par vous lors du dépôt.',
+      cta: 'Découvrir la vérification',
+    },
+    full: {
+      badge: 'La plus complète',
+      tag: 'Nous nous occupons de tout',
+      name: 'Formule complète',
+      price: '699 €',
+      value: "dont 10 000 THB de frais officiels du visa (environ 350 € à l'ambassade de Paris)",
+      items: ['Préparation complète du dossier', 'Dépôt de la demande par nos soins', "Suivi jusqu'à la décision", 'Un conseiller dédié pendant toute la procédure'],
+      excl: 'Traductions assermentées et légalisations éventuelles à votre charge.',
+      cta: 'Voir la formule complète',
+    },
+
+    trustEyebrow: 'Pourquoi nous faire confiance',
+    trustTitle: 'Un vrai interlocuteur, des règles du jeu écrites noir sur blanc.',
+    trust: [
+      ['Une personne, pas une plateforme', "Alexandre vit en Thaïlande et parcourt le pays depuis plus de dix ans. Vous savez à qui vous parlez."],
+      ['Des prix transparents', "Ce qui est inclus, ce qui ne l'est pas, qui dépose le dossier : tout est écrit avant de payer."],
+      ['Vos documents protégés', "Paiement sécurisé par Stripe. Vos pièces passent par un espace sécurisé, jamais en pièce jointe d'e-mail."],
+      ['Aucune promesse intenable', "Nous ne garantissons pas le visa : personne ne le peut. Nous garantissons un dossier préparé avec rigueur."],
+    ],
+    about: 'Découvrir le parcours d’Alexandre',
+
+    faqEyebrow: 'Questions fréquentes',
+    faqTitle: 'Les réponses avant de vous engager',
+    faqs: [
+      ['Mon visa est-il garanti ?', "Non. La décision appartient exclusivement aux autorités thaïlandaises. Notre rôle est de vous présenter un dossier complet et conforme, ce qui réduit les risques de refus évitables."],
+      ['Qui dépose la demande ?', "Avec la formule complète à 699 €, c'est nous : nous déposons votre demande sur le portail officiel e-Visa. Avec la vérification à 99 €, vous déposez vous-même après notre contrôle."],
+      ['Quand dois-je payer ?', "Le test, le premier avis et l'appel découverte sont gratuits. Si vous choisissez une formule, vous la réglez en une seule fois, par carte, avant que nous commencions à travailler sur votre dossier."],
+      ['Les frais officiels du visa sont-ils inclus ?', "Oui dans la formule complète (10 000 THB, environ 350 € à l'ambassade de Paris, selon le tarif applicable au moment du dépôt). Non dans la vérification à 99 € : vous les réglez lors de votre dépôt."],
+      ['Je suis déjà en Thaïlande, est-ce possible ?', "La demande doit être déposée pendant que vous êtes hors de Thaïlande. Vous pouvez préparer le dossier avec nous dès maintenant et le déposer lors d'un séjour hors du pays."],
+      ['Que se passe-t-il si ma demande est refusée ?', "Nous analysons avec vous les motifs de la décision et les options possibles. Les conditions d'un éventuel nouvel accompagnement vous sont communiquées clairement, au cas par cas."],
+      ['Comment mes documents sont-ils protégés ?', "Vous les transmettez dans un espace sécurisé, jamais par e-mail. Ils servent uniquement à votre demande, conformément à notre politique de confidentialité (RGPD)."],
+    ],
+
+    finalTitle: 'Commencez par le gratuit : 2 minutes suffisent.',
+    finalText: 'Faites le test, ou posez directement votre question à Alexandre sur WhatsApp.',
+    finalCta1: 'Faire le test',
+    finalCta2: 'Écrire sur WhatsApp',
+    wa: "Bonjour, j'ai une question sur le visa DTV.",
+  },
+  en: {
+    title: 'Thailand DTV visa: prepared and filed for you',
+    description:
+      'MyVisaDTV prepares your DTV visa file, submits it for you and follows it until the decision. Free eligibility test, first assessment within 48 hours, in English or French.',
+    eyebrow: 'Destination Thailand Visa (DTV)',
+    h1: 'Your DTV visa, prepared and filed for you.',
+    sub: 'Up to 5 years in Thailand to work remotely, freelance or take part in a Soft Power activity. We prepare your file, submit it and follow it through to the decision.',
+    cta1: 'Am I eligible? (2 min)',
+    cta2: 'Talk to Alexandre (10 min, free)',
+    chips: ['Free first assessment within 48 business hours', 'Official visa fee included (full package)', 'In English or French'],
+    legal: 'Independent consultancy, not a government body. No visa is guaranteed: the decision belongs to the Thai authorities.',
+    photoAlt: 'Alexandre, founder of MyVisaDTV',
+    photoName: 'Alexandre, founder',
+    photoText: "Based in Thailand, he's the one you talk to on the discovery call.",
+
+    quizEyebrow: 'Eligibility test',
+    quizTitle: 'Is the DTV right for you? Find out in 3 questions.',
+    quizIntro: 'Free, anonymous and instant. No personal details needed.',
+    q1: "What's your situation?",
+    q1o: [
+      ['remote', 'Remote employee working for a company outside Thailand'],
+      ['freelance', 'Freelancer or self-employed with clients outside Thailand'],
+      ['softpower', 'Soft Power activity (Muay Thai, Thai cooking, courses, medical care…)'],
+      ['family', 'Spouse or child of a DTV applicant or holder'],
+      ['other', 'Something else'],
+    ],
+    q2: 'Do you have at least 500,000 THB in savings (or the equivalent in your currency), held for about 3 months?',
+    q2o: [['yes', 'Yes'], ['no', 'No'], ['unsure', "I'm not sure"]],
+    q3: 'Where will you apply from?',
+    q3o: [['outside', 'From outside Thailand'], ['inside', "I'm currently in Thailand"]],
+    submit: 'See my result',
+    missing: 'Please answer all 3 questions.',
+    cats: { remote: 'Workcation (remote work)', freelance: 'Workcation (freelance)', softpower: 'Soft Power', family: 'Family member (dependant)' },
+    res: {
+      ok: ['Your profile looks compatible with the DTV', 'Likely category:', 'Next step: a free first assessment of your file, within 48 business hours.', 'Get my free assessment'],
+      savings: ['The financial requirement is the point to check', "The DTV requires at least 500,000 THB in savings, held for a few months. It's the most common reason for refusal, so let's talk before you go further.", 'Book a free call'],
+      inside: ['You apply from outside Thailand', "The DTV is applied for online while you're outside the country, for example from a neighbouring country. Let's plan the right timing together.", 'Book a free call'],
+      unsure: ['Your case deserves a closer look', 'Some situations qualify with the right documents. Tell us about your plans: free first assessment within 48 business hours.', 'Get my free assessment'],
+    },
+    quizNote: `Indicative result, based on the rules known as of ${rulesDate}. It doesn't replace a review of your file or the Thai authorities' decision.`,
+
+    howEyebrow: 'How it works',
+    howTitle: 'From your first question to the decision, in 4 steps.',
+    how: [
+      ['Free', 'Test, first assessment and call', 'Take the test, get a first assessment within 48 business hours and ask your questions on a 10-minute call.'],
+      ['One payment', 'You choose your package', '€99 document check or €699 full package, paid once by card before any work starts.'],
+      ['Preparation and filing', 'We prepare your file', 'Document list, review, compliance checks. With the full package, we file the application for you.'],
+      ['Follow-up', 'Until the decision', "We follow the application, answer the embassy's requests and keep you informed until the outcome."],
+    ],
+
+    offersEyebrow: 'Our packages',
+    offersTitle: 'Two packages, one clear price, paid once.',
+    check: {
+      tag: 'You file it yourself',
+      name: 'Document check',
+      price: '€99',
+      items: ['Review of all your documents for your profile', 'Consistency across documents (names, dates, amounts)', 'Written report within 48 business hours', '€99 deducted if you then switch to the full package'],
+      excl: 'You pay the official visa fee when you file.',
+      cta: 'See the document check',
+    },
+    full: {
+      badge: 'Most complete',
+      tag: 'We take care of everything',
+      name: 'Full package',
+      price: '€699',
+      value: 'including the 10,000 THB official visa fee (about €350 at the Thai embassy in Paris)',
+      items: ['Complete file preparation', 'Application filed by us', 'Follow-up until the decision', 'A dedicated advisor throughout'],
+      excl: 'Any sworn translations or legalisation are at your expense.',
+      cta: 'See the full package',
+    },
+
+    trustEyebrow: 'Why trust us',
+    trustTitle: 'A real person to talk to, and the rules written down in black and white.',
+    trust: [
+      ['A person, not a platform', "Alexandre lives in Thailand and has been travelling the country for over ten years. You know who you're talking to."],
+      ['Transparent pricing', "What's included, what isn't, who files the application: it's all written down before you pay."],
+      ['Your documents protected', 'Secure payment by Stripe. Your documents go through a secure space, never as email attachments.'],
+      ['No promises we can’t keep', "We don't guarantee the visa: nobody can. We guarantee a carefully prepared file."],
+    ],
+    about: 'Read Alexandre’s story',
+
+    faqEyebrow: 'Frequently asked questions',
+    faqTitle: 'Answers before you commit',
+    faqs: [
+      ['Is my visa guaranteed?', 'No. The decision belongs solely to the Thai authorities. Our job is to give you a complete, compliant file, which reduces the risk of avoidable refusals.'],
+      ['Who files the application?', 'With the €699 full package, we do: we submit your application on the official e-Visa portal. With the €99 document check, you file it yourself after our review.'],
+      ['When do I pay?', 'The test, the first assessment and the discovery call are free. If you choose a package, you pay for it once, by card, before we start working on your file.'],
+      ['Is the official visa fee included?', "Yes in the full package (10,000 THB, about €350 at the Thai embassy in Paris, at the rate applicable when filing). No in the €99 document check: you pay it when you file."],
+      ["I'm already in Thailand. Is that a problem?", "The application must be filed while you're outside Thailand. You can prepare your file with us now and submit it during a trip abroad."],
+      ['What if my application is refused?', 'We go through the reasons for the decision and the possible options with you. The terms of any further support are explained clearly, case by case.'],
+      ['How are my documents protected?', 'You send them through a secure space, never by email. They are used only for your application, in line with our privacy policy (GDPR).'],
+    ],
+
+    finalTitle: 'Start with the free part: it takes 2 minutes.',
+    finalText: 'Take the test, or ask Alexandre your question directly on WhatsApp.',
+    finalCta1: 'Take the test',
+    finalCta2: 'Message us on WhatsApp',
+    wa: 'Hello, I have a question about the DTV visa.',
+  },
+  de: {
+    title: 'DTV-Visum Thailand: vorbereitet und für Sie eingereicht',
+    description:
+      'MyVisaDTV bereitet Ihre DTV-Unterlagen vor, reicht den Antrag für Sie ein und begleitet ihn bis zur Entscheidung. Kostenloser Eignungstest, Ersteinschätzung in 48 Stunden, auf Englisch oder Französisch.',
+    eyebrow: 'Destination Thailand Visa (DTV)',
+    h1: 'Ihr DTV-Visum, vorbereitet und für Sie eingereicht.',
+    sub: 'Bis zu 5 Jahre in Thailand für Remote-Arbeit, Freelancing oder eine Soft-Power-Aktivität. Wir bereiten Ihre Unterlagen vor, reichen den Antrag ein und begleiten ihn bis zur Entscheidung.',
+    cta1: 'Bin ich berechtigt? (2 Min.)',
+    cta2: 'Mit Alexandre sprechen (10 Min., kostenlos)',
+    chips: ['Kostenlose Ersteinschätzung in 48 Werktagsstunden', 'Offizielle Visumgebühr inklusive (Komplettpaket)', 'Auf Englisch oder Französisch'],
+    legal: 'Unabhängige Beratung, keine Behörde. Kein Visum ist garantiert: Die Entscheidung liegt bei den thailändischen Behörden.',
+    photoAlt: 'Alexandre, Gründer von MyVisaDTV',
+    photoName: 'Alexandre, Gründer',
+    photoText: 'Er lebt in Thailand und führt das Kennenlerngespräch persönlich.',
+
+    quizEyebrow: 'Eignungstest',
+    quizTitle: 'Passt das DTV zu Ihnen? Antwort in 3 Fragen.',
+    quizIntro: 'Kostenlos, anonym und sofort. Keine persönlichen Daten nötig.',
+    q1: 'Wie ist Ihre Situation?',
+    q1o: [
+      ['remote', 'Angestellt im Homeoffice für ein Unternehmen außerhalb Thailands'],
+      ['freelance', 'Freelancer oder selbstständig mit Kunden außerhalb Thailands'],
+      ['softpower', 'Soft-Power-Aktivität (Muay Thai, Thai-Küche, Kurse, medizinische Behandlung…)'],
+      ['family', 'Ehepartner oder Kind eines DTV-Antragstellers oder -Inhabers'],
+      ['other', 'Andere Situation'],
+    ],
+    q2: 'Verfügen Sie über mindestens 500.000 THB Ersparnisse (oder den Gegenwert in Ihrer Währung), seit etwa 3 Monaten?',
+    q2o: [['yes', 'Ja'], ['no', 'Nein'], ['unsure', 'Ich bin nicht sicher']],
+    q3: 'Von wo stellen Sie den Antrag?',
+    q3o: [['outside', 'Von außerhalb Thailands'], ['inside', 'Ich bin derzeit in Thailand']],
+    submit: 'Ergebnis anzeigen',
+    missing: 'Bitte beantworten Sie alle 3 Fragen.',
+    cats: { remote: 'Workcation (Remote-Arbeit)', freelance: 'Workcation (Freelance)', softpower: 'Soft Power', family: 'Familienangehörige (abhängige Person)' },
+    res: {
+      ok: ['Ihr Profil scheint zum DTV zu passen', 'Wahrscheinliche Kategorie:', 'Nächster Schritt: eine kostenlose Ersteinschätzung Ihrer Unterlagen in 48 Werktagsstunden.', 'Kostenlose Einschätzung erhalten'],
+      savings: ['Der finanzielle Nachweis ist der Knackpunkt', 'Das DTV verlangt mindestens 500.000 THB Ersparnisse, gehalten über einige Monate. Das ist der häufigste Ablehnungsgrund: Sprechen wir vorher darüber.', 'Kostenloses Gespräch buchen'],
+      inside: ['Der Antrag wird außerhalb Thailands gestellt', 'Das DTV wird online beantragt, während Sie sich außerhalb des Landes aufhalten, zum Beispiel in einem Nachbarland. Planen wir den richtigen Zeitpunkt gemeinsam.', 'Kostenloses Gespräch buchen'],
+      unsure: ['Ihr Fall verdient einen genaueren Blick', 'Manche Situationen sind mit den richtigen Nachweisen förderfähig. Erzählen Sie uns von Ihrem Vorhaben: kostenlose Ersteinschätzung in 48 Werktagsstunden.', 'Kostenlose Einschätzung erhalten'],
+    },
+    quizNote: `Unverbindliches Ergebnis auf Basis der bekannten Regeln vom ${rulesDate}. Es ersetzt weder die Prüfung Ihrer Unterlagen noch die Entscheidung der thailändischen Behörden.`,
+
+    howEyebrow: 'So funktioniert es',
+    howTitle: 'Von der ersten Frage bis zur Entscheidung, in 4 Schritten.',
+    how: [
+      ['Kostenlos', 'Test, Ersteinschätzung und Gespräch', 'Sie machen den Test, erhalten eine Ersteinschätzung in 48 Werktagsstunden und stellen Ihre Fragen in einem 10-minütigen Gespräch.'],
+      ['Einmalige Zahlung', 'Sie wählen Ihr Paket', 'Prüfung für 99 € oder Komplettpaket für 699 €, einmalig per Karte bezahlt, bevor die Arbeit beginnt.'],
+      ['Vorbereitung und Einreichung', 'Wir bereiten Ihre Unterlagen vor', 'Dokumentenliste, Prüfung, Aufbereitung. Mit dem Komplettpaket reichen wir den Antrag für Sie ein.'],
+      ['Begleitung', 'Bis zur Entscheidung', 'Wir verfolgen den Antrag, beantworten Anfragen der Botschaft und halten Sie bis zum Ergebnis auf dem Laufenden.'],
+    ],
+
+    offersEyebrow: 'Unsere Pakete',
+    offersTitle: 'Zwei Pakete, ein klarer Preis, einmal bezahlt.',
+    check: {
+      tag: 'Sie reichen selbst ein',
+      name: 'Prüfung der Unterlagen',
+      price: '99 €',
+      items: ['Prüfung aller Unterlagen passend zu Ihrem Profil', 'Stimmigkeit der Dokumente (Namen, Daten, Beträge)', 'Schriftlicher Bericht in 48 Werktagsstunden', '99 € werden beim Wechsel zum Komplettpaket angerechnet'],
+      excl: 'Die offizielle Visumgebühr zahlen Sie selbst bei der Einreichung.',
+      cta: 'Zur Prüfung',
+    },
+    full: {
+      badge: 'Am umfassendsten',
+      tag: 'Wir kümmern uns um alles',
+      name: 'Komplettpaket',
+      price: '699 €',
+      value: 'inklusive 10.000 THB offizieller Visumgebühr (etwa 350 € bei der Botschaft in Paris)',
+      items: ['Vollständige Vorbereitung der Unterlagen', 'Einreichung des Antrags durch uns', 'Begleitung bis zur Entscheidung', 'Ein persönlicher Berater während des gesamten Verfahrens'],
+      excl: 'Eventuelle beglaubigte Übersetzungen und Legalisierungen zahlen Sie selbst.',
+      cta: 'Zum Komplettpaket',
+    },
+
+    trustEyebrow: 'Warum Sie uns vertrauen können',
+    trustTitle: 'Ein echter Ansprechpartner und klare Regeln, schwarz auf weiß.',
+    trust: [
+      ['Ein Mensch, keine Plattform', 'Alexandre lebt in Thailand und bereist das Land seit über zehn Jahren. Sie wissen, mit wem Sie sprechen.'],
+      ['Transparente Preise', 'Was enthalten ist, was nicht, wer den Antrag einreicht: Alles steht fest, bevor Sie bezahlen.'],
+      ['Ihre Dokumente geschützt', 'Sichere Zahlung über Stripe. Ihre Unterlagen laufen über einen sicheren Bereich, nie als E-Mail-Anhang.'],
+      ['Keine leeren Versprechen', 'Wir garantieren das Visum nicht: Das kann niemand. Wir garantieren sorgfältig vorbereitete Unterlagen.'],
+    ],
+    about: 'Mehr über Alexandre',
+
+    faqEyebrow: 'Häufige Fragen',
+    faqTitle: 'Antworten, bevor Sie sich entscheiden',
+    faqs: [
+      ['Ist mein Visum garantiert?', 'Nein. Die Entscheidung liegt allein bei den thailändischen Behörden. Unsere Aufgabe ist es, Ihnen vollständige und korrekte Unterlagen zu liefern. Das senkt das Risiko vermeidbarer Ablehnungen.'],
+      ['Wer reicht den Antrag ein?', 'Mit dem Komplettpaket für 699 € übernehmen wir das: Wir reichen Ihren Antrag über das offizielle e-Visa-Portal ein. Mit der Prüfung für 99 € reichen Sie nach unserer Kontrolle selbst ein.'],
+      ['Wann muss ich bezahlen?', 'Test, Ersteinschätzung und Kennenlerngespräch sind kostenlos. Wenn Sie ein Paket wählen, bezahlen Sie es einmalig per Karte, bevor wir mit Ihren Unterlagen beginnen.'],
+      ['Ist die offizielle Visumgebühr enthalten?', 'Ja im Komplettpaket (10.000 THB, etwa 350 € bei der Botschaft in Paris, nach dem bei Einreichung geltenden Satz). Nein bei der Prüfung für 99 €: Sie zahlen sie bei der Einreichung.'],
+      ['Ich bin schon in Thailand. Geht das?', 'Der Antrag muss gestellt werden, während Sie sich außerhalb Thailands aufhalten. Sie können die Unterlagen jetzt mit uns vorbereiten und bei einer Reise ins Ausland einreichen.'],
+      ['Was passiert, wenn mein Antrag abgelehnt wird?', 'Wir besprechen mit Ihnen die Gründe der Entscheidung und die möglichen Optionen. Die Bedingungen einer weiteren Begleitung werden Ihnen im Einzelfall klar mitgeteilt.'],
+      ['Wie werden meine Dokumente geschützt?', 'Sie übermitteln sie über einen sicheren Bereich, nie per E-Mail. Sie werden ausschließlich für Ihren Antrag verwendet, gemäß unserer Datenschutzerklärung (DSGVO).'],
+    ],
+
+    finalTitle: 'Starten Sie mit dem kostenlosen Teil: 2 Minuten genügen.',
+    finalText: 'Machen Sie den Test oder stellen Sie Alexandre Ihre Frage direkt per WhatsApp.',
+    finalCta1: 'Test machen',
+    finalCta2: 'Per WhatsApp schreiben',
+    wa: 'Hallo, ich habe eine Frage zum DTV-Visum.',
+  },
+}[lang];
+
+// Correspondance entre le profil du test et le champ « statut » de la fiche de renseignement
+const STATUT = { remote: 'teletravailleur', freelance: 'independant', softpower: 'activite-encadree', family: 'autre', other: 'autre' };
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: c.faqs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+};
+const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
+---
+
+<BaseLayout title={c.title} description={c.description} structuredData={structuredData} lang={lang} translated>
+  <!-- 1. Hero : promesse, 2 actions, réassurance, visage -->
+  <section class="border-b border-sable-light bg-papier" data-no-reveal>
+    <div class="mx-auto grid max-w-content gap-12 px-6 py-16 md:grid-cols-[1.15fr_0.85fr] md:items-center md:px-10 md:py-24">
+      <div>
+        <p class="eyebrow mb-5">{c.eyebrow}</p>
+        <h1 class="font-display text-4xl leading-tight text-indigo md:text-5xl">{c.h1}</h1>
+        <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">{c.sub}</p>
+        <div class="mt-9 flex flex-wrap gap-3">
+          <a href="#eligibilite" class="btn-primary" data-umami-event="Accueil : bouton test (haut)">{c.cta1}</a>
+          <a href="#reserver-appel" class="btn-secondary" data-umami-event="Accueil : bouton appel (haut)">{c.cta2}</a>
+        </div>
+        <ul class="mt-8 flex flex-wrap gap-2" role="list">
+          {c.chips.map((chip) => (
+            <li class="inline-flex items-center gap-2 rounded-full bg-jade-bg px-3 py-1.5 font-sans text-xs font-medium text-jade">
+              <span aria-hidden="true">✓</span>{chip}
+            </li>
+          ))}
+        </ul>
+        <p class="mt-6 max-w-xl font-sans text-xs leading-relaxed text-encre/70">{c.legal}</p>
+      </div>
+
+      <figure class="mx-auto w-full max-w-sm">
+        <img
+          src="/images/alexandre-fondateur.jpg"
+          alt={c.photoAlt}
+          width="922"
+          height="1229"
+          fetchpriority="high"
+          class="aspect-[4/5] w-full rounded-lg object-cover object-[center_30%] shadow-sm"
+        />
+        <figcaption class="-mt-10 mx-4 relative rounded-md border border-sable-light bg-white px-5 py-4 shadow-sm">
+          <p class="font-display text-base text-indigo">{c.photoName}</p>
+          <p class="mt-1 font-sans text-sm leading-snug text-encre/75">{c.photoText}</p>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 2. Test d'éligibilité (sans JS : le formulaire reste lisible et mène à la fiche) -->
+  <section class="section scroll-mt-24" id="eligibilite">
+    <div class="mx-auto max-w-3xl">
+      <p class="eyebrow mb-3">{c.quizEyebrow}</p>
+      <h2 class="font-display text-3xl text-indigo">{c.quizTitle}</h2>
+      <p class="mt-3 font-sans text-sm text-encre/75">{c.quizIntro}</p>
+
+      <form id="quiz" class="mt-8 space-y-8 rounded-lg border border-sable-light bg-white p-6 md:p-8" novalidate>
+        {[
+          ['profil', c.q1, c.q1o],
+          ['epargne', c.q2, c.q2o],
+          ['lieu', c.q3, c.q3o],
+        ].map(([name, question, options], qi) => (
+          <fieldset>
+            <legend class="font-display text-lg text-indigo">
+              <span class="mr-2 font-mono text-sm text-or-dark">{`0${qi + 1}`}</span>{question}
+            </legend>
+            <div class="mt-4 grid gap-2">
+              {(options as string[][]).map(([value, label]) => (
+                <label class="quiz-option flex cursor-pointer items-start gap-3 rounded-md border border-sable-light px-4 py-3 font-sans text-sm text-encre/90">
+                  <input type="radio" name={name as string} value={value} class="mt-0.5 h-4 w-4 shrink-0 accent-indigo" />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+        <p id="quiz-missing" class="hidden font-sans text-sm text-red-700" role="alert">{c.missing}</p>
+        <button type="submit" class="btn-primary w-full sm:w-auto">{c.submit}</button>
+      </form>
+
+      <div id="quiz-result" class="mt-6" aria-live="polite" tabindex="-1">
+        <div data-result="ok" hidden class="rounded-lg border-2 border-or bg-white p-6 md:p-8">
+          <h3 class="font-display text-2xl text-indigo">{c.res.ok[0]}</h3>
+          <p class="mt-3 font-sans text-sm text-encre/80">{c.res.ok[1]} <strong class="text-indigo" data-cat></strong></p>
+          <p class="mt-2 font-sans text-sm text-encre/80">{c.res.ok[2]}</p>
+          <a href={L('/fiche-renseignement/')} data-fiche class="btn-primary mt-6 inline-flex">{c.res.ok[3]}</a>
+        </div>
+        {(['savings', 'inside', 'unsure'] as const).map((k) => (
+          <div data-result={k} hidden class="rounded-lg border border-sable-light bg-white p-6 md:p-8">
+            <h3 class="font-display text-2xl text-indigo">{c.res[k][0]}</h3>
+            <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">{c.res[k][1]}</p>
+            {k === 'unsure' ? (
+              <a href={L('/fiche-renseignement/')} data-fiche class="btn-primary mt-6 inline-flex">{c.res[k][2]}</a>
+            ) : (
+              <a href="#reserver-appel" class="btn-primary mt-6 inline-flex">{c.res[k][2]}</a>
+            )}
+          </div>
+        ))}
+        <p data-note hidden class="mt-4 font-sans text-xs leading-relaxed text-encre/70">{c.quizNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Comment ça marche -->
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">{c.howEyebrow}</p>
+    <h2 class="max-w-2xl font-display text-3xl text-indigo">{c.howTitle}</h2>
+    <ol class="mt-12 grid gap-8 md:grid-cols-4">
+      {c.how.map(([tag, title, text], i) => (
+        <li>
+          <span class="font-display text-2xl text-or-dark">{`0${i + 1}`}</span>
+          <p class="mt-2 font-mono text-xs uppercase tracking-wide text-jade">{tag}</p>
+          <h3 class="mt-1 font-display text-lg text-indigo">{title}</h3>
+          <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">{text}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- 4. Les deux formules -->
+  <section class="section scroll-mt-24" id="formules">
+    <p class="eyebrow mb-3">{c.offersEyebrow}</p>
+    <h2 class="max-w-2xl font-display text-3xl text-indigo">{c.offersTitle}</h2>
+    <div class="mt-10 grid gap-8 md:grid-cols-2">
+      <div class="flex flex-col rounded-lg border border-sable-light bg-white p-8">
+        <p class="font-mono text-xs uppercase tracking-wide text-encre/70">{c.check.tag}</p>
+        <h3 class="mt-2 font-display text-2xl text-indigo">{c.check.name}</h3>
+        <p class="mt-3 font-display text-4xl text-indigo">{c.check.price}</p>
+        <ul class="mt-6 flex-1 space-y-3">
+          {c.check.items.map((it) => <CheckItem>{it}</CheckItem>)}
+        </ul>
+        <p class="mt-6 border-t border-sable-light pt-4 font-sans text-sm text-encre/75">{c.check.excl}</p>
+        <a href={L('/visa-dtv/verification-dossier/')} class="btn-secondary mt-6 w-full">{c.check.cta}</a>
+      </div>
+      <div class="relative order-first flex flex-col rounded-lg border-2 border-or bg-white p-8 md:order-none">
+        <span class="absolute -top-3 left-6 rounded-full bg-or px-3 py-1 font-sans text-xs font-semibold text-indigo">{c.full.badge}</span>
+        <p class="font-mono text-xs uppercase tracking-wide text-encre/70">{c.full.tag}</p>
+        <h3 class="mt-2 font-display text-2xl text-indigo">{c.full.name}</h3>
+        <p class="mt-3 font-display text-4xl text-indigo">{c.full.price}</p>
+        <p class="mt-1 font-sans text-sm font-medium text-jade">{c.full.value}</p>
+        <ul class="mt-6 flex-1 space-y-3">
+          {c.full.items.map((it) => <CheckItem variant="gold">{it}</CheckItem>)}
+        </ul>
+        <p class="mt-6 border-t border-sable-light pt-4 font-sans text-sm text-encre/75">{c.full.excl}</p>
+        <a href={L('/visa-dtv/demande-accompagnee/')} class="btn-primary mt-6 w-full">{c.full.cta}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Confiance (sans témoignages tant qu'il n'y en a pas de réels) -->
+  <section class="section border-t border-sable-light">
+    <p class="eyebrow mb-3">{c.trustEyebrow}</p>
+    <h2 class="max-w-2xl font-display text-3xl text-indigo">{c.trustTitle}</h2>
+    <div class="mt-10 grid gap-8 md:grid-cols-2">
+      {c.trust.map(([title, text]) => (
+        <div>
+          <h3 class="font-display text-xl text-indigo">{title}</h3>
+          <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">{text}</p>
+        </div>
+      ))}
+    </div>
+    <a href={L('/a-propos/')} class="mt-8 inline-block font-sans text-sm font-semibold text-indigo underline decoration-or underline-offset-4 hover:text-or-dark">{c.about}</a>
+  </section>
+
+  <!-- 6. Appel découverte (Cal.com intégré, id #reserver-appel) -->
+  <CalInline lang={lang} />
+
+  <!-- 7. FAQ centrée sur les objections -->
+  <section class="section">
+    <p class="eyebrow mb-3">{c.faqEyebrow}</p>
+    <h2 class="mb-8 max-w-xl font-display text-3xl text-indigo">{c.faqTitle}</h2>
+    <div class="max-w-2xl">
+      {c.faqs.map(([q, a]) => <FaqItem question={q}>{a}</FaqItem>)}
+    </div>
+  </section>
+
+  <!-- 8. Dernier appel à l'action -->
+  <section class="border-t border-sable-light bg-indigo text-papier">
+    <div class="section text-center">
+      <h2 class="mx-auto max-w-xl font-display text-3xl text-papier">{c.finalTitle}</h2>
+      <p class="mx-auto mt-4 max-w-md font-sans text-sm text-papier/80">{c.finalText}</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="#eligibilite" class="btn-primary inline-flex" data-umami-event="Accueil : bouton test (bas)">{c.finalCta1}</a>
+        <a href={waLink} target="_blank" rel="noopener noreferrer" class="btn-on-dark inline-flex">{c.finalCta2}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .quiz-option {
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .quiz-option:hover {
+    border-color: #c9a24c;
+  }
+  .quiz-option:has(input:checked) {
+    border-color: #16233f;
+    background-color: #f7f3ea;
+  }
+  .quiz-option:has(input:focus-visible) {
+    outline: 2px solid #16233f;
+    outline-offset: 2px;
+  }
+</style>
+
+<script define:vars={{ cats: c.cats, statut: STATUT }}>
+  (function () {
+    var form = document.getElementById('quiz');
+    var box = document.getElementById('quiz-result');
+    if (!form || !box) return;
+    var started = false;
+    form.addEventListener('change', function () {
+      if (!started && window.umami) window.umami.track('Test éligibilité : commencé');
+      started = true;
+      document.getElementById('quiz-missing').classList.add('hidden');
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var get = function (n) { var el = form.querySelector('input[name="' + n + '"]:checked'); return el ? el.value : null; };
+      var profil = get('profil'), epargne = get('epargne'), lieu = get('lieu');
+      if (!profil || !epargne || !lieu) {
+        document.getElementById('quiz-missing').classList.remove('hidden');
+        return;
+      }
+      var result = epargne === 'no' ? 'savings' : lieu === 'inside' ? 'inside' : (profil === 'other' || epargne === 'unsure') ? 'unsure' : 'ok';
+      box.querySelectorAll('[data-result]').forEach(function (el) { el.hidden = el.getAttribute('data-result') !== result; });
+      box.querySelector('[data-note]').hidden = false;
+      var cat = box.querySelector('[data-cat]');
+      if (cat) cat.textContent = cats[profil] || '';
+      box.querySelectorAll('[data-fiche]').forEach(function (a) {
+        var url = new URL(a.getAttribute('href'), location.href);
+        url.searchParams.set('statut', statut[profil]);
+        a.setAttribute('href', url.pathname + url.search);
+      });
+      if (window.umami) window.umami.track('Test éligibilité : résultat', { resultat: result, profil: profil });
+      box.focus({ preventScroll: true });
+      box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  })();
+</script>

@@ -210,7 +210,8 @@ const organizationSchema = {
             if (set.has(p)) return false;
             p = p.parentElement;
           }
-          return !el.closest('#cal-inline');
+          // Pas d'animation pour le haut de page (titre visible immédiatement)
+          return !el.closest('#cal-inline') && !el.closest('[data-no-reveal]');
         });
         var io = new IntersectionObserver(function (entries) {
           entries.forEach(function (e) {
