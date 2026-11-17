@@ -87,3 +87,12 @@ npm run astro check
 - Avant de créer une nouvelle page, vérifier si une Content Collection existe déjà pour ce type de contenu (FAQ, articles, témoignages)
 - Avant d'ajouter une dépendance, vérifier qu'elle est compatible avec le rendu statique/SSG d'Astro
 - Préférer des solutions simples et légères : ce site n'a pas besoin d'un framework front lourd pour l'essentiel de ses pages
+
+## Économie de tokens (forfait Pro limité)
+
+- Réponses courtes et directes, en français, sans récapitulatif superflu ni liste d'options non demandées
+- Ne pas explorer tout le projet : lire uniquement les fichiers nécessaires à la tâche (utiliser grep pour cibler)
+- Ne jamais lire `node_modules/`, `dist/`, `.astro/`, `package-lock.json`
+- Pas de sous-agents, de recherche approfondie ni de revue de code multi-agents sauf demande explicite
+- Ne pas relire un fichier qu'on vient de modifier ; ne pas lancer `npm run build` sauf si nécessaire pour vérifier
+- Préférer les modifications ciblées (Edit) aux réécritures complètes de fichiers
