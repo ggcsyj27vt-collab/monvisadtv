@@ -786,6 +786,8 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
         resultat_indicatif: answers.result,
         rgpd: 'accepté',
       };
+      // Alerte Telegram pour Alexandre (n8n), sans bloquer l'envoi principal
+      fetch('/api/test-eligibilite', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), keepalive: true }).catch(function () {});
       fetch(FORMSPREE, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) })
         .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); })
         .then(function () {
