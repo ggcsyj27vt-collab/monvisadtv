@@ -29,9 +29,9 @@ const c = {
     eyebrow: 'Destination Thailand Visa (DTV)',
     h1: 'Votre visa DTV, préparé et déposé pour vous.',
     sub: "Jusqu'à 5 ans en Thaïlande pour télétravailler, travailler en freelance ou pratiquer une activité Soft Power. Nous préparons votre dossier, le déposons et le suivons jusqu'à la décision.",
-    cta1: 'Suis-je éligible ? (2 min)',
+    cta1: 'Je teste mon éligibilité gratuitement',
     cta2: 'Appel gratuit de 10 min',
-    chips: ['Premier avis gratuit sous 48 h ouvrées', 'Frais officiels du visa inclus (formule complète)', 'En français ou en anglais'],
+    chips: ['Premier avis gratuit sous 48 h ouvrées', 'Vérification de votre dossier dès 99 €', 'En français ou en anglais'],
     legal: "Cabinet indépendant, pas un organisme gouvernemental. Aucun visa n'est garanti : la décision appartient aux autorités thaïlandaises.",
     photoAlt: 'Alexandre, fondateur de MyVisaDTV',
     photoName: 'Alexandre, fondateur',
@@ -75,6 +75,7 @@ const c = {
     offersEyebrow: 'Nos formules',
     offersTitle: 'Deux formules, un prix clair, payé une seule fois.',
     check: {
+      badge: 'Idéal pour commencer',
       tag: 'Vous déposez vous-même',
       name: 'Vérification du dossier',
       price: '99 €',
@@ -128,9 +129,9 @@ const c = {
     eyebrow: 'Destination Thailand Visa (DTV)',
     h1: 'Your DTV visa, prepared and filed for you.',
     sub: 'Up to 5 years in Thailand to work remotely, freelance or take part in a Soft Power activity. We prepare your file, submit it and follow it through to the decision.',
-    cta1: 'Am I eligible? (2 min)',
+    cta1: 'Check my eligibility for free',
     cta2: 'Free 10-min call',
-    chips: ['Free first assessment within 48 business hours', 'Official visa fee included (full package)', 'In English or French'],
+    chips: ['Free first assessment within 48 business hours', 'Expert document check from €99', 'In English or French'],
     legal: 'Independent consultancy, not a government body. No visa is guaranteed: the decision belongs to the Thai authorities.',
     photoAlt: 'Alexandre, founder of MyVisaDTV',
     photoName: 'Alexandre, founder',
@@ -174,6 +175,7 @@ const c = {
     offersEyebrow: 'Our packages',
     offersTitle: 'Two packages, one clear price, paid once.',
     check: {
+      badge: 'Best place to start',
       tag: 'You file it yourself',
       name: 'Document check',
       price: '€99',
@@ -227,9 +229,9 @@ const c = {
     eyebrow: 'Destination Thailand Visa (DTV)',
     h1: 'Ihr DTV-Visum, vorbereitet und für Sie eingereicht.',
     sub: 'Bis zu 5 Jahre in Thailand für Remote-Arbeit, Freelancing oder eine Soft-Power-Aktivität. Wir bereiten Ihre Unterlagen vor, reichen den Antrag ein und begleiten ihn bis zur Entscheidung.',
-    cta1: 'Bin ich berechtigt? (2 Min.)',
+    cta1: 'Jetzt kostenlos Eignung prüfen',
     cta2: 'Kostenloses 10-Min.-Gespräch',
-    chips: ['Kostenlose Ersteinschätzung in 48 Werktagsstunden', 'Offizielle Visumgebühr inklusive (Komplettpaket)', 'Auf Englisch oder Französisch'],
+    chips: ['Kostenlose Ersteinschätzung in 48 Werktagsstunden', 'Expertenprüfung Ihrer Unterlagen ab 99 €', 'Auf Englisch oder Französisch'],
     legal: 'Unabhängige Beratung, keine Behörde. Kein Visum ist garantiert: Die Entscheidung liegt bei den thailändischen Behörden.',
     photoAlt: 'Alexandre, Gründer von MyVisaDTV',
     photoName: 'Alexandre, Gründer',
@@ -273,6 +275,7 @@ const c = {
     offersEyebrow: 'Unsere Pakete',
     offersTitle: 'Zwei Pakete, ein klarer Preis, einmal bezahlt.',
     check: {
+      badge: 'Idealer Einstieg',
       tag: 'Sie reichen selbst ein',
       name: 'Prüfung der Unterlagen',
       price: '99 €',
@@ -326,9 +329,9 @@ const STATUT = { remote: 'teletravailleur', freelance: 'independant', softpower:
 
 // Textes de la carte « dossier » (illustration du haut de page) et du bandeau de confiance
 const card = {
-  fr: { title: 'Votre demande de visa DTV', status: 'En bonne voie', fee: 'Frais officiels du visa inclus', steps: [['Test d’éligibilité', 'done'], ['Dossier préparé et vérifié', 'done'], ['Déposé par MyVisaDTV', 'now'], ['Décision des autorités', 'todo']], trustbar: ['Paiement sécurisé par Stripe', 'Dépôt sur le portail officiel e-Visa', 'Réponse en français ou en anglais'] },
-  en: { title: 'Your DTV visa application', status: 'On track', fee: 'Official visa fee included', steps: [['Eligibility test', 'done'], ['File prepared and checked', 'done'], ['Filed by MyVisaDTV', 'now'], ['Authorities’ decision', 'todo']], trustbar: ['Secure payment by Stripe', 'Filed on the official e-Visa portal', 'Answers in English or French'] },
-  de: { title: 'Ihr DTV-Visumantrag', status: 'Auf gutem Weg', fee: 'Offizielle Visumgebühr inklusive', steps: [['Eignungstest', 'done'], ['Unterlagen vorbereitet und geprüft', 'done'], ['Eingereicht durch MyVisaDTV', 'now'], ['Entscheidung der Behörden', 'todo']], trustbar: ['Sichere Zahlung über Stripe', 'Einreichung über das offizielle e-Visa-Portal', 'Antworten auf Englisch oder Französisch'] },
+  fr: { title: 'Vérification de votre dossier', status: 'Rapport sous 48 h', fee: 'Rapport écrit sous 48 h ouvrées', steps: [['Documents envoyés', 'done'], ['Contrôle pièce par pièce', 'done'], ['Rapport écrit de l’expert', 'now'], ['Vous déposez en toute sérénité', 'todo']], trustbar: ['Paiement sécurisé par Stripe', 'Dépôt sur le portail officiel e-Visa', 'Réponse en français ou en anglais'] },
+  en: { title: 'Your document check', status: 'Report in 48 h', fee: 'Written report within 48 business hours', steps: [['Documents sent', 'done'], ['Checked one by one', 'done'], ['Expert written report', 'now'], ['You file with confidence', 'todo']], trustbar: ['Secure payment by Stripe', 'Filed on the official e-Visa portal', 'Answers in English or French'] },
+  de: { title: 'Prüfung Ihrer Unterlagen', status: 'Bericht in 48 Std.', fee: 'Schriftlicher Bericht in 48 Werktagsstunden', steps: [['Unterlagen gesendet', 'done'], ['Dokument für Dokument geprüft', 'done'], ['Schriftlicher Expertenbericht', 'now'], ['Sie reichen sicher ein', 'todo']], trustbar: ['Sichere Zahlung über Stripe', 'Einreichung über das offizielle e-Visa-Portal', 'Antworten auf Englisch oder Französisch'] },
 }[lang];
 
 const structuredData = {
@@ -388,8 +391,8 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
           </ol>
           <div class="mt-7 flex items-end justify-between rounded-2xl bg-slate-50 px-5 py-4">
             <div>
-              <p class="font-sans text-xs text-slate-500">{c.full.name}</p>
-              <p class="font-display text-3xl font-semibold tracking-tight text-indigo">{c.full.price}</p>
+              <p class="font-sans text-xs text-slate-500">{c.check.name}</p>
+              <p class="font-display text-3xl font-semibold tracking-tight text-indigo">{c.check.price}</p>
             </div>
             <p class="max-w-[11rem] text-right font-sans text-xs leading-snug text-slate-500">{card.fee}</p>
           </div>
@@ -480,37 +483,38 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
     </div>
   </section>
 
-  <!-- 4. Les deux formules -->
+  <!-- 4. Les deux formules : la vérification à 99 € (porte d'entrée) est mise en avant -->
   <section class="bg-white scroll-mt-24" id="formules">
     <div class="mx-auto max-w-content px-6 py-20 md:px-10 md:py-28">
       <p class="hm-kicker">{c.offersEyebrow}</p>
       <h2 class="hm-h2 max-w-2xl">{c.offersTitle}</h2>
-      <div class="mt-12 grid gap-6 md:grid-cols-2">
-        <div class="flex flex-col rounded-3xl border border-slate-200 bg-white p-8 md:p-10">
-          <p class="font-sans text-sm text-slate-500">{c.check.tag}</p>
-          <h3 class="mt-1 font-display text-2xl font-semibold text-indigo">{c.check.name}</h3>
-          <p class="mt-6 font-display text-5xl font-semibold tracking-tight text-indigo">{c.check.price}</p>
+      <div class="mt-12 grid gap-6 md:grid-cols-2 md:items-center">
+        <div class="relative flex flex-col rounded-3xl bg-indigo p-8 text-white shadow-[0_30px_60px_-30px_rgba(22,35,63,0.6)] ring-4 ring-or/40 md:p-10">
+          <span class="absolute right-6 top-6 rounded-full bg-or px-3 py-1 font-sans text-xs font-semibold text-indigo">{c.check.badge}</span>
+          <p class="font-sans text-sm text-white/70">{c.check.tag}</p>
+          <h3 class="mt-1 font-display text-2xl font-semibold text-white">{c.check.name}</h3>
+          <p class="mt-6 font-display text-6xl font-semibold tracking-tight text-white">{c.check.price}</p>
           <ul class="mt-8 flex-1 space-y-3">
             {c.check.items.map((it) => (
-              <li class="flex items-start gap-3 font-sans text-sm text-slate-700"><svg viewBox="0 0 20 20" class="mt-0.5 h-4 w-4 shrink-0 text-indigo" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L8 14.5L16 5.5" /></svg>{it}</li>
-            ))}
-          </ul>
-          <p class="mt-8 font-sans text-sm text-slate-500">{c.check.excl}</p>
-          <a href={L('/visa-dtv/verification-dossier/')} class="hm-btn hm-btn-ghost mt-6 w-full">{c.check.cta}</a>
-        </div>
-        <div class="relative order-first flex flex-col rounded-3xl bg-indigo p-8 text-white shadow-[0_30px_60px_-30px_rgba(22,35,63,0.6)] md:order-none md:p-10">
-          <span class="absolute right-6 top-6 rounded-full bg-or px-3 py-1 font-sans text-xs font-semibold text-indigo">{c.full.badge}</span>
-          <p class="font-sans text-sm text-white/70">{c.full.tag}</p>
-          <h3 class="mt-1 font-display text-2xl font-semibold text-white">{c.full.name}</h3>
-          <p class="mt-6 font-display text-5xl font-semibold tracking-tight text-white">{c.full.price}</p>
-          <p class="mt-2 font-sans text-sm text-or-light">{c.full.value}</p>
-          <ul class="mt-8 flex-1 space-y-3">
-            {c.full.items.map((it) => (
               <li class="flex items-start gap-3 font-sans text-sm text-white/90"><svg viewBox="0 0 20 20" class="mt-0.5 h-4 w-4 shrink-0 text-or-light" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L8 14.5L16 5.5" /></svg>{it}</li>
             ))}
           </ul>
-          <p class="mt-8 font-sans text-sm text-white/60">{c.full.excl}</p>
-          <a href={L('/visa-dtv/demande-accompagnee/')} class="hm-btn hm-btn-gold mt-6 w-full">{c.full.cta}</a>
+          <p class="mt-8 font-sans text-sm text-white/60">{c.check.excl}</p>
+          <a href={L('/visa-dtv/verification-dossier/')} class="hm-btn hm-btn-gold mt-6 w-full">{c.check.cta}</a>
+        </div>
+        <div class="relative flex flex-col rounded-3xl border-2 border-slate-300 bg-slate-50 p-8 md:p-10">
+          <span class="absolute right-6 top-6 rounded-full border border-slate-300 bg-white px-3 py-1 font-sans text-xs font-semibold text-indigo">{c.full.badge}</span>
+          <p class="font-sans text-sm text-slate-500">{c.full.tag}</p>
+          <h3 class="mt-1 font-display text-2xl font-semibold text-indigo">{c.full.name}</h3>
+          <p class="mt-6 font-display text-5xl font-semibold tracking-tight text-indigo">{c.full.price}</p>
+          <p class="mt-2 font-sans text-sm font-medium text-jade">{c.full.value}</p>
+          <ul class="mt-8 flex-1 space-y-3">
+            {c.full.items.map((it) => (
+              <li class="flex items-start gap-3 font-sans text-sm text-slate-700"><svg viewBox="0 0 20 20" class="mt-0.5 h-4 w-4 shrink-0 text-indigo" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L8 14.5L16 5.5" /></svg>{it}</li>
+            ))}
+          </ul>
+          <p class="mt-8 font-sans text-sm text-slate-500">{c.full.excl}</p>
+          <a href={L('/visa-dtv/demande-accompagnee/')} class="hm-btn hm-btn-primary mt-6 w-full">{c.full.cta}</a>
         </div>
       </div>
     </div>
