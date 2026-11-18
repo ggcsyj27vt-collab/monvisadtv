@@ -11,6 +11,7 @@ const translatedPaths = [
   '/confidentialite/',
   '/fiche-renseignement/',
   '/mentions-legales/',
+  '/partenaires/',
   '/visa-dtv/comprendre-le-dtv/',
   '/visa-dtv/demande-accompagnee/',
   '/visa-dtv/verification-dossier/',
