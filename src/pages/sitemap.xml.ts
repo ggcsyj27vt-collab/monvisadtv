@@ -11,11 +11,13 @@ const translatedPaths = [
   '/confidentialite/',
   '/fiche-renseignement/',
   '/mentions-legales/',
-  '/partenaires/',
   '/visa-dtv/comprendre-le-dtv/',
   '/visa-dtv/demande-accompagnee/',
   '/visa-dtv/verification-dossier/',
 ];
+
+// Pages qui existent seulement en français et en /en/ (pas de version allemande).
+const frEnPaths = ['/partenaires/'];
 
 export async function GET() {
   const posts = await getCollection('blog');
@@ -25,6 +27,8 @@ export async function GET() {
     ...translatedPaths,
     ...translatedPaths.map((p) => `/en${p}`.replace(/\/{2,}/g, '/')),
     ...translatedPaths.map((p) => `/de${p}`.replace(/\/{2,}/g, '/')),
+    ...frEnPaths,
+    ...frEnPaths.map((p) => `/en${p}`),
     ...blogPaths,
   ];
 

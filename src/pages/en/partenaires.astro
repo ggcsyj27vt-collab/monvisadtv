@@ -1,0 +1,176 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const inputClass =
+  'mt-2 w-full rounded-sm border border-sable-light bg-white px-4 py-3 font-sans text-sm text-encre focus:border-indigo focus:outline-none';
+
+const profils = [
+  { titre: 'Coworking and coliving spaces', texte: 'Your international members stay for months and look for a long-term visa solution.' },
+  { titre: 'Muay Thai camps and schools', texte: 'Thai language, cooking, yoga… your students want to stay longer to keep training.' },
+  { titre: 'Relocation and real estate', texte: 'You help people settle in: the visa is often the first question before the lease.' },
+  { titre: 'Accountants, lawyers, insurers', texte: 'Your expat clients ask about their status: refer them to a specialist.' },
+  { titre: 'Creators and communities', texte: 'Groups, channels and blogs about life in Thailand: a reliable resource for your audience.' },
+  { titre: 'Travel agencies', texte: 'Your clients are planning a long stay: offer them visa support in French and English.' },
+];
+
+const etapes = [
+  { titre: 'You refer someone', texte: 'With a link, a WhatsApp message, or simply by asking them to mention your name.' },
+  { titre: 'We take care of everything', texte: 'Eligibility check, file preparation, follow-up until submission. You are kept informed.' },
+  { titre: 'You receive your commission', texte: 'For every client who books our support, under the terms we agree together.' },
+];
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'MyVisaDTV partner programme',
+  description:
+    'Referral programme for businesses in Thailand and online communities who send people to MyVisaDTV for DTV visa support.',
+  url: 'https://myvisadtv.com/en/partenaires/',
+  inLanguage: 'en',
+};
+---
+
+<BaseLayout
+  title="Become a partner"
+  description="Coworking space, Muay Thai camp, school, relocation agency or content creator: recommend MyVisaDTV for the DTV visa and earn a commission on every client we assist."
+  lang="en"
+  structuredData={structuredData}
+>
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-20">
+      <p class="eyebrow mb-4">Partner programme</p>
+      <h1 class="max-w-2xl font-display text-4xl leading-tight text-indigo md:text-5xl">
+        Your clients need a DTV visa? Send them to us.
+      </h1>
+      <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-encre/80">
+        You welcome foreigners who want to stay longer in Thailand. We help them with their DTV
+        visa application from start to finish, and you earn a commission for every client you refer.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#apply" class="btn-primary" data-track="Partners: apply">Become a partner</a>
+        <a
+          href="https://wa.me/66631747492?text=Hello%2C%20I%27d%20like%20to%20know%20more%20about%20the%20MyVisaDTV%20partner%20programme."
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-secondary"
+        >
+          Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <p class="eyebrow mb-4">How it works</p>
+    <h2 class="max-w-2xl font-display text-3xl leading-tight text-indigo">Three steps, no paperwork for you</h2>
+    <ol class="mt-10 grid gap-6 md:grid-cols-3">
+      {etapes.map((e, i) => (
+        <li class="rounded-lg border border-sable-light bg-white p-7">
+          <span class="font-mono text-xs text-jade">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="mt-3 font-display text-lg text-indigo">{e.titre}</h3>
+          <p class="mt-2 font-sans text-sm leading-relaxed text-encre/80">{e.texte}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="border-y border-sable-light bg-jade-bg">
+    <div class="section">
+      <p class="eyebrow mb-4">Who it's for</p>
+      <h2 class="max-w-2xl font-display text-3xl leading-tight text-indigo">The partners we work with</h2>
+      <div class="mt-10 grid gap-x-10 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
+        {profils.map((p) => (
+          <div>
+            <h3 class="font-sans text-base font-semibold text-indigo">{p.titre}</h3>
+            <p class="mt-1 font-sans text-sm leading-relaxed text-encre/80">{p.texte}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="apply">
+    <div class="grid gap-14 md:grid-cols-[1fr_0.7fr]">
+      <form method="POST" action="https://formspree.io/f/mgaegdgv" class="space-y-6">
+        <input type="hidden" name="_subject" value="Candidature partenaire MyVisaDTV (EN)" />
+        <input type="hidden" name="type_demande" value="partenaire" />
+        <div>
+          <p class="eyebrow mb-3">Application</p>
+          <h2 class="font-display text-3xl leading-tight text-indigo">Propose a partnership</h2>
+          <p class="mt-3 font-sans text-sm text-encre/70">We get back to you within 2 business days.</p>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label for="p-nom" class="block font-sans text-sm font-medium text-encre">Your name</label>
+            <input type="text" id="p-nom" name="nom" required autocomplete="name" class={inputClass} />
+          </div>
+          <div>
+            <label for="p-structure" class="block font-sans text-sm font-medium text-encre">Business or media</label>
+            <input type="text" id="p-structure" name="structure" required autocomplete="organization" class={inputClass} />
+          </div>
+          <div>
+            <label for="p-email" class="block font-sans text-sm font-medium text-encre">Email</label>
+            <input type="email" id="p-email" name="email" required autocomplete="email" class={inputClass} />
+          </div>
+          <div>
+            <label for="p-whatsapp" class="block font-sans text-sm font-medium text-encre">WhatsApp (optional)</label>
+            <input type="tel" id="p-whatsapp" name="whatsapp" autocomplete="tel" class={inputClass} />
+          </div>
+          <div>
+            <label for="p-type" class="block font-sans text-sm font-medium text-encre">Type of business</label>
+            <select id="p-type" name="activite" required class={inputClass}>
+              <option value="">Choose…</option>
+              {profils.map((p) => <option>{p.titre}</option>)}
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="p-ville" class="block font-sans text-sm font-medium text-encre">City</label>
+            <input type="text" id="p-ville" name="ville" placeholder="Bangkok, Chiang Mai, online…" class={inputClass} />
+          </div>
+        </div>
+
+        <div>
+          <label for="p-site" class="block font-sans text-sm font-medium text-encre">Website or social media (optional)</label>
+          <input type="url" id="p-site" name="site" placeholder="https://" class={inputClass} />
+        </div>
+
+        <div>
+          <label for="p-message" class="block font-sans text-sm font-medium text-encre">Tell us about your clients</label>
+          <textarea id="p-message" name="message" rows="4" placeholder="Number of foreign clients or followers, typical length of stay, nationalities…" class={inputClass}></textarea>
+        </div>
+
+        <label class="flex items-start gap-3 font-sans text-sm text-encre/80">
+          <input type="checkbox" name="consentement" required class="mt-1" />
+          <span>I agree that MyVisaDTV may use this information to contact me about the partnership (<a href="/en/confidentialite/" class="text-jade underline">privacy policy</a>).</span>
+        </label>
+
+        <button type="submit" class="btn-primary">Send my application</button>
+      </form>
+
+      <aside class="h-fit space-y-6">
+        <div class="rounded-lg border border-sable-light bg-white p-8">
+          <h2 class="font-display text-lg text-indigo">What we do, and what we don't</h2>
+          <ul class="mt-4 space-y-3 font-sans text-sm leading-relaxed text-encre/80">
+            <li>MyVisaDTV is a private support agency, not the Thai government.</li>
+            <li>We prepare and check applications, but the decision belongs to the authorities: we cannot guarantee a visa will be granted.</li>
+            <li>Your clients get the same care as ours, and you know where each file stands.</li>
+          </ul>
+        </div>
+        <div class="rounded-lg border border-sable-light bg-white p-8">
+          <h2 class="font-display text-lg text-indigo">A question before applying?</h2>
+          <p class="mt-3 font-sans text-sm leading-relaxed text-encre/80">Write to <span class="font-mono text-xs">contact@myvisadtv.com</span> or book a 10-minute call.</p>
+          <a
+            href="https://cal.com/myvisadtv/appel-decouverte-dtv"
+            target="_blank"
+            rel="noopener"
+            class="mt-5 inline-flex w-full items-center justify-center rounded-md bg-indigo px-5 py-3 font-sans text-sm font-semibold text-white transition hover:opacity-90"
+          >
+            Book a 10-minute call
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
