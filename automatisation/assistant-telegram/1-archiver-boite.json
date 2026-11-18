@@ -1,5 +1,5 @@
 {
-  "name": "Assistant e-mail : archiver la boîte contact@",
+  "name": "Email assistant: archive the contact@ inbox",
   "nodes": [
     {
       "parameters": {
@@ -9,7 +9,7 @@
         "options": {}
       },
       "id": "469f5d24-20b4-4f9a-8e39-89c7174f85fd",
-      "name": "Nouvel e-mail reçu (IMAP)",
+      "name": "New email received (IMAP)",
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
@@ -25,10 +25,10 @@
     },
     {
       "parameters": {
-        "jsCode": "// Transforme chaque e-mail reçu en fiche Notion « Boîte mail »\nconst s = (v) => (v == null ? '' : String(v)).trim();\nconst rt = (v) => ({ rich_text: [{ text: { content: s(v).slice(0, 1900) } }] });\nconst out = [];\nfor (const item of $input.all()) {\n  const j = item.json;\n  let de = typeof j.from === 'string' ? j.from : (j.from?.text || j.from?.value?.[0]?.address || '');\n  const m = de.match(/[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+/);\n  const corps = s(j.textPlain || j.text || s(j.textHtml || j.html).replace(/<[^>]+>/g, ' ')).replace(/\\n{3,}/g, '\\n\\n');\n  const pj = Object.keys(item.binary || {}).map((k) => item.binary[k].fileName).filter(Boolean).join(', ');\n  const date = j.date ? new Date(j.date) : new Date();\n  const props = {\n    'Objet': { title: [{ text: { content: s(j.subject || '(sans objet)').slice(0, 200) } }] },\n    'De': rt(de),\n    'Reçu le': { date: { start: date.toISOString() } },\n    'Contenu': rt(corps),\n    'Message-ID': rt(j.messageId || j['message-id'] || ''),\n  };\n  if (m) props['Email expéditeur'] = { email: m[0].toLowerCase() };\n  if (pj) props['Pièces jointes'] = rt(pj);\n  out.push({ json: { body: { parent: { database_id: '41c615ef3da181a883b2e1161a4a26d0' }, properties: props } } });\n}\nreturn out;\n"
+        "jsCode": "// Turns each received email into an entry of the Notion \"Boîte mail\" database\n// (Notion field names stay in French: they must match the database columns)\nconst s = (v) => (v == null ? '' : String(v)).trim();\nconst rt = (v) => ({ rich_text: [{ text: { content: s(v).slice(0, 1900) } }] });\nconst out = [];\nfor (const item of $input.all()) {\n  const j = item.json;\n  let de = typeof j.from === 'string' ? j.from : (j.from?.text || j.from?.value?.[0]?.address || '');\n  const m = de.match(/[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+/);\n  const corps = s(j.textPlain || j.text || s(j.textHtml || j.html).replace(/<[^>]+>/g, ' ')).replace(/\\n{3,}/g, '\\n\\n');\n  const pj = Object.keys(item.binary || {}).map((k) => item.binary[k].fileName).filter(Boolean).join(', ');\n  const date = j.date ? new Date(j.date) : new Date();\n  const props = {\n    'Objet': { title: [{ text: { content: s(j.subject || '(no subject)').slice(0, 200) } }] },\n    'De': rt(de),\n    'Reçu le': { date: { start: date.toISOString() } },\n    'Contenu': rt(corps),\n    'Message-ID': rt(j.messageId || j['message-id'] || ''),\n  };\n  if (m) props['Email expéditeur'] = { email: m[0].toLowerCase() };\n  if (pj) props['Pièces jointes'] = rt(pj);\n  out.push({ json: { body: { parent: { database_id: '41c615ef3da181a883b2e1161a4a26d0' }, properties: props } } });\n}\nreturn out;\n"
       },
       "id": "44f26f02-6047-4189-afd9-8023de44c974",
-      "name": "Préparer la fiche",
+      "name": "Prepare the Notion entry",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -57,7 +57,7 @@
         "options": {}
       },
       "id": "b23396aa-e4d5-42af-8fee-c6f77e98d4e3",
-      "name": "Notion : ranger l'e-mail",
+      "name": "Notion: store the email",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
@@ -74,22 +74,22 @@
     }
   ],
   "connections": {
-    "Nouvel e-mail reçu (IMAP)": {
+    "New email received (IMAP)": {
       "main": [
         [
           {
-            "node": "Préparer la fiche",
+            "node": "Prepare the Notion entry",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Préparer la fiche": {
+    "Prepare the Notion entry": {
       "main": [
         [
           {
-            "node": "Notion : ranger l'e-mail",
+            "node": "Notion: store the email",
             "type": "main",
             "index": 0
           }
