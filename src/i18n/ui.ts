@@ -26,6 +26,7 @@ interface UiStrings {
     infoHeading: string;
     legal: string;
     privacy: string;
+    terms: string;
     disclaimer: string;
     rights: string;
   };
@@ -52,6 +53,7 @@ export const ui: Record<Locale, UiStrings> = {
       infoHeading: 'Informations',
       legal: 'Mentions légales',
       privacy: 'Politique de confidentialité',
+      terms: 'Conditions générales de vente',
       disclaimer:
         "MyVisaDTV est un cabinet de conseil privé. Nous ne sommes ni une administration thaïlandaise, ni un consulat, et ne garantissons pas l'obtention du visa : la décision finale appartient exclusivement aux autorités thaïlandaises compétentes.",
       rights: 'Tous droits réservés.',
@@ -75,6 +77,7 @@ export const ui: Record<Locale, UiStrings> = {
       infoHeading: 'Information',
       legal: 'Legal notice',
       privacy: 'Privacy policy',
+      terms: 'Terms of sale',
       disclaimer:
         'MyVisaDTV is a private consulting practice. We are neither a Thai administration nor a consulate, and we do not guarantee visa approval: the final decision rests exclusively with the competent Thai authorities.',
       rights: 'All rights reserved.',
@@ -98,6 +101,7 @@ export const ui: Record<Locale, UiStrings> = {
       infoHeading: 'Informationen',
       legal: 'Impressum',
       privacy: 'Datenschutzerklärung',
+      terms: 'AGB',
       disclaimer:
         'MyVisaDTV ist eine private Beratungsstelle. Wir sind weder eine thailändische Behörde noch ein Konsulat und garantieren die Visumerteilung nicht: Die endgültige Entscheidung liegt ausschließlich bei den zuständigen thailändischen Behörden.',
       rights: 'Alle Rechte vorbehalten.',
