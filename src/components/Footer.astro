@@ -30,7 +30,7 @@ const year = new Date().getFullYear();
           <li><a class="hover:text-or" href={localePath(lang, '/visa-dtv/comprendre-le-dtv/')}>{t.nav.understand}</a></li>
           <li><a class="hover:text-or" href={localePath(lang, '/blog/')}>{t.nav.blog}</a></li>
           <li><a class="hover:text-or" href={localePath(lang, '/fiche-renseignement/')}>{lang === 'fr' ? 'Fiche de renseignement' : t.nav.startCta}</a></li>
-          {lang === 'fr' && <li><a class="hover:text-or" href="/partenaires/">Devenir partenaire</a></li>}
+          {lang !== 'de' && <li><a class="hover:text-or" href={localePath(lang, '/partenaires/')}>{lang === 'fr' ? 'Devenir partenaire' : 'Become a partner'}</a></li>}
         </ul>
       </div>
 
