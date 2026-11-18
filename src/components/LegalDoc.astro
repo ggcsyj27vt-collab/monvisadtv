@@ -1,0 +1,52 @@
+---
+// Gabarit commun des pages légales (mentions, confidentialité, CGV) en FR/EN/DE.
+// Les paragraphes acceptent du HTML simple (liens, gras).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { Locale } from '../i18n/ui';
+import { entreprise, champsManquants } from '../data/entreprise';
+
+interface Props {
+  lang: Locale;
+  title: string;
+  description: string;
+  sections: [string, string[]][];
+}
+const { lang, title, description, sections } = Astro.props;
+
+const majDate = new Date(entreprise.majLegales).toLocaleDateString({ fr: 'fr-FR', en: 'en-GB', de: 'de-DE' }[lang], {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+const maj = { fr: `Dernière mise à jour : ${majDate}`, en: `Last updated: ${majDate}`, de: `Zuletzt aktualisiert: ${majDate}` }[lang];
+const translation = {
+  fr: null,
+  en: 'This is an informational translation. The French version of this page is the legally binding one.',
+  de: 'Dies ist eine Übersetzung zu Informationszwecken. Rechtsverbindlich ist die französische Fassung dieser Seite.',
+}[lang];
+const missing = champsManquants();
+---
+
+<BaseLayout title={title} description={description} lang={lang} translated>
+  <section class="section max-w-3xl">
+    <h1 class="font-display text-4xl text-indigo">{title}</h1>
+    <p class="mt-3 font-sans text-xs text-encre/60">{maj}</p>
+
+    <div class="mt-10 space-y-8 font-sans text-sm leading-relaxed text-encre/85">
+      {translation && (
+        <p class="rounded-sm border border-slate-200 bg-slate-50 px-5 py-4 font-sans text-xs text-encre/70">{translation}</p>
+      )}
+      {missing.length > 0 && (
+        <p class="rounded-sm border border-or-dark/40 bg-jade-bg px-5 py-4 font-mono text-xs text-encre/70">
+          À compléter dans src/data/entreprise.ts : {missing.join(', ')}.
+        </p>
+      )}
+      {sections.map(([h, paras]) => (
+        <div>
+          <h2 class="font-display text-xl text-indigo">{h}</h2>
+          {paras.map((p) => <p class="mt-2" set:html={p} />)}
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
