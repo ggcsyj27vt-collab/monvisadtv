@@ -7,6 +7,7 @@ import CheckItem from './CheckItem.astro';
 import FaqItem from './FaqItem.astro';
 import CalInline from './CalInline.astro';
 import { localePath, type Locale } from '../i18n/ui';
+import { temoignages } from '../data/temoignages';
 
 interface Props {
   lang: Locale;
@@ -31,7 +32,8 @@ const c = {
     sub: "Un dossier incomplet peut mener à un refus. Pour 99 €, nous contrôlons chaque pièce et vous remettons un rapport écrit sous 48 h ouvrées. Vous préférez tout nous confier ? Nous déposons la demande pour vous.",
     cta1: 'Je teste mon éligibilité gratuitement',
     cta2: 'Appel gratuit de 10 min',
-    chips: ['Premier avis gratuit sous 48 h ouvrées', 'Vérification de votre dossier dès 99 €', 'En français ou en anglais'],
+    rules: ['Règles du 31 août 2026 intégrées', 'casier judiciaire et justificatif de résidence'],
+    chips: ['Prix tout compris : 699 €, frais officiels du visa inclus', 'Délai écrit : rapport sous 48 h ouvrées', 'Dépôt sur le portail officiel e-Visa de la Thaïlande'],
     legal: "Cabinet indépendant, pas un organisme gouvernemental. Aucun visa n'est garanti : la décision appartient aux autorités thaïlandaises.",
     photoAlt: 'Alexandre, fondateur de MyVisaDTV',
     photoName: 'Alexandre, fondateur',
@@ -94,11 +96,12 @@ const c = {
       cta: 'Voir la formule complète',
     },
 
+    reviewsTitle: 'Ils ont obtenu leur DTV avec nous',
     trustEyebrow: 'Pourquoi nous faire confiance',
     trustTitle: 'Un vrai interlocuteur, des règles du jeu écrites noir sur blanc.',
     trust: [
       ['Une personne, pas une plateforme', "Alexandre vit en Thaïlande et parcourt le pays depuis plus de dix ans. Vous savez à qui vous parlez."],
-      ['Des prix transparents', "Ce qui est inclus, ce qui ne l'est pas, qui dépose le dossier : tout est écrit avant de payer."],
+      ['Un prix tout compris', "699 € frais officiels du visa inclus, ou 99 € pour la vérification. Ce qui est inclus, ce qui ne l'est pas, qui dépose : tout est écrit avant de payer."],
       ['Vos documents protégés', "Paiement sécurisé par Stripe. Vos pièces passent par un espace sécurisé, jamais en pièce jointe d'e-mail."],
       ['Aucune promesse intenable', "Nous ne garantissons pas le visa : personne ne le peut. Nous garantissons un dossier préparé avec rigueur."],
     ],
@@ -112,7 +115,7 @@ const c = {
       ['Quand dois-je payer ?', "Le test, le premier avis et l'appel découverte sont gratuits. Si vous choisissez une formule, vous la réglez en une seule fois, par carte, avant que nous commencions à travailler sur votre dossier."],
       ['Les frais officiels du visa sont-ils inclus ?', "Oui dans la formule complète (10 000 THB, environ 350 € à l'ambassade de Paris, selon le tarif applicable au moment du dépôt). Non dans la vérification à 99 € : vous les réglez lors de votre dépôt."],
       ['Je suis déjà en Thaïlande, est-ce possible ?', "La demande doit être déposée pendant que vous êtes hors de Thaïlande. Vous pouvez préparer le dossier avec nous dès maintenant et le déposer lors d'un séjour hors du pays."],
-      ['Que se passe-t-il si ma demande est refusée ?', "Nous analysons avec vous les motifs de la décision et les options possibles. Les conditions d'un éventuel nouvel accompagnement vous sont communiquées clairement, au cas par cas."],
+      ['Que se passe-t-il si ma demande est refusée ?', "Notre engagement : si le refus vient d'une pièce que nous avons validée, nous préparons et déposons votre 2e demande sans honoraires (formule complète), ou revérifions gratuitement votre nouveau dossier (vérification à 99 €). Seuls les frais officiels du nouveau dépôt restent à votre charge. Pour tout autre motif, nous analysons la décision avec vous et vous proposons la suite par écrit."],
       ['Comment mes documents sont-ils protégés ?', "Vous les transmettez dans un espace sécurisé, jamais par e-mail. Ils servent uniquement à votre demande, conformément à notre politique de confidentialité (RGPD)."],
     ],
 
@@ -131,7 +134,8 @@ const c = {
     sub: "An incomplete file can lead to a refusal. For 99€, we check every document and send you a written report within 48 business hours. Rather hand everything over? We can file the application for you.",
     cta1: 'Check my eligibility for free',
     cta2: 'Free 10-min call',
-    chips: ['Free first assessment within 48 business hours', 'Expert document check from 99€', 'In English or French'],
+    rules: ['31 August 2026 rules included', 'criminal record and proof of residence'],
+    chips: ['All-inclusive price: 699€, official visa fee included', 'Written turnaround: report within 48 business hours', "Filed on Thailand's official e-Visa portal"],
     legal: 'Independent consultancy, not a government body. No visa is guaranteed: the decision belongs to the Thai authorities.',
     photoAlt: 'Alexandre, founder of MyVisaDTV',
     photoName: 'Alexandre, founder',
@@ -194,11 +198,12 @@ const c = {
       cta: 'See the full package',
     },
 
+    reviewsTitle: 'They got their DTV with us',
     trustEyebrow: 'Why trust us',
     trustTitle: 'A real person to talk to, and the rules written down in black and white.',
     trust: [
       ['A person, not a platform', "Alexandre lives in Thailand and has been travelling the country for over ten years. You know who you're talking to."],
-      ['Transparent pricing', "What's included, what isn't, who files the application: it's all written down before you pay."],
+      ['An all-inclusive price', "699€ including the official visa fee, or 99€ for the document check. What's included, what isn't, who files: it's all written down before you pay."],
       ['Your documents protected', 'Secure payment by Stripe. Your documents go through a secure space, never as email attachments.'],
       ['No promises we can’t keep', "We don't guarantee the visa: nobody can. We guarantee a carefully prepared file."],
     ],
@@ -212,7 +217,7 @@ const c = {
       ['When do I pay?', 'The test, the first assessment and the discovery call are free. If you choose a package, you pay for it once, by card, before we start working on your file.'],
       ['Is the official visa fee included?', "Yes in the full package (10,000 THB, about 350€ at the Thai embassy in Paris, at the rate applicable when filing). No in the 99€ document check: you pay it when you file."],
       ["I'm already in Thailand. Is that a problem?", "The application must be filed while you're outside Thailand. You can prepare your file with us now and submit it during a trip abroad."],
-      ['What if my application is refused?', 'We go through the reasons for the decision and the possible options with you. The terms of any further support are explained clearly, case by case.'],
+      ['What if my application is refused?', "Our commitment: if the refusal is due to a document we approved, we prepare and file your second application with no service fee (full package), or re-check your new file for free (99€ document check). You only pay the official fee for the new application. For any other reason, we go through the decision with you and send you the next steps in writing."],
       ['How are my documents protected?', 'You send them through a secure space, never by email. They are used only for your application, in line with our privacy policy (GDPR).'],
     ],
 
@@ -231,7 +236,8 @@ const c = {
     sub: "Unvollständige Unterlagen können zur Ablehnung führen. Für 99 € prüfen wir jedes Dokument und schicken Ihnen in 48 Werktagsstunden einen schriftlichen Bericht. Lieber alles abgeben? Dann reichen wir den Antrag für Sie ein.",
     cta1: 'Jetzt kostenlos Eignung prüfen',
     cta2: 'Kostenloses 10-Min.-Gespräch',
-    chips: ['Kostenlose Ersteinschätzung in 48 Werktagsstunden', 'Expertenprüfung Ihrer Unterlagen ab 99 €', 'Auf Englisch oder Französisch'],
+    rules: ['Regeln vom 31. August 2026 berücksichtigt', 'Führungszeugnis und Wohnsitznachweis'],
+    chips: ['Komplettpreis: 699 €, offizielle Visagebühr inklusive', 'Feste Frist: Bericht in 48 Werktagsstunden', 'Einreichung über das offizielle thailändische e-Visa-Portal'],
     legal: 'Unabhängige Beratung, keine Behörde. Kein Visum ist garantiert: Die Entscheidung liegt bei den thailändischen Behörden.',
     photoAlt: 'Alexandre, Gründer von MyVisaDTV',
     photoName: 'Alexandre, Gründer',
@@ -294,11 +300,12 @@ const c = {
       cta: 'Zum Komplettpaket',
     },
 
+    reviewsTitle: 'Sie haben ihr DTV mit uns erhalten',
     trustEyebrow: 'Warum Sie uns vertrauen können',
     trustTitle: 'Ein echter Ansprechpartner und klare Regeln, schwarz auf weiß.',
     trust: [
       ['Ein Mensch, keine Plattform', 'Alexandre lebt in Thailand und bereist das Land seit über zehn Jahren. Sie wissen, mit wem Sie sprechen.'],
-      ['Transparente Preise', 'Was enthalten ist, was nicht, wer den Antrag einreicht: Alles steht fest, bevor Sie bezahlen.'],
+      ['Ein Komplettpreis', '699 € inklusive offizieller Visagebühr oder 99 € für die Prüfung. Was enthalten ist, was nicht, wer einreicht: Alles steht fest, bevor Sie bezahlen.'],
       ['Ihre Dokumente geschützt', 'Sichere Zahlung über Stripe. Ihre Unterlagen laufen über einen sicheren Bereich, nie als E-Mail-Anhang.'],
       ['Keine leeren Versprechen', 'Wir garantieren das Visum nicht: Das kann niemand. Wir garantieren sorgfältig vorbereitete Unterlagen.'],
     ],
@@ -312,7 +319,7 @@ const c = {
       ['Wann muss ich bezahlen?', 'Test, Ersteinschätzung und Kennenlerngespräch sind kostenlos. Wenn Sie ein Paket wählen, bezahlen Sie es einmalig per Karte, bevor wir mit Ihren Unterlagen beginnen.'],
       ['Ist die offizielle Visumgebühr enthalten?', 'Ja im Komplettpaket (10.000 THB, etwa 350 € bei der Botschaft in Paris, nach dem bei Einreichung geltenden Satz). Nein bei der Prüfung für 99 €: Sie zahlen sie bei der Einreichung.'],
       ['Ich bin schon in Thailand. Geht das?', 'Der Antrag muss gestellt werden, während Sie sich außerhalb Thailands aufhalten. Sie können die Unterlagen jetzt mit uns vorbereiten und bei einer Reise ins Ausland einreichen.'],
-      ['Was passiert, wenn mein Antrag abgelehnt wird?', 'Wir besprechen mit Ihnen die Gründe der Entscheidung und die möglichen Optionen. Die Bedingungen einer weiteren Begleitung werden Ihnen im Einzelfall klar mitgeteilt.'],
+      ['Was passiert, wenn mein Antrag abgelehnt wird?', "Unsere Zusage: Geht die Ablehnung auf ein von uns geprüftes Dokument zurück, bereiten wir Ihren zweiten Antrag ohne Honorar vor und reichen ihn ein (Komplettpaket) bzw. prüfen Ihre neuen Unterlagen kostenlos (Prüfung für 99 €). Sie tragen nur die offizielle Gebühr für den neuen Antrag. Bei anderen Gründen besprechen wir die Entscheidung mit Ihnen und schicken Ihnen die nächsten Schritte schriftlich."],
       ['Wie werden meine Dokumente geschützt?', 'Sie übermitteln sie über einen sicheren Bereich, nie per E-Mail. Sie werden ausschließlich für Ihren Antrag verwendet, gemäß unserer Datenschutzerklärung (DSGVO).'],
     ],
 
@@ -359,6 +366,10 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
         <p class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-sans text-xs font-medium text-slate-600">
           <span class="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>{c.eyebrow}
         </p>
+        <a href={L('/visa-dtv/comprendre-le-dtv/')} class="mt-3 flex w-fit max-w-full items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-1.5 font-sans text-xs text-amber-900 hover:bg-amber-100 sm:rounded-full" data-track="Accueil : badge règles août 2026">
+          <svg viewBox="0 0 20 20" class="mt-px h-3.5 w-3.5 shrink-0 text-amber-700" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L8 14.5L16 5.5" /></svg>
+          <span><strong class="font-semibold">{c.rules[0]}</strong>{lang === 'fr' ? ' : ' : ': '}{c.rules[1]}</span>
+        </a>
         <h1 class="mt-6 font-display text-[2.6rem] font-semibold leading-[1.05] tracking-tight text-indigo md:text-6xl">{c.h1}</h1>
         <p class="mt-6 max-w-xl font-sans text-lg leading-relaxed text-slate-600">{c.sub}</p>
         <div class="mt-9 flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row">
@@ -578,6 +589,24 @@ const waLink = `https://wa.me/66631747492?text=${encodeURIComponent(c.wa)}`;
           </div>
         ))}
       </div>
+      {temoignages.length > 0 && (
+        <div class="mt-14">
+          <h3 class="font-display text-xl font-semibold text-indigo">{c.reviewsTitle}</h3>
+          <ul class="mt-6 grid gap-4 md:grid-cols-3" role="list">
+            {temoignages.slice(0, 3).map((t) => (
+              <li>
+                <figure class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6">
+                  <blockquote class="flex-1 font-sans text-sm leading-relaxed text-slate-700">« {t.texte[lang]} »</blockquote>
+                  <figcaption class="mt-4 font-sans text-sm">
+                    <span class="font-semibold text-indigo">{t.prenom}</span>
+                    <span class="text-slate-500"> · {t.categorie[lang]} · {new Date(t.date + '-01').toLocaleDateString({ fr: 'fr-FR', en: 'en-GB', de: 'de-DE' }[lang], { month: 'long', year: 'numeric' })}</span>
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <a href={L('/a-propos/')} class="mt-8 inline-flex items-center gap-2 font-sans text-sm font-semibold text-indigo hover:text-or-dark">{c.about} <span aria-hidden="true">→</span></a>
     </div>
   </section>

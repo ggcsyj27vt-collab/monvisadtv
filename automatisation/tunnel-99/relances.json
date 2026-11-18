@@ -1,0 +1,510 @@
+{
+  "name": "Tunnel 99 € : relances",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "ff221dd8-cb7e-4c9e-995b-e005a3a2187b",
+      "name": "Chaque jour à 10 h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/419615ef3da18149b530d5b19aa6b379/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ page_size: 100, filter: { and: [ { property: 'Statut', select: { equals: 'Offre 99 € envoyée' } }, { property: 'Email', email: { is_not_empty: true } } ] } }) }}",
+        "options": {}
+      },
+      "id": "2a0861e3-ce22-423b-b327-e422ff6a18de",
+      "name": "Notion : offres en attente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Une ligne par client en attente de paiement\nconst txt = (p) => (p?.rich_text || p?.title || []).map((t) => t.plain_text).join('').trim();\nreturn $input.all().flatMap((i) => i.json.results || []).map((pg) => ({ json: {\n  pageId: pg.id,\n  nom: txt(pg.properties['Nom']),\n  email: pg.properties['Email']?.email || '',\n  langue: pg.properties['Langue']?.select?.name === 'FR' ? 'fr' : 'en',\n  categorie: pg.properties['Catégorie']?.select?.name || '',\n  nb: pg.properties['Nb relances']?.number || 0,\n  derniere: pg.properties['Dernière relance']?.date?.start || pg.created_time.slice(0, 10),\n} })).filter((x) => x.email);\n"
+      },
+      "id": "96791b25-aa0a-44cf-a7f3-92c9eed8428a",
+      "name": "Clients en attente",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/41c615ef3da181a883b2e1161a4a26d0/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ page_size: 1, filter: { and: [ { property: 'Email expéditeur', email: { equals: $json.email } }, { property: 'Reçu le', date: { on_or_after: $json.derniere } } ] } }) }}",
+        "options": {}
+      },
+      "id": "dcdf94dd-8570-4567-a14c-ecefbe814149",
+      "name": "Boîte mail : a-t-il répondu ?",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const SIG_HTML = {\n  fr: \"<table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;color:#1F2430;\\\"><tr><td valign=\\\"middle\\\" style=\\\"padding:0 18px 0 0;\\\"><a href=\\\"https://myvisadtv.com/\\\" style=\\\"text-decoration:none;\\\"><img src=\\\"https://myvisadtv.com/images/logo-dtv-thailand.png\\\" width=\\\"132\\\" height=\\\"88\\\" alt=\\\"MyVisaDTV, DTV Thailand Visa Services\\\" style=\\\"display:block;border:0;width:132px;height:88px;\\\"></a></td><td valign=\\\"middle\\\" style=\\\"border-left:2px solid #C9A24C;padding:2px 0 2px 18px;\\\"><div style=\\\"font-family:Georgia,'Times New Roman',serif;font-size:19px;font-weight:bold;color:#16233F;line-height:1.2;\\\">Alexandre</div><div style=\\\"font-size:13px;color:#2F6F62;font-weight:bold;line-height:1.5;padding-top:2px;\\\">Fondateur · MyVisaDTV</div><div style=\\\"font-size:12px;color:#6F675B;line-height:1.5;\\\">Accompagnement visa DTV pour la Thaïlande</div><table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;margin-top:8px;font-size:12.5px;line-height:1.7;\\\"><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">WhatsApp</td><td><a href=\\\"https://wa.me/66631747492\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">+66 63 174 7492</a></td></tr><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">E-mail</td><td><a href=\\\"mailto:contact@myvisadtv.com\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">contact@myvisadtv.com</a></td></tr><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">Site</td><td><a href=\\\"https://myvisadtv.com/\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">myvisadtv.com</a></td></tr></table><table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;margin-top:10px;\\\"><tr><td style=\\\"background:#16233F;border-radius:6px;\\\"><a href=\\\"https://cal.com/myvisadtv/appel-decouverte-dtv\\\" style=\\\"display:inline-block;padding:7px 14px;font-size:12px;font-weight:bold;color:#FFFFFF;text-decoration:none;\\\">Réserver un appel gratuit de 10 min</a></td></tr></table></td></tr><tr><td colspan=\\\"2\\\" style=\\\"padding-top:12px;font-size:10.5px;line-height:1.4;color:#9C9284;\\\"> MyVisaDTV est une agence privée d'accompagnement. Nous ne sommes pas l'administration thaïlandaise et ne garantissons pas l'obtention du visa. </td></tr></table>\",\n  en: \"<table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;color:#1F2430;\\\"><tr><td valign=\\\"middle\\\" style=\\\"padding:0 18px 0 0;\\\"><a href=\\\"https://myvisadtv.com/en/\\\" style=\\\"text-decoration:none;\\\"><img src=\\\"https://myvisadtv.com/images/logo-dtv-thailand.png\\\" width=\\\"132\\\" height=\\\"88\\\" alt=\\\"MyVisaDTV, DTV Thailand Visa Services\\\" style=\\\"display:block;border:0;width:132px;height:88px;\\\"></a></td><td valign=\\\"middle\\\" style=\\\"border-left:2px solid #C9A24C;padding:2px 0 2px 18px;\\\"><div style=\\\"font-family:Georgia,'Times New Roman',serif;font-size:19px;font-weight:bold;color:#16233F;line-height:1.2;\\\">Alexandre</div><div style=\\\"font-size:13px;color:#2F6F62;font-weight:bold;line-height:1.5;padding-top:2px;\\\">Founder · MyVisaDTV</div><div style=\\\"font-size:12px;color:#6F675B;line-height:1.5;\\\">DTV visa support for Thailand</div><table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;margin-top:8px;font-size:12.5px;line-height:1.7;\\\"><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">WhatsApp</td><td><a href=\\\"https://wa.me/66631747492\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">+66 63 174 7492</a></td></tr><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">Email</td><td><a href=\\\"mailto:contact@myvisadtv.com\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">contact@myvisadtv.com</a></td></tr><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">Web</td><td><a href=\\\"https://myvisadtv.com/en/\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">myvisadtv.com</a></td></tr></table><table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;margin-top:10px;\\\"><tr><td style=\\\"background:#16233F;border-radius:6px;\\\"><a href=\\\"https://cal.com/myvisadtv/appel-decouverte-dtv\\\" style=\\\"display:inline-block;padding:7px 14px;font-size:12px;font-weight:bold;color:#FFFFFF;text-decoration:none;\\\">Book a free 10-minute call</a></td></tr></table></td></tr><tr><td colspan=\\\"2\\\" style=\\\"padding-top:12px;font-size:10.5px;line-height:1.4;color:#9C9284;\\\"> MyVisaDTV is a private support agency. We are not the Thai government and cannot guarantee that a visa will be granted. </td></tr></table>\",\n};\n\n// ===== Tunnel de vente : vérification du dossier à 99 € =====\n// Bloc commun aux deux workflows (envoi de l'offre + relances).\nconst LIEN_STRIPE = 'https://buy.stripe.com/7sY5kE2oogXg4r1fQc14403';\nconst LIEN_PAGE = { fr: 'https://myvisadtv.com/visa-dtv/verification-dossier/', en: 'https://myvisadtv.com/en/visa-dtv/verification-dossier/' };\nconst LIEN_699 = { fr: 'https://myvisadtv.com/visa-dtv/demande-accompagnee/', en: 'https://myvisadtv.com/en/visa-dtv/demande-accompagnee/' };\nconst LIEN_APPEL = 'https://cal.com/myvisadtv/appel-decouverte-dtv';\nconst WHATSAPP = '+66 63 174 7492';\nconst CAT = {\n  fr: { 'Workcation': 'Workcation (télétravail ou freelance)', 'Soft Power': 'Soft Power', 'Dépendant': 'membre de la famille', 'Médical': 'médical' },\n  en: { 'Workcation': 'Workcation (remote work or freelance)', 'Soft Power': 'Soft Power', 'Dépendant': 'family member', 'Médical': 'medical' },\n};\nconst lienPaiement = (email, lang) => `${LIEN_STRIPE}?locale=${lang}${email ? '&prefilled_email=' + encodeURIComponent(email) : ''}`;\n\nconst MAILS = {\n  fr: [\n    {\n      objet: (p) => `${p.prenom ? p.prenom + ', v' : 'V'}otre dossier de visa DTV : la prochaine étape`,\n      corps: (p) => `Bonjour${p.prenom ? ' ' + p.prenom : ''},\n\nMerci d'avoir fait notre test d'éligibilité. D'après vos réponses, vous semblez éligible au visa DTV${p.categorie ? ' dans la catégorie ' + p.categorie : ''}. C'est un résultat indicatif : c'est votre dossier qui fera la différence.\n\nLa première cause de refus, c'est un dossier incomplet ou incohérent : une pièce manquante, un relevé bancaire sur la mauvaise période, un nom écrit différemment d'un document à l'autre.\n\nPour 99 €, nous vérifions votre dossier avant que vous ne le déposiez :\n- la liste exacte des pièces exigées pour votre profil, comparée à ce que vous avez ;\n- la conformité de chaque pièce (passeport, relevés bancaires et solde de 500 000 THB, justificatif d'activité…) ;\n- la cohérence entre tous vos documents ;\n- un rapport écrit sous 48 h ouvrées, avec ce qu'il faut corriger.\n\nEt si vous préférez ensuite nous confier toute la demande, les 99 € sont déduits de la formule complète.\n\nVous pouvez répondre directement à cet e-mail si vous avez une question.`,\n      bouton: 'Commander la vérification (99 €)',\n    },\n    {\n      objet: () => `Avez-vous pu regarder la vérification de votre dossier DTV ?`,\n      corps: (p) => `Bonjour${p.prenom ? ' ' + p.prenom : ''},\n\nJe reviens vers vous au sujet de votre demande de visa DTV. Avant de déposer votre dossier, un contrôle complet de vos pièces vous évite le refus le plus fréquent : celui d'un dossier incomplet ou incohérent.\n\nLa vérification coûte 99 €, vous recevez un rapport écrit sous 48 h ouvrées, et ce montant est déduit si vous passez ensuite à la formule complète.\n\nUne question avant de vous décider ? Répondez simplement à cet e-mail, ou écrivez-moi sur WhatsApp au ${WHATSAPP}.`,\n      bouton: 'Faire vérifier mon dossier (99 €)',\n    },\n    {\n      objet: () => `Dernier message au sujet de votre visa DTV`,\n      corps: (p) => `Bonjour${p.prenom ? ' ' + p.prenom : ''},\n\nJe ne veux pas encombrer votre boîte, ce sera donc mon dernier message.\n\nDeux options si vous souhaitez être accompagné :\n- la vérification de votre dossier à 99 €, si vous déposez vous-même : ${LIEN_PAGE.fr}\n- la formule complète à 699 €, si vous préférez que nous nous occupions de tout : ${LIEN_699.fr}\n\nVous hésitez entre les deux ? Réservez un appel gratuit de 10 minutes : ${LIEN_APPEL}\n\nJe vous souhaite une très belle installation en Thaïlande.`,\n      bouton: 'Commander la vérification (99 €)',\n    },\n  ],\n  en: [\n    {\n      objet: (p) => `${p.prenom ? p.prenom + ', y' : 'Y'}our DTV visa application: the next step`,\n      corps: (p) => `Hello${p.prenom ? ' ' + p.prenom : ''},\n\nThank you for taking our eligibility test. Based on your answers, you appear to be eligible for the DTV visa${p.categorie ? ' under the ' + p.categorie + ' category' : ''}. This is an indicative result: your application file is what makes the difference.\n\nThe most common reason for refusal is an incomplete or inconsistent file: a missing document, a bank statement covering the wrong period, a name spelled differently from one document to another.\n\nFor €99, we check your file before you submit it:\n- the exact list of documents required for your profile, compared with what you have;\n- the compliance of each document (passport, bank statements and the 500,000 THB balance, proof of activity…);\n- the consistency between all your documents;\n- a written report within 2 business days, with what needs to be fixed.\n\nAnd if you then prefer us to handle the whole application, the €99 is deducted from the full service.\n\nFeel free to reply to this email if you have any question.`,\n      bouton: 'Order the document check (€99)',\n    },\n    {\n      objet: () => `Have you had a chance to look at the DTV document check?`,\n      corps: (p) => `Hello${p.prenom ? ' ' + p.prenom : ''},\n\nJust following up on your DTV visa application. Before you submit, a full check of your documents helps you avoid the most common refusal: an incomplete or inconsistent file.\n\nThe check costs €99, you receive a written report within 2 business days, and the amount is deducted if you then switch to the full service.\n\nAny question before deciding? Simply reply to this email, or message me on WhatsApp at ${WHATSAPP}.`,\n      bouton: 'Get my documents checked (€99)',\n    },\n    {\n      objet: () => `Last note about your DTV visa`,\n      corps: (p) => `Hello${p.prenom ? ' ' + p.prenom : ''},\n\nI don't want to clutter your inbox, so this will be my last message.\n\nTwo options if you would like support:\n- the €99 document check, if you submit the application yourself: ${LIEN_PAGE.en}\n- the €699 full service, if you would rather we handle everything: ${LIEN_699.en}\n\nNot sure which one fits? Book a free 10-minute call: ${LIEN_APPEL}\n\nWishing you a great move to Thailand.`,\n      bouton: 'Order the document check (€99)',\n    },\n  ],\n};\nconst NOTE = {\n  fr: \"Résultat indicatif, établi à partir de vos réponses au test. MyVisaDTV est une agence privée d'accompagnement : la décision appartient aux autorités thaïlandaises et nous ne garantissons pas l'obtention du visa.\",\n  en: 'Indicative result based on your answers to the test. MyVisaDTV is a private support agency: the decision belongs to the Thai authorities and we cannot guarantee that a visa will be granted.',\n};\nconst SIGNE = `Alexandre · MyVisaDTV\\nmyvisadtv.com · WhatsApp ${WHATSAPP}`;\nconst esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst lienHtml = (t) => t.replace(/(https?:\\/\\/[^\\s<]+)/g, '<a href=\"$1\" style=\"color:#2F6F62;\">$1</a>');\n\n// etape : 0 = offre, 1 = relance 1, 2 = dernière relance\nfunction construireMail(etape, lang, client) {\n  const L = lang === 'en' ? 'en' : 'fr';\n  const p = { prenom: (client.prenom || '').trim(), categorie: CAT[L][client.categorie] || '' };\n  const m = MAILS[L][etape];\n  const lien = lienPaiement(client.email, L);\n  const corps = m.corps(p);\n  const text = `${corps}\\n\\n${m.bouton} : ${lien}\\n\\n${SIGNE}\\n\\n${NOTE[L]}`;\n  const paragraphes = esc(corps).split(/\\n{2,}/).map((b) => {\n    const lignes = b.split('\\n');\n    if (lignes.length > 1 && lignes.slice(1).every((l) => l.startsWith('- '))) {\n      return `<p style=\"margin:0 0 6px;\">${lienHtml(lignes[0])}</p><ul style=\"margin:0 0 14px;padding-left:20px;\">${lignes.slice(1).map((l) => `<li style=\"margin:0 0 4px;\">${lienHtml(l.slice(2))}</li>`).join('')}</ul>`;\n    }\n    return `<p style=\"margin:0 0 14px;\">${lienHtml(lignes.join('<br>'))}</p>`;\n  }).join('');\n  const bouton = `<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" role=\"presentation\" style=\"margin:6px 0 20px;\"><tr><td style=\"background:#C9A24C;border-radius:8px;\"><a href=\"${lien}\" style=\"display:inline-block;padding:12px 22px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#16233F;text-decoration:none;\">${esc(m.bouton)}</a></td></tr></table>`;\n  const html = '<div style=\"font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.55;color:#1F2430;max-width:600px;\">'\n    + paragraphes + bouton\n    + '<div style=\"margin-top:8px;\">' + SIG_HTML[L] + '</div>'\n    + `<p style=\"margin:16px 0 0;font-size:11px;line-height:1.4;color:#9C9284;\">${esc(NOTE[L])}</p></div>`;\n  return { objet: m.objet(p), text, html };\n}\n\n\n// ---- Décision pour chaque client : relancer, attendre, ou arrêter ----\nconst now = DateTime.now().setZone('Asia/Bangkok');\nconst today = now.toFormat('yyyy-MM-dd');\nconst ATTENTE = [2, 3, 4]; // jours avant relance 1, relance 2, puis fin du tunnel\nconst out = [];\n$input.all().forEach((item, i) => {\n  const c = $('Clients en attente').all()[i].json;\n  const aRepondu = (item.json.results || []).length > 0;\n  const jours = Math.floor(now.startOf('day').diff(DateTime.fromISO(c.derniere, { zone: 'Asia/Bangkok' }).startOf('day'), 'days').days);\n  const base = { pageId: c.pageId, nom: c.nom, to: c.email, today };\n  if (aRepondu) { out.push({ json: { ...base, action: 'repondu' } }); return; }\n  if (c.nb >= 3 || jours < ATTENTE[Math.min(c.nb, 2)]) return;\n  if (c.nb === 2) { out.push({ json: { ...base, action: 'fin' } }); return; }\n  const prenom = c.nom.includes('@') ? '' : c.nom.split(' ')[0];\n  const m = construireMail(c.nb + 1, c.langue, { prenom, email: c.email, categorie: c.categorie });\n  out.push({ json: { ...base, action: 'relance', etape: c.nb + 1, ...m } });\n});\nreturn out;\n"
+      },
+      "id": "507f84b9-c29d-4acf-9a4a-cca8067f1324",
+      "name": "Décider",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "f2ffc2b3-49a7-4141-b1c5-583d20c3e460",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "relance",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "dc6bdb5c-3ef5-4313-8d14-6631d23ec15e",
+      "name": "Relancer ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "Alexandre - myvisaDTV <contact@myvisadtv.com>",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.objet }}",
+        "emailFormat": "both",
+        "text": "={{ $json.text }}",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "37ffcba4-55da-41b5-8af3-b2f1ff97735c",
+      "name": "Envoyer la relance",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1320,
+        180
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "8Bc3etl2wxq6wEEm",
+          "name": "SMTP myvisaDTV (contact@)"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://api.notion.com/v1/pages/' + $('Relancer ?').item.json.pageId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ properties: { 'Nb relances': { number: $('Relancer ?').item.json.etape }, 'Dernière relance': { date: { start: $('Relancer ?').item.json.today } } } }) }}",
+        "options": {}
+      },
+      "id": "9d7e1f7d-2c2d-494c-8c41-7fe4932473c7",
+      "name": "Notion : relance notée",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        180
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a1b529ae-f15c-4931-8703-cdfb70d79f21",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "repondu",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2c5fea4d-76d4-42e4-a806-f64ddca4f107",
+      "name": "A répondu ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://api.notion.com/v1/pages/' + $json.pageId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ properties: { 'Statut': { select: { name: \"A répondu à l'offre\" } } } }) }}",
+        "options": {}
+      },
+      "id": "05a1f786-fc5e-4c18-bda0-6d0d21030274",
+      "name": "Notion : a répondu",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        360
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://api.notion.com/v1/pages/' + $json.pageId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ properties: { 'Nb relances': { number: 3 } } }) }}",
+        "options": {}
+      },
+      "id": "4532c32e-ea53-499e-aefc-2b621851bf3e",
+      "name": "Notion : fin du tunnel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        500
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Résumé Telegram du jour\nconst items = $('Décider').all().map((i) => i.json);\nif (!items.length) return [];\nconst l = ['💶 Tunnel 99 € : point du jour'];\nconst r = items.filter((x) => x.action === 'relance'); if (r.length) l.push('\\nRelances envoyées :', ...r.map((x) => `• ${x.nom} (relance ${x.etape})`));\nconst p = items.filter((x) => x.action === 'repondu'); if (p.length) l.push('\\nOnt répondu, à traiter :', ...p.map((x) => `• ${x.nom} (${x.to})`));\nconst f = items.filter((x) => x.action === 'fin'); if (f.length) l.push('\\nSans réponse après 2 relances, à appeler peut-être :', ...f.map((x) => `• ${x.nom} (${x.to})`));\nreturn [{ json: { text: l.join('\\n') } }];\n"
+      },
+      "id": "478bf197-64c2-4244-8183-54588b8a997b",
+      "name": "Résumé du jour",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        300
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "chatId": "7817841281",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "bcb4b06b-995e-4922-8c4a-904aeb902769",
+      "name": "Telegram : résumé",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TUuxivf4PXDKgHKU",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Chaque jour à 10 h": {
+      "main": [
+        [
+          {
+            "node": "Notion : offres en attente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion : offres en attente": {
+      "main": [
+        [
+          {
+            "node": "Clients en attente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clients en attente": {
+      "main": [
+        [
+          {
+            "node": "Boîte mail : a-t-il répondu ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Boîte mail : a-t-il répondu ?": {
+      "main": [
+        [
+          {
+            "node": "Décider",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Décider": {
+      "main": [
+        [
+          {
+            "node": "Relancer ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Relancer ?": {
+      "main": [
+        [
+          {
+            "node": "Envoyer la relance",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "A répondu ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envoyer la relance": {
+      "main": [
+        [
+          {
+            "node": "Notion : relance notée",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A répondu ?": {
+      "main": [
+        [
+          {
+            "node": "Notion : a répondu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notion : fin du tunnel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion : relance notée": {
+      "main": [
+        [
+          {
+            "node": "Résumé du jour",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion : a répondu": {
+      "main": [
+        [
+          {
+            "node": "Résumé du jour",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion : fin du tunnel": {
+      "main": [
+        [
+          {
+            "node": "Résumé du jour",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Résumé du jour": {
+      "main": [
+        [
+          {
+            "node": "Telegram : résumé",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "Asia/Bangkok",
+    "executionOrder": "v1"
+  }
+}

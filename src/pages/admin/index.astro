@@ -58,15 +58,18 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <select id="status-select" class="mt-2 rounded-sm border border-sable-light bg-papier px-4 py-2 font-sans text-sm focus:border-indigo focus:outline-none">
             <option value="diagnostic">Diagnostic en cours</option>
             <option value="documents">Réunion des documents</option>
-            <option value="verification">Vérification du dossier</option>
+            <option value="verification">Vérification du dossier (rappel si &gt; 36 h)</option>
+            <option value="rapport">Rapport de vérification envoyé</option>
             <option value="depot">Dossier déposé</option>
             <option value="decision">En attente de décision</option>
             <option value="approuve">Visa obtenu</option>
             <option value="refuse">Dossier refusé</option>
+            <option value="clos">Dossier clos</option>
           </select>
         </div>
 
-        <p class="mt-4 font-sans text-xs text-encre/60">Lien à envoyer au client :</p>
+        <p id="detail-account" class="mt-4 font-sans text-sm text-encre/80"></p>
+        <p class="mt-4 font-sans text-xs text-encre/60">Ancien lien d'accès (sans compte) :</p>
         <p id="detail-link" class="mt-1 break-all rounded-sm bg-papier px-3 py-2 font-mono text-xs text-indigo"></p>
 
         <h3 class="mt-6 font-display text-lg text-indigo">Documents déposés</h3>
@@ -93,11 +96,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       diagnostic: 'Diagnostic en cours',
       documents: 'Réunion des documents',
       verification: 'Vérification du dossier',
+      rapport: 'Rapport envoyé',
       depot: 'Dossier déposé',
       decision: 'En attente de décision',
       approuve: 'Visa obtenu',
       refuse: 'Dossier refusé',
+      clos: 'Dossier clos',
     };
+    const esc = (v: unknown) => String(v ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]!);
+    const products: Record<string, string> = { verification: 'Vérif. 99 €', complete: 'Complète 699 €' };
 
     const loginPanel = document.getElementById('login-panel')!;
     const dashboardPanel = document.getElementById('dashboard-panel')!;
@@ -143,8 +150,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         row.type = 'button';
         row.className = 'flex w-full items-center justify-between rounded-sm border border-sable-light bg-white px-4 py-3 text-left hover:border-indigo';
         row.innerHTML = `
-          <span class="font-sans text-sm font-medium text-indigo">${c.client_name}</span>
-          <span class="font-mono text-xs text-jade">${statusLabels[c.status] || c.status}</span>
+          <span class="font-sans text-sm font-medium text-indigo">${esc(c.client_name)} <span class="font-normal text-encre/50">${esc(products[c.product] || '')}</span></span>
+          <span class="font-mono text-xs text-jade">${esc(statusLabels[c.status] || c.status)}</span>
         `;
         row.addEventListener('click', () => openCase(c));
         casesList.appendChild(row);
@@ -166,7 +173,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         return;
       }
       const link = `${window.location.origin}/dossier/?token=${data.access_token}`;
-      resultEl.innerHTML = `Dossier créé. Lien à envoyer au client : <span class="font-mono">${link}</span>`;
+      resultEl.textContent = `Dossier créé. Lien à envoyer au client : ${link}`;
       nameInput.value = '';
       await loadCases();
     });
@@ -178,6 +185,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       caseDetail.classList.remove('hidden');
 
       document.getElementById('detail-client-name')!.textContent = c.client_name;
+      document.getElementById('detail-account')!.textContent = c.email
+        ? `Compte client : ${c.email} · ${products[c.product] || ''} · langue ${c.lang || 'fr'}`
+        : 'Pas de compte client (dossier créé à la main).';
       (document.getElementById('status-select') as HTMLSelectElement).value = c.status;
       document.getElementById('detail-link')!.textContent =
         `${window.location.origin}/dossier/?token=${c.access_token}`;
@@ -208,8 +218,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         const { data: signed } = await sb.storage.from('documents').createSignedUrl(doc.storage_path, 3600);
         const li = document.createElement('li');
         li.innerHTML = signed?.signedUrl
-          ? `<a href="${signed.signedUrl}" target="_blank" rel="noopener noreferrer" class="text-jade underline">${doc.file_name}</a>`
-          : doc.file_name;
+          ? `<a href="${esc(signed.signedUrl)}" target="_blank" rel="noopener noreferrer" class="text-jade underline">${esc(doc.file_name)}</a>`
+          : esc(doc.file_name);
         list.appendChild(li);
       }
       if (!data || data.length === 0) {
@@ -229,7 +239,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           : 'max-w-md rounded-lg bg-jade-bg px-4 py-3';
         wrapper.innerHTML = `
           <p class="font-mono text-[10px] uppercase tracking-wide ${isAdvisor ? 'text-papier/60' : 'text-jade'}">${isAdvisor ? 'Vous' : 'Client'}</p>
-          <p class="mt-1 font-sans text-sm">${msg.body.replace(/</g, '&lt;')}</p>
+          <p class="mt-1 whitespace-pre-line font-sans text-sm">${esc(msg.body)}</p>
         `;
         list.appendChild(wrapper);
       });

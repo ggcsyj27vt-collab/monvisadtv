@@ -5,6 +5,9 @@
 -- avec lequel vous vous connectez à /admin.
 -- =============================================================================
 
+-- Tout ou rien : si une étape échoue (ex. e-mail admin introuvable), rien n'est modifié.
+begin;
+
 -- 1. Nouvelles colonnes des dossiers ------------------------------------------
 alter table public.cases add column if not exists user_id uuid references auth.users(id) on delete set null;
 alter table public.cases add column if not exists email text;
@@ -40,15 +43,23 @@ insert into public.admins (user_id)
 select id from auth.users where email = 'VOTRE_EMAIL_ADMIN'
 on conflict do nothing;
 
+-- Garde-fou : sans admin reconnu, /admin ne verrait plus aucun dossier → on annule tout.
+do $$
+begin
+  if not exists (select 1 from public.admins) then
+    raise exception 'Aucun admin trouvé : remplacez VOTRE_EMAIL_ADMIN par l''e-mail exact de votre compte /admin (Authentication → Users), puis relancez. Rien n''a été modifié.';
+  end if;
+end $$;
+
 create or replace function public.is_admin() returns boolean
 language sql stable security definer set search_path = public as $$
   select exists (select 1 from public.admins where user_id = auth.uid());
 $$;
 
 -- Le dossier appartient-il au client connecté ?
-create or replace function public.owns_case(p_case_id uuid) returns boolean
+create or replace function public.owns_case(p_case_id text) returns boolean
 language sql stable security definer set search_path = public as $$
-  select exists (select 1 from public.cases where id = p_case_id and user_id = auth.uid());
+  select exists (select 1 from public.cases where id::text = p_case_id and user_id = auth.uid());
 $$;
 
 -- Lien à jeton (anciens dossiers créés à la main) encore valide ?
@@ -82,11 +93,11 @@ create policy admin_all_messages on public.messages for all to authenticated usi
 
 -- Client connecté : uniquement ses dossiers, en lecture
 create policy client_read_cases on public.cases for select to authenticated using (user_id = auth.uid());
-create policy client_read_documents on public.documents for select to authenticated using (public.owns_case(case_id));
-create policy client_add_documents on public.documents for insert to authenticated with check (public.owns_case(case_id));
-create policy client_read_messages on public.messages for select to authenticated using (public.owns_case(case_id));
+create policy client_read_documents on public.documents for select to authenticated using (public.owns_case(case_id::text));
+create policy client_add_documents on public.documents for insert to authenticated with check (public.owns_case(case_id::text));
+create policy client_read_messages on public.messages for select to authenticated using (public.owns_case(case_id::text));
 create policy client_add_messages on public.messages for insert to authenticated
-  with check (public.owns_case(case_id) and author = 'client');
+  with check (public.owns_case(case_id::text) and author = 'client');
 
 -- Les visiteurs anonymes (anciens liens à jeton) passent uniquement par les fonctions
 -- get_case_by_token, get_documents_by_token, get_messages_by_token, add_document_record
@@ -113,8 +124,10 @@ create policy docs_admin_all on storage.objects for all to authenticated
 
 -- Client connecté : déposer dans le dossier <id du dossier>/ qui lui appartient
 create policy docs_client_upload on storage.objects for insert to authenticated
-  with check (bucket_id = 'documents' and public.owns_case(((storage.foldername(name))[1])::uuid));
+  with check (bucket_id = 'documents' and public.owns_case((storage.foldername(name))[1]));
 
 -- Ancien lien à jeton : déposer seulement dans <jeton valide>/ (jamais lister ni lire)
 create policy docs_token_upload on storage.objects for insert to anon
   with check (bucket_id = 'documents' and public.token_is_valid((storage.foldername(name))[1]));
+
+commit;

@@ -32,7 +32,7 @@ La première étape utile consiste à analyser précisément les motifs de la d�
 
 ## Comment nous accompagnons les dossiers après un premier refus
 
-Nous analysons avec vous les motifs de la décision et les options possibles. Les conditions d'un éventuel nouvel accompagnement vous sont communiquées clairement au cas par cas, en fonction de ce qui a posé problème dans la première tentative — <a href="/visa-dtv/demande-accompagnee/">voir le détail de notre formule d'accompagnement</a>.
+Si le refus vient d'une pièce que nous avons validée, nous préparons et déposons votre 2e demande sans honoraires : seuls les frais officiels du nouveau dépôt restent à votre charge. Pour tout autre motif, nous analysons la décision avec vous et vous proposons la suite par écrit — <a href="/visa-dtv/demande-accompagnee/">voir le détail de notre formule d'accompagnement</a>.
 
 L'objectif n'est jamais de redéposer un dossier à l'identique en espérant un résultat différent, mais de comprendre précisément ce qui doit changer avant une nouvelle tentative.
 

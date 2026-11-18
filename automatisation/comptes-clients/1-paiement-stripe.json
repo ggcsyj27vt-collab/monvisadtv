@@ -1,0 +1,418 @@
+{
+  "name": "Paiement Stripe → compte client",
+  "nodes": [
+    {
+      "parameters": {
+        "events": [
+          "checkout.session.completed"
+        ]
+      },
+      "id": "89907009-c709-4a5e-a621-cbb01ea2ea35",
+      "name": "Paiement Stripe reçu",
+      "type": "n8n-nodes-base.stripeTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "stripeApi": {
+          "id": "",
+          "name": "Stripe MyVisaDTV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lit la session Stripe et en déduit la formule et la langue du client.\nconst s = $input.first().json.data.object;\nif (s.payment_status !== 'paid') return [];\nconst email = String(s.customer_details?.email || '').trim().toLowerCase();\nif (!email) throw new Error('Paiement sans e-mail : ' + s.id);\nconst name = String(s.customer_details?.name || '').trim() || email;\nconst amount = (s.amount_total || 0) / 100;\n// 99 € = vérification ; au-delà de 150 € = formule complète (699 €, ou 600 € si les 99 € sont déduits)\nconst product = amount > 150 ? 'complete' : 'verification';\nconst loc = String(s.locale || '').slice(0, 2);\nconst country = s.customer_details?.address?.country || '';\nconst FR = ['FR', 'BE', 'LU', 'MC', 'CA', 'MA', 'TN', 'DZ', 'SN', 'CI', 'RE', 'GP', 'MQ', 'GF', 'YT', 'NC', 'PF'];\nconst DE = ['DE', 'AT', 'CH'];\nconst lang = ['fr', 'en', 'de'].includes(loc) ? loc : FR.includes(country) ? 'fr' : DE.includes(country) ? 'de' : 'en';\nreturn [{ json: { email, name, product, lang, amount, sessionId: s.id } }];\n"
+      },
+      "id": "6119202d-e23a-475b-9050-f6167a637fba",
+      "name": "Préparer le client",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ujrtyrnnhwsfqnftoawt.supabase.co/auth/v1/admin/users",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ email: $json.email, email_confirm: true, user_metadata: { full_name: $json.name } }) }}"
+      },
+      "id": "e4ee454e-e18e-424a-b5d5-2b6a01e65ca0",
+      "name": "Supabase : créer le compte",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 200 = compte créé ; 422 = le client a déjà un compte (2e achat) : on continue.\nconst r = $input.first().json;\nconst p = $('Préparer le client').first().json;\nconst created = r.statusCode >= 200 && r.statusCode < 300;\nconst exists = r.statusCode === 422 || /already|exists/i.test(JSON.stringify(r.body || ''));\nif (!created && !exists) throw new Error(`Création du compte impossible (${r.statusCode}) : ${JSON.stringify(r.body)}`);\nreturn [{ json: { ...p, isNew: created } }];\n"
+      },
+      "id": "a629378c-9e42-4472-89ef-80c44d28bdc8",
+      "name": "Compte nouveau ou existant ?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ujrtyrnnhwsfqnftoawt.supabase.co/auth/v1/admin/generate_link",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ type: 'recovery', email: $json.email, redirect_to: 'https://myvisadtv.com' + ({ en: '/en', de: '/de' }[$json.lang] || '') + '/dossier/' }) }}"
+      },
+      "id": "8629224c-891b-45a3-88ac-0baa84ec740a",
+      "name": "Supabase : lien pour le mot de passe",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        300
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ujrtyrnnhwsfqnftoawt.supabase.co/rest/v1/cases?on_conflict=stripe_session_id",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Prefer",
+              "value": "return=representation,resolution=ignore-duplicates"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ client_name: $('Compte nouveau ou existant ?').first().json.name, email: $('Compte nouveau ou existant ?').first().json.email, user_id: $json.id || ($json.user && $json.user.id), product: $('Compte nouveau ou existant ?').first().json.product, lang: $('Compte nouveau ou existant ?').first().json.lang, stripe_session_id: $('Compte nouveau ou existant ?').first().json.sessionId, status: 'documents' }) }}"
+      },
+      "id": "1a168a1e-e37f-4cbf-9a49-c11730fd4880",
+      "name": "Supabase : créer le dossier",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        300
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const SITE = 'https://myvisadtv.com';\nconst espaceUrl = (lang) => SITE + ({ en: '/en', de: '/de' }[lang] || '') + '/dossier/';\nconst esc = (s) => String(s ?? '').replace(/[&<>\"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' })[c]);\nconst first = (n) => esc(String(n || '').trim().split(/\\s+/)[0] || '');\nconst SIGN = { fr: 'Alexandre<br>MyVisaDTV · contact@myvisadtv.com', en: 'Alexandre<br>MyVisaDTV · contact@myvisadtv.com', de: 'Alexandre<br>MyVisaDTV · contact@myvisadtv.com' };\nconst HELLO = { fr: 'Bonjour', en: 'Hello', de: 'Hallo' };\nfunction bouton(href, label) {\n  return `<p style=\"margin:28px 0\"><a href=\"${href}\" style=\"background:#16233f;color:#fff;padding:14px 22px;border-radius:999px;text-decoration:none;font-weight:600;display:inline-block\">${label}</a></p>`;\n}\nfunction mail(lang, name, paras, cta) {\n  const l = ['fr', 'en', 'de'].includes(lang) ? lang : 'fr';\n  const body = paras.map((p) => `<p style=\"margin:0 0 14px\">${p}</p>`).join('');\n  const html = `<div style=\"font-family:-apple-system,Segoe UI,Arial,sans-serif;font-size:15px;line-height:1.55;color:#1f2937;max-width:560px\">`\n    + `<p style=\"margin:0 0 14px\">${HELLO[l]} ${first(name)},</p>${body}${cta ? bouton(cta[0], cta[1]) : ''}<p style=\"margin:24px 0 0\">${SIGN[l]}</p></div>`;\n  const text = [`${HELLO[l]} ${String(name || '').split(' ')[0]},`, ...paras.map((p) => p.replace(/<br>/g, '\\n').replace(/<[^>]+>/g, '')), cta ? `${cta[1]} : ${cta[0]}` : '', 'Alexandre — MyVisaDTV'].filter(Boolean).join('\\n\\n');\n  return { html, text };\n}\n\nconst res = $input.first().json;\nif (res.statusCode >= 300) throw new Error(`Dossier non créé (${res.statusCode}) : ${JSON.stringify(res.body)}`);\n// Stripe renvoie parfois deux fois le même paiement : dossier déjà créé → on s'arrête.\nif (!Array.isArray(res.body) || res.body.length === 0) return [];\nconst c = $('Compte nouveau ou existant ?').first().json;\nconst L = $('Supabase : lien pour le mot de passe').first().json;\nconst link = L.action_link || (L.properties && L.properties.action_link);\nif (!link) throw new Error('Lien de connexion manquant : ' + JSON.stringify(L));\nconst espace = espaceUrl(c.lang);\nconst T = {\n  fr: {\n    objet: 'Votre espace client MyVisaDTV est prêt',\n    merci: `Merci pour votre paiement de <strong>${c.amount} €</strong> (${c.product === 'complete' ? 'formule complète' : 'vérification du dossier'}). Votre espace client est ouvert.`,\n    id: `<strong>Identifiant :</strong> ${esc(c.email)}<br><strong>Mot de passe :</strong> ${c.isNew ? 'à choisir vous-même avec le bouton ci-dessous (lien valable 24 h)' : 'celui que vous avez déjà, ou un nouveau avec le bouton ci-dessous'}.`,\n    suite: c.product === 'complete'\n      ? 'Prochaine étape : déposez vos pièces dans votre espace. Nous préparons ensuite votre dossier et convenons avec vous de la date de dépôt sur le portail officiel e-Visa.'\n      : 'Prochaine étape : déposez vos pièces dans votre espace. Dès que votre dossier est complet, vous recevez votre rapport écrit sous 48 h ouvrées.',\n    liste: `La liste des pièces par catégorie : <a href=\"${SITE}/blog/documents-dtv-thailande-liste-complete/\">${SITE}/blog/documents-dtv-thailande-liste-complete/</a>`,\n    apres: `Ensuite, connectez-vous à tout moment sur <a href=\"${espace}\">${espace}</a>. Lien expiré ? Cliquez sur « Recevoir un lien » sur cette page.`,\n    cta: c.isNew ? 'Choisir mon mot de passe' : 'Ouvrir mon espace',\n  },\n  en: {\n    objet: 'Your MyVisaDTV client space is ready',\n    merci: `Thank you for your payment of <strong>${c.amount}€</strong> (${c.product === 'complete' ? 'full package' : 'document check'}). Your client space is open.`,\n    id: `<strong>Login:</strong> ${esc(c.email)}<br><strong>Password:</strong> ${c.isNew ? 'choose it yourself with the button below (link valid for 24 hours)' : 'your existing one, or set a new one with the button below'}.`,\n    suite: c.product === 'complete'\n      ? 'Next step: upload your documents to your space. We then prepare your file and agree with you on the filing date on the official e-Visa portal.'\n      : 'Next step: upload your documents to your space. As soon as your file is complete, you get your written report within 48 business hours.',\n    liste: `Document list by category: <a href=\"${SITE}/en/blog/\">${SITE}/en/blog/</a>`,\n    apres: `After that, log in any time at <a href=\"${espace}\">${espace}</a>. Link expired? Click “Get a link” on that page.`,\n    cta: c.isNew ? 'Choose my password' : 'Open my space',\n  },\n  de: {\n    objet: 'Ihr MyVisaDTV-Kundenbereich ist bereit',\n    merci: `Vielen Dank für Ihre Zahlung von <strong>${c.amount} €</strong> (${c.product === 'complete' ? 'Komplettpaket' : 'Prüfung der Unterlagen'}). Ihr Kundenbereich ist eingerichtet.`,\n    id: `<strong>Benutzername:</strong> ${esc(c.email)}<br><strong>Passwort:</strong> ${c.isNew ? 'wählen Sie selbst über den Button unten (Link 24 Stunden gültig)' : 'Ihr bisheriges, oder ein neues über den Button unten'}.`,\n    suite: c.product === 'complete'\n      ? 'Nächster Schritt: Laden Sie Ihre Unterlagen in Ihrem Bereich hoch. Wir bereiten dann Ihren Antrag vor und vereinbaren mit Ihnen den Einreichungstermin im offiziellen e-Visa-Portal.'\n      : 'Nächster Schritt: Laden Sie Ihre Unterlagen in Ihrem Bereich hoch. Sobald sie vollständig sind, erhalten Sie Ihren schriftlichen Bericht innerhalb von 48 Werktagsstunden.',\n    liste: `Unterlagen nach Kategorie: <a href=\"${SITE}/de/blog/\">${SITE}/de/blog/</a>`,\n    apres: `Danach melden Sie sich jederzeit unter <a href=\"${espace}\">${espace}</a> an. Link abgelaufen? Klicken Sie dort auf „Link erhalten“.`,\n    cta: c.isNew ? 'Passwort wählen' : 'Bereich öffnen',\n  },\n}[c.lang] ;\nconst m = mail(c.lang, c.name, [T.merci, T.id, T.suite, T.liste, T.apres], [link, T.cta]);\nreturn [{ json: {\n  to: c.email, objet: T.objet, html: m.html, text: m.text, email: c.email,\n  telegram: `💳 Paiement reçu : ${c.name} (${c.email}), ${c.amount} €, ${c.product === 'complete' ? 'formule complète' : 'vérification 99 €'}. Compte ${c.isNew ? 'créé' : 'existant'}, dossier créé, e-mail envoyé.`,\n} }];\n"
+      },
+      "id": "94f1c3ff-1fd6-4a97-b12f-15b42e379ade",
+      "name": "Préparer l'e-mail de bienvenue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "Alexandre - myvisaDTV <contact@myvisadtv.com>",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.objet }}",
+        "emailFormat": "both",
+        "text": "={{ $json.text }}",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "46f3df17-6b7b-45b1-8420-b680301f7143",
+      "name": "E-mail de bienvenue",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1560,
+        160
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "8Bc3etl2wxq6wEEm",
+          "name": "SMTP myvisaDTV (contact@)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "7817841281",
+        "text": "={{ $json.telegram }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "6133a4b4-079e-4277-ad4a-5f6ada1aa497",
+      "name": "Prévenir Alexandre",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1560,
+        320
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TUuxivf4PXDKgHKU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/419615ef3da18149b530d5b19aa6b379/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ page_size: 1, filter: { property: 'Email', email: { equals: $json.email } } }) }}"
+      },
+      "id": "0fdf76eb-816e-4a36-af21-39feb2d5f27e",
+      "name": "Notion : retrouver le prospect",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1560,
+        480
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const page = ($input.first().json.results || [])[0];\nreturn page ? [{ json: { pageId: page.id } }] : [];\n"
+      },
+      "id": "74c81e19-7df6-4957-be41-8f89a4714396",
+      "name": "Prospect trouvé ?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://api.notion.com/v1/pages/' + $json.pageId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ properties: { 'Statut': { select: { name: 'Payé' } } } }) }}"
+      },
+      "id": "47e00f49-cc63-498c-a2ab-03154169df6a",
+      "name": "Notion : statut « Payé »",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2000,
+        480
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Paiement Stripe reçu": {
+      "main": [
+        [
+          {
+            "node": "Préparer le client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer le client": {
+      "main": [
+        [
+          {
+            "node": "Supabase : créer le compte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : créer le compte": {
+      "main": [
+        [
+          {
+            "node": "Compte nouveau ou existant ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compte nouveau ou existant ?": {
+      "main": [
+        [
+          {
+            "node": "Supabase : lien pour le mot de passe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : lien pour le mot de passe": {
+      "main": [
+        [
+          {
+            "node": "Supabase : créer le dossier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : créer le dossier": {
+      "main": [
+        [
+          {
+            "node": "Préparer l'e-mail de bienvenue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer l'e-mail de bienvenue": {
+      "main": [
+        [
+          {
+            "node": "E-mail de bienvenue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prévenir Alexandre",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notion : retrouver le prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion : retrouver le prospect": {
+      "main": [
+        [
+          {
+            "node": "Prospect trouvé ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prospect trouvé ?": {
+      "main": [
+        [
+          {
+            "node": "Notion : statut « Payé »",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "timezone": "Asia/Bangkok",
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

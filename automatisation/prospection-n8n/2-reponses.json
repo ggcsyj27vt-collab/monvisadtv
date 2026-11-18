@@ -1,0 +1,208 @@
+{
+  "name": "Prospection MyVisaDTV : réponses",
+  "nodes": [
+    {
+      "parameters": {
+        "mailbox": "INBOX",
+        "postProcessAction": "nothing",
+        "format": "simple",
+        "options": {}
+      },
+      "id": "16e50c88-8b20-470c-810b-dd57702acaf3",
+      "name": "Nouvel e-mail reçu (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "imap": {
+          "id": "A3soQdEztO7Q0EuK",
+          "name": "IMAP myvisaDTV (contact@)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrait l'adresse de l'expéditeur et repère une demande d'arrêt\nconst out = [];\nfor (const item of $input.all()) {\n  const j = item.json;\n  let from = '';\n  if (typeof j.from === 'string') from = j.from;\n  else if (j.from?.value?.[0]?.address) from = j.from.value[0].address;\n  else if (j.from?.text) from = j.from.text;\n  const m = from.match(/[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+/);\n  if (!m) continue;\n  const email = m[0].toLowerCase();\n  if (/mailer-daemon|postmaster|no-?reply/.test(email)) continue;\n  const corps = String(j.textPlain || j.text || j.textHtml || j.html || '').slice(0, 400).toLowerCase();\n  const stop = /\\b(stop|unsubscribe|désinscri|desinscri|pas intéressé|not interested)\\b/.test(corps);\n  out.push({ json: { email, stop, sujet: j.subject || '' } });\n}\nreturn out;\n"
+      },
+      "id": "4a419229-457c-4764-9c7a-33caee59011b",
+      "name": "Lire l'expéditeur",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/41c615ef3da181d8af4af0cc259be233/query",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ page_size: 1, filter: { property: 'Email', email: { equals: $json.email } } }) }}",
+        "options": {}
+      },
+      "id": "5b1ad298-dc09-4671-b17a-4ed52d90f932",
+      "name": "Notion : chercher le prospect",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Garde seulement les réponses venant d'un prospect connu dans Notion\nconst txt = (prop) => (prop?.rich_text || prop?.title || []).map((t) => t.plain_text).join('').trim();\nconst out = [];\n$input.all().forEach((item, idx) => {\n  const page = (item.json.results || [])[0];\n  if (!page) return;\n  const src = $('Lire l\\'expéditeur').all()[idx]?.json || {};\n  const now = DateTime.now().setZone('Asia/Bangkok');\n  const ancien = txt(page.properties['Historique']);\n  const ligne = src.stop ? 'Réponse « stop » : ne plus contacter' : `Réponse reçue : « ${src.sujet || 'sans objet'} »`;\n  const historique = ((ancien ? ancien + '\\n' : '') + `${now.toFormat('dd/MM/yyyy')} · ${ligne}`).slice(-1900);\n  const dejaRepondu = page.properties['Date de réponse']?.date?.start;\n  out.push({ json: {\n    pageId: page.id,\n    nom: txt(page.properties['Nom']),\n    statut: src.stop ? 'Refus' : 'En discussion',\n    stop: !!src.stop,\n    sujet: src.sujet,\n    email: src.email,\n    historique,\n    dateReponse: dejaRepondu || now.toFormat('yyyy-MM-dd'),\n  } });\n});\nreturn out;\n"
+      },
+      "id": "708df306-85d0-4beb-9a0f-9639ac94ef77",
+      "name": "Prospect connu ?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://api.notion.com/v1/pages/' + $json.pageId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ properties: { 'Statut': { select: { name: $json.statut } }, 'Séquence auto': { checkbox: false }, 'Prochaine action': { date: null }, 'Date de réponse': { date: { start: $json.dateReponse } }, 'Historique': { rich_text: [{ text: { content: $json.historique } }] } } }) }}",
+        "options": {}
+      },
+      "id": "16f172fd-61b2-4b04-bc5e-33107ccbde1e",
+      "name": "Notion : arrêter la séquence",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "7817841281",
+        "text": "={{ ($('Prospect connu ?').item.json.stop ? '🛑 ' + $('Prospect connu ?').item.json.nom + ' a demandé à ne plus être contacté (statut : Refus).' : '💬 ' + $('Prospect connu ?').item.json.nom + ' a répondu ! Séquence arrêtée, statut « En discussion ».') + '\\nObjet : ' + $('Prospect connu ?').item.json.sujet }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a859e8f6-a45f-49c5-b39d-c3d2b38d7d54",
+      "name": "Telegram : réponse reçue",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TUuxivf4PXDKgHKU",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Nouvel e-mail reçu (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Lire l'expéditeur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lire l'expéditeur": {
+      "main": [
+        [
+          {
+            "node": "Notion : chercher le prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion : chercher le prospect": {
+      "main": [
+        [
+          {
+            "node": "Prospect connu ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prospect connu ?": {
+      "main": [
+        [
+          {
+            "node": "Notion : arrêter la séquence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion : arrêter la séquence": {
+      "main": [
+        [
+          {
+            "node": "Telegram : réponse reçue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "Asia/Bangkok",
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
