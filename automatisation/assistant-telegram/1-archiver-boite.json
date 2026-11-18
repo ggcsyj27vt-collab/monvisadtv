@@ -1,0 +1,104 @@
+{
+  "name": "Email assistant: archive the contact@ inbox",
+  "nodes": [
+    {
+      "parameters": {
+        "mailbox": "INBOX",
+        "postProcessAction": "nothing",
+        "format": "simple",
+        "options": {}
+      },
+      "id": "469f5d24-20b4-4f9a-8e39-89c7174f85fd",
+      "name": "New email received (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "imap": {
+          "id": "A3soQdEztO7Q0EuK",
+          "name": "IMAP myvisaDTV (contact@)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turns each received email into an entry of the Notion \"Boîte mail\" database\n// (Notion field names stay in French: they must match the database columns)\nconst s = (v) => (v == null ? '' : String(v)).trim();\nconst rt = (v) => ({ rich_text: [{ text: { content: s(v).slice(0, 1900) } }] });\nconst out = [];\nfor (const item of $input.all()) {\n  const j = item.json;\n  let de = typeof j.from === 'string' ? j.from : (j.from?.text || j.from?.value?.[0]?.address || '');\n  const m = de.match(/[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+/);\n  const corps = s(j.textPlain || j.text || s(j.textHtml || j.html).replace(/<[^>]+>/g, ' ')).replace(/\\n{3,}/g, '\\n\\n');\n  const pj = Object.keys(item.binary || {}).map((k) => item.binary[k].fileName).filter(Boolean).join(', ');\n  const date = j.date ? new Date(j.date) : new Date();\n  const props = {\n    'Objet': { title: [{ text: { content: s(j.subject || '(no subject)').slice(0, 200) } }] },\n    'De': rt(de),\n    'Reçu le': { date: { start: date.toISOString() } },\n    'Contenu': rt(corps),\n    'Message-ID': rt(j.messageId || j['message-id'] || ''),\n  };\n  if (m) props['Email expéditeur'] = { email: m[0].toLowerCase() };\n  if (pj) props['Pièces jointes'] = rt(pj);\n  out.push({ json: { body: { parent: { database_id: '41c615ef3da181a883b2e1161a4a26d0' }, properties: props } } });\n}\nreturn out;\n"
+      },
+      "id": "44f26f02-6047-4189-afd9-8023de44c974",
+      "name": "Prepare the Notion entry",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {}
+      },
+      "id": "b23396aa-e4d5-42af-8fee-c6f77e98d4e3",
+      "name": "Notion: store the email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "New email received (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Prepare the Notion entry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare the Notion entry": {
+      "main": [
+        [
+          {
+            "node": "Notion: store the email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "Asia/Bangkok",
+    "executionOrder": "v1"
+  }
+}

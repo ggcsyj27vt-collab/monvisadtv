@@ -22,8 +22,8 @@ const pathWithoutLangPrefix = rawPath.replace(/^\/(en|de)(\/|$)/, '/');
 // Le blog n'existe qu'en français pour l'instant : le sélecteur renvoie vers
 // l'accueil de la langue choisie plutôt que vers une URL de blog inexistante.
 const isBlogPage = pathWithoutLangPrefix.startsWith('/blog');
-// L'espace client et l'admin n'existent qu'en français : le sélecteur renvoie vers l'accueil.
-const isFrOnlyPage = /^\/(dossier|admin)(\/|$)/.test(pathWithoutLangPrefix);
+// L'admin n'existe qu'en français : le sélecteur renvoie vers l'accueil.
+const isFrOnlyPage = /^\/admin(\/|$)/.test(pathWithoutLangPrefix);
 const targetPath = isBlogPage ? '/blog/' : isFrOnlyPage ? '/' : pathWithoutLangPrefix;
 const langLinks = {
   fr: targetPath,

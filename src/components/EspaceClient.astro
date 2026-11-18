@@ -1,0 +1,440 @@
+---
+// Espace client (FR/EN/DE).
+// - Clients avec compte (créé automatiquement au paiement Stripe) : connexion e-mail + mot de passe.
+// - Lien reçu par e-mail (#type=recovery) : le client choisit son mot de passe.
+// - Anciens dossiers créés à la main : lien ?token=… (toujours accepté).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+const input = 'mt-2 w-full rounded-sm border border-sable-light bg-white px-4 py-3 font-sans text-sm focus:border-indigo focus:outline-none';
+
+const T = {
+  fr: {
+    title: 'Mon dossier',
+    description: "Suivez l'avancement de votre dossier, déposez vos documents et échangez avec votre conseiller.",
+    eyebrow: 'Espace client',
+    intro: "Retrouvez ici l'avancement de votre dossier, déposez vos documents et échangez avec votre conseiller.",
+    loading: 'Chargement…',
+    loginTitle: 'Connexion',
+    loginIntro: "Votre identifiant est l'adresse e-mail utilisée lors du paiement.",
+    email: 'E-mail',
+    password: 'Mot de passe',
+    login: 'Se connecter',
+    forgot: 'Mot de passe oublié ou première connexion ? Recevoir un lien',
+    pwTitle: 'Choisissez votre mot de passe',
+    pwIntro: 'Identifiant :',
+    pwRule: 'Au moins 10 caractères.',
+    newPw: 'Nouveau mot de passe',
+    savePw: 'Enregistrer et ouvrir mon dossier',
+    skipPw: 'Garder mon mot de passe actuel',
+    invalidTitle: 'Lien introuvable',
+    invalidText: "Ce lien ne correspond à aucun dossier actif. Vérifiez que vous avez bien copié l'adresse complète, ou écrivez-nous à",
+    logout: 'Se déconnecter',
+    caseOf: 'Dossier de',
+    docsTitle: 'Vos documents',
+    docsIntro: 'Déposez vos justificatifs ici (PDF, JPG ou PNG, 10 Mo max par fichier). Votre conseiller vous précisera la liste exacte attendue.',
+    upload: 'Déposer le fichier',
+    msgTitle: 'Échanges avec votre conseiller',
+    msgPlaceholder: 'Écrivez votre message…',
+    send: 'Envoyer',
+    js: {
+      status: { diagnostic: 'Diagnostic en cours', documents: 'Réunion des documents', verification: 'Vérification du dossier', rapport: 'Rapport de vérification envoyé', depot: 'Dossier déposé', decision: 'En attente de décision', approuve: 'Visa obtenu', refuse: 'Dossier refusé', clos: 'Dossier clos' },
+      expired: 'Ce lien a expiré. Recevez-en un nouveau avec le bouton ci-dessous.',
+      badLogin: 'E-mail ou mot de passe incorrect.',
+      needEmail: "Saisissez d'abord votre e-mail ci-dessus.",
+      linkSent: 'Si un dossier existe pour cette adresse, un lien vient de vous être envoyé.',
+      badPw: 'Mot de passe refusé (10 caractères minimum). Réessayez.',
+      noCaseTitle: 'Aucun dossier pour le moment',
+      noCaseText: 'Votre dossier apparaîtra ici dès sa création. Une question ? contact@myvisadtv.com',
+      noDocs: 'Aucun document déposé pour le moment.',
+      noMsgs: 'Aucun message pour le moment.',
+      advisor: 'Votre conseiller',
+      you: 'Vous',
+      tooBig: 'Fichier trop lourd (10 Mo maximum).',
+      sending: 'Envoi en cours…',
+      uploadErr: "Erreur lors de l'envoi. Réessayez ou contactez-nous.",
+      uploaded: 'Document envoyé ✓',
+    },
+  },
+  en: {
+    title: 'My file',
+    description: 'Follow your application, upload your documents and talk to your advisor.',
+    eyebrow: 'Client space',
+    intro: 'Follow the progress of your application, upload your documents and talk to your advisor.',
+    loading: 'Loading…',
+    loginTitle: 'Log in',
+    loginIntro: 'Your login is the email address you used to pay.',
+    email: 'Email',
+    password: 'Password',
+    login: 'Log in',
+    forgot: 'Forgot your password or first visit? Get a link',
+    pwTitle: 'Choose your password',
+    pwIntro: 'Login:',
+    pwRule: 'At least 10 characters.',
+    newPw: 'New password',
+    savePw: 'Save and open my file',
+    skipPw: 'Keep my current password',
+    invalidTitle: 'Link not found',
+    invalidText: "This link doesn't match any active file. Check that you copied the full address, or email us at",
+    logout: 'Log out',
+    caseOf: 'File of',
+    docsTitle: 'Your documents',
+    docsIntro: 'Upload your documents here (PDF, JPG or PNG, 10 MB max per file). Your advisor will tell you exactly which ones are needed.',
+    upload: 'Upload file',
+    msgTitle: 'Messages with your advisor',
+    msgPlaceholder: 'Write your message…',
+    send: 'Send',
+    js: {
+      status: { diagnostic: 'Initial assessment', documents: 'Gathering documents', verification: 'Checking your file', rapport: 'Check report sent', depot: 'Application filed', decision: 'Awaiting decision', approuve: 'Visa granted', refuse: 'Application refused', clos: 'File closed' },
+      expired: 'This link has expired. Get a new one with the button below.',
+      badLogin: 'Incorrect email or password.',
+      needEmail: 'Enter your email above first.',
+      linkSent: 'If a file exists for this address, a link has just been sent to you.',
+      badPw: 'Password rejected (10 characters minimum). Please try again.',
+      noCaseTitle: 'No file yet',
+      noCaseText: 'Your file will appear here as soon as it is created. Any question? contact@myvisadtv.com',
+      noDocs: 'No documents uploaded yet.',
+      noMsgs: 'No messages yet.',
+      advisor: 'Your advisor',
+      you: 'You',
+      tooBig: 'File too large (10 MB maximum).',
+      sending: 'Uploading…',
+      uploadErr: 'Upload failed. Please try again or contact us.',
+      uploaded: 'Document uploaded ✓',
+    },
+  },
+  de: {
+    title: 'Mein Antrag',
+    description: 'Verfolgen Sie Ihren Antrag, laden Sie Unterlagen hoch und schreiben Sie Ihrem Berater.',
+    eyebrow: 'Kundenbereich',
+    intro: 'Hier sehen Sie den Stand Ihres Antrags, laden Ihre Unterlagen hoch und schreiben Ihrem Berater.',
+    loading: 'Wird geladen…',
+    loginTitle: 'Anmelden',
+    loginIntro: 'Ihr Benutzername ist die E-Mail-Adresse, mit der Sie bezahlt haben.',
+    email: 'E-Mail',
+    password: 'Passwort',
+    login: 'Anmelden',
+    forgot: 'Passwort vergessen oder erster Besuch? Link erhalten',
+    pwTitle: 'Wählen Sie Ihr Passwort',
+    pwIntro: 'Benutzername:',
+    pwRule: 'Mindestens 10 Zeichen.',
+    newPw: 'Neues Passwort',
+    savePw: 'Speichern und Antrag öffnen',
+    skipPw: 'Aktuelles Passwort behalten',
+    invalidTitle: 'Link nicht gefunden',
+    invalidText: 'Dieser Link gehört zu keinem aktiven Antrag. Prüfen Sie, ob Sie die vollständige Adresse kopiert haben, oder schreiben Sie uns an',
+    logout: 'Abmelden',
+    caseOf: 'Antrag von',
+    docsTitle: 'Ihre Unterlagen',
+    docsIntro: 'Laden Sie Ihre Nachweise hier hoch (PDF, JPG oder PNG, max. 10 MB pro Datei). Ihr Berater nennt Ihnen die genaue Liste.',
+    upload: 'Datei hochladen',
+    msgTitle: 'Nachrichten mit Ihrem Berater',
+    msgPlaceholder: 'Ihre Nachricht…',
+    send: 'Senden',
+    js: {
+      status: { diagnostic: 'Ersteinschätzung', documents: 'Unterlagen werden gesammelt', verification: 'Unterlagen werden geprüft', rapport: 'Prüfbericht verschickt', depot: 'Antrag eingereicht', decision: 'Warten auf Entscheidung', approuve: 'Visum erteilt', refuse: 'Antrag abgelehnt', clos: 'Antrag abgeschlossen' },
+      expired: 'Dieser Link ist abgelaufen. Fordern Sie mit dem Button unten einen neuen an.',
+      badLogin: 'E-Mail oder Passwort falsch.',
+      needEmail: 'Geben Sie zuerst oben Ihre E-Mail ein.',
+      linkSent: 'Falls zu dieser Adresse ein Antrag existiert, wurde Ihnen soeben ein Link geschickt.',
+      badPw: 'Passwort abgelehnt (mindestens 10 Zeichen). Bitte erneut versuchen.',
+      noCaseTitle: 'Noch kein Antrag',
+      noCaseText: 'Ihr Antrag erscheint hier, sobald er angelegt ist. Fragen? contact@myvisadtv.com',
+      noDocs: 'Noch keine Unterlagen hochgeladen.',
+      noMsgs: 'Noch keine Nachrichten.',
+      advisor: 'Ihr Berater',
+      you: 'Sie',
+      tooBig: 'Datei zu groß (max. 10 MB).',
+      sending: 'Wird hochgeladen…',
+      uploadErr: 'Hochladen fehlgeschlagen. Bitte erneut versuchen oder uns kontaktieren.',
+      uploaded: 'Dokument hochgeladen ✓',
+    },
+  },
+}[lang];
+---
+
+<BaseLayout title={T.title} description={T.description} lang={lang} translated noindex>
+  <section class="border-b border-sable-light bg-papier">
+    <div class="mx-auto max-w-content px-6 py-16 md:px-10 md:py-20">
+      <p class="eyebrow mb-4">{T.eyebrow}</p>
+      <h1 class="max-w-2xl font-display text-4xl leading-tight text-indigo md:text-5xl">{T.title}</h1>
+      <p class="mt-4 max-w-xl font-sans text-base text-encre/70">{T.intro}</p>
+    </div>
+  </section>
+
+  <section class="section max-w-3xl" id="espace-client" data-i18n={JSON.stringify(T.js)}>
+    <div id="loading-state" class="font-sans text-sm text-encre/60">{T.loading}</div>
+
+    <!-- Connexion -->
+    <div id="login-panel" class="hidden max-w-sm">
+      <h2 class="font-display text-2xl text-indigo">{T.loginTitle}</h2>
+      <p class="mt-2 font-sans text-sm text-encre/70">{T.loginIntro}</p>
+      <form id="login-form" class="mt-6 space-y-4">
+        <div>
+          <label for="login-email" class="block font-sans text-sm font-medium text-encre">{T.email}</label>
+          <input type="email" id="login-email" autocomplete="email" required class={input} />
+        </div>
+        <div>
+          <label for="login-password" class="block font-sans text-sm font-medium text-encre">{T.password}</label>
+          <input type="password" id="login-password" autocomplete="current-password" required class={input} />
+        </div>
+        <button type="submit" class="btn-primary w-full">{T.login}</button>
+        <p id="login-msg" class="font-sans text-xs text-jade-dark" role="status"></p>
+      </form>
+      <button id="forgot-btn" type="button" class="mt-4 font-sans text-sm text-encre/70 underline hover:text-indigo">{T.forgot}</button>
+    </div>
+
+    <!-- Choix du mot de passe (lien reçu par e-mail) -->
+    <div id="password-panel" class="hidden max-w-sm">
+      <h2 class="font-display text-2xl text-indigo">{T.pwTitle}</h2>
+      <p class="mt-2 font-sans text-sm text-encre/70">{T.pwIntro} <strong id="password-email"></strong>. {T.pwRule}</p>
+      <form id="password-form" class="mt-6 space-y-4">
+        <div>
+          <label for="new-password" class="block font-sans text-sm font-medium text-encre">{T.newPw}</label>
+          <input type="password" id="new-password" autocomplete="new-password" minlength="10" required class={input} />
+        </div>
+        <button type="submit" class="btn-primary w-full">{T.savePw}</button>
+        <p id="password-msg" class="font-sans text-xs text-jade-dark" role="status"></p>
+      </form>
+      <button id="skip-password" type="button" class="mt-4 font-sans text-sm text-encre/70 underline hover:text-indigo">{T.skipPw}</button>
+    </div>
+
+    <div id="invalid-state" class="hidden rounded-lg border border-sable-light bg-white p-8 text-center">
+      <p class="font-display text-xl text-indigo" id="invalid-title">{T.invalidTitle}</p>
+      <p class="mt-3 font-sans text-sm text-encre/70" id="invalid-text">
+        {T.invalidText} <a href="mailto:contact@myvisadtv.com" class="underline hover:text-indigo">contact@myvisadtv.com</a>.
+      </p>
+    </div>
+
+    <div id="case-content" class="hidden space-y-10">
+      <div class="flex justify-end">
+        <button id="logout-btn" type="button" class="hidden font-sans text-sm text-encre/60 underline hover:text-indigo">{T.logout}</button>
+      </div>
+      <div class="rounded-lg border border-sable-light bg-jade-bg p-6">
+        <p class="font-mono text-xs uppercase tracking-wide text-encre/50">{T.caseOf}</p>
+        <p class="mt-1 font-display text-2xl text-indigo" id="client-name"></p>
+        <p class="mt-3 inline-flex items-center gap-2 rounded-sm bg-white px-3 py-1.5 font-mono text-xs text-jade">
+          <span aria-hidden="true">●</span>
+          <span id="status-label"></span>
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-indigo">{T.docsTitle}</h2>
+        <p class="mt-2 font-sans text-sm text-encre/70">{T.docsIntro}</p>
+        <form id="upload-form" class="mt-5 flex flex-wrap items-center gap-3">
+          <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png" class="font-sans text-sm text-encre/80" />
+          <button type="submit" class="btn-primary" id="upload-btn">{T.upload}</button>
+        </form>
+        <p id="upload-status" class="mt-2 font-sans text-xs text-encre/60" role="status"></p>
+        <ul id="documents-list" class="mt-6 space-y-2 font-sans text-sm text-encre/85"></ul>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl text-indigo">{T.msgTitle}</h2>
+        <div id="messages-list" class="mt-5 space-y-4"></div>
+        <form id="message-form" class="mt-6 space-y-3">
+          <textarea id="message-input" rows="3" placeholder={T.msgPlaceholder} required class="w-full rounded-sm border border-sable-light bg-white px-4 py-3 font-sans text-sm text-encre focus:border-indigo focus:outline-none"></textarea>
+          <button type="submit" class="btn-primary">{T.send}</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'https://ujrtyrnnhwsfqnftoawt.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_nKqEap0GKlrBNhtwxqivZg_UCtZT8Ek';
+
+    // À lire avant que Supabase ne nettoie l'adresse : le client arrive-t-il par un lien e-mail ?
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const linkType = hash.get('type'); // 'recovery' (lien de bienvenue ou mot de passe oublié)
+    const linkError = hash.get('error_code'); // ex. 'otp_expired'
+
+    const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    const $ = (id: string) => document.getElementById(id)!;
+    const t = JSON.parse($('espace-client').dataset.i18n || '{}');
+    const esc = (s: string) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+    const show = (id: string) => {
+      ['loading-state', 'login-panel', 'password-panel', 'invalid-state', 'case-content'].forEach((p) => $(p).classList.toggle('hidden', p !== id));
+    };
+
+    // Dossier affiché : soit via compte (caseId), soit via ancien lien (token)
+    let caseId: string | null = null;
+
+    async function init() {
+      if (token) return openTokenCase();
+      const { data } = await sb.auth.getSession();
+      if (linkError) {
+        $('login-msg').textContent = t.expired;
+        return show('login-panel');
+      }
+      if (data.session && linkType === 'recovery') {
+        $('password-email').textContent = data.session.user.email || '';
+        history.replaceState(null, '', window.location.pathname);
+        return show('password-panel');
+      }
+      if (data.session) return openAccountCase();
+      show('login-panel');
+    }
+
+    // ---- Compte client -------------------------------------------------------
+    async function openAccountCase() {
+      const { data: rows } = await sb.from('cases').select('id, client_name, status').order('created_at', { ascending: false }).limit(1);
+      const c = rows?.[0];
+      if (!c) {
+        $('invalid-title').textContent = t.noCaseTitle;
+        $('invalid-text').textContent = t.noCaseText;
+        return show('invalid-state');
+      }
+      caseId = c.id;
+      $('logout-btn').classList.remove('hidden');
+      fillCase(c);
+    }
+
+    $('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = ($('login-email') as HTMLInputElement).value.trim();
+      const password = ($('login-password') as HTMLInputElement).value;
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) {
+        $('login-msg').textContent = t.badLogin;
+        return;
+      }
+      openAccountCase();
+    });
+
+    $('forgot-btn').addEventListener('click', async () => {
+      const email = ($('login-email') as HTMLInputElement).value.trim();
+      if (!email) {
+        $('login-msg').textContent = t.needEmail;
+        return;
+      }
+      await sb.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}${window.location.pathname}` });
+      // Même message que le compte existe ou non (ne révèle pas qui est client)
+      $('login-msg').textContent = t.linkSent;
+    });
+
+    $('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const password = ($('new-password') as HTMLInputElement).value;
+      const { error } = await sb.auth.updateUser({ password });
+      if (error) {
+        $('password-msg').textContent = t.badPw;
+        return;
+      }
+      openAccountCase();
+    });
+    $('skip-password').addEventListener('click', () => openAccountCase());
+
+    $('logout-btn').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      window.location.reload();
+    });
+
+    // ---- Ancien lien à jeton -------------------------------------------------
+    async function openTokenCase() {
+      const { data: rows, error } = await sb.rpc('get_case_by_token', { p_token: token });
+      if (error || !rows?.[0]) return show('invalid-state');
+      fillCase(rows[0]);
+    }
+
+    // ---- Affichage commun ----------------------------------------------------
+    async function fillCase(c: any) {
+      $('client-name').textContent = c.client_name;
+      $('status-label').textContent = t.status[c.status] || c.status;
+      show('case-content');
+      await loadDocuments();
+      await loadMessages();
+    }
+
+    async function loadDocuments() {
+      const { data } = caseId
+        ? await sb.from('documents').select('file_name, uploaded_at').eq('case_id', caseId).order('uploaded_at', { ascending: false })
+        : await sb.rpc('get_documents_by_token', { p_token: token });
+      const list = $('documents-list');
+      list.innerHTML = '';
+      (data || []).forEach((doc: any) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center gap-2 rounded-sm border border-sable-light bg-white px-4 py-3';
+        li.innerHTML = `<span aria-hidden="true">📄</span> <span>${esc(doc.file_name)}</span>`;
+        list.appendChild(li);
+      });
+      if (!data || data.length === 0) {
+        list.innerHTML = `<li class="font-sans text-sm text-encre/50">${esc(t.noDocs)}</li>`;
+      }
+    }
+
+    async function loadMessages() {
+      const { data } = caseId
+        ? await sb.from('messages').select('author, body, created_at').eq('case_id', caseId).order('created_at', { ascending: true })
+        : await sb.rpc('get_messages_by_token', { p_token: token });
+      const list = $('messages-list');
+      list.innerHTML = '';
+      (data || []).forEach((msg: any) => {
+        const isAdvisor = msg.author === 'advisor';
+        const wrapper = document.createElement('div');
+        wrapper.className = isAdvisor ? 'max-w-md rounded-lg bg-jade-bg px-4 py-3' : 'ml-auto max-w-md rounded-lg bg-indigo px-4 py-3 text-papier';
+        wrapper.innerHTML = `
+          <p class="font-mono text-[10px] uppercase tracking-wide ${isAdvisor ? 'text-jade' : 'text-papier/60'}">${esc(isAdvisor ? t.advisor : t.you)}</p>
+          <p class="mt-1 whitespace-pre-line font-sans text-sm">${esc(msg.body)}</p>
+        `;
+        list.appendChild(wrapper);
+      });
+      if (!data || data.length === 0) {
+        list.innerHTML = `<p class="font-sans text-sm text-encre/50">${esc(t.noMsgs)}</p>`;
+      }
+    }
+
+    $('upload-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = $('file-input') as HTMLInputElement;
+      const file = fileInput.files?.[0];
+      const statusEl = $('upload-status');
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) {
+        statusEl.textContent = t.tooBig;
+        return;
+      }
+      statusEl.textContent = t.sending;
+      const safeName = file.name.normalize('NFD').replace(/[^\w.-]+/g, '_');
+      const path = `${caseId ?? token}/${Date.now()}-${safeName}`;
+      const { error: uploadError } = await sb.storage.from('documents').upload(path, file);
+      if (uploadError) {
+        statusEl.textContent = t.uploadErr;
+        return;
+      }
+      if (caseId) {
+        await sb.from('documents').insert({ case_id: caseId, file_name: file.name, storage_path: path });
+      } else {
+        await sb.rpc('add_document_record', { p_token: token, p_file_name: file.name, p_storage_path: path });
+      }
+      statusEl.textContent = t.uploaded;
+      fileInput.value = '';
+      await loadDocuments();
+    });
+
+    $('message-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = $('message-input') as HTMLTextAreaElement;
+      const body = input.value.trim();
+      if (!body) return;
+      if (caseId) {
+        await sb.from('messages').insert({ case_id: caseId, author: 'client', body });
+      } else {
+        await sb.rpc('add_client_message', { p_token: token, p_body: body });
+      }
+      input.value = '';
+      await loadMessages();
+    });
+
+    init();
+  </script>
+</BaseLayout>

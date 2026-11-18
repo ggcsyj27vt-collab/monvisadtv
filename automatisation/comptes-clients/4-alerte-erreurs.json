@@ -1,0 +1,58 @@
+{
+  "name": "Alerte : workflow en erreur",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "cbf0ee8f-b70f-4879-9ca5-9bf86d990c66",
+      "name": "Un workflow a planté",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "7817841281",
+        "text": "={{ '⚠️ n8n : le workflow « ' + $json.workflow.name + ' » a planté.\\n' + ($json.execution.error && $json.execution.error.message || '') + '\\n' + ($json.execution.url || '') }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "77b04f06-2f6a-48d1-9ee6-190a98202be0",
+      "name": "Telegram : erreur",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TUuxivf4PXDKgHKU",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Un workflow a planté": {
+      "main": [
+        [
+          {
+            "node": "Telegram : erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "timezone": "Asia/Bangkok",
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

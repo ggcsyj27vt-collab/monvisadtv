@@ -1,0 +1,391 @@
+{
+  "name": "Email assistant (Telegram)",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "a6104be4-0272-4fcf-850d-e3f438a9c75e",
+      "name": "Telegram message",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TUuxivf4PXDKgHKU",
+          "name": "Telegram account"
+        }
+      },
+      "webhookId": "332cb099-ea85-4c4f-bb24-cdd5170fe3e3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "ee747a3b-8e71-4838-8de3-ea86973e212a",
+              "leftValue": "={{ String($json.message.chat.id) }}",
+              "rightValue": "7817841281",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "a2e4391e-5dac-4aee-b0fe-aefcc538d196",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "51a4e0a8-4a75-4f80-aa24-43adcef3a6eb",
+      "name": "Is it Alexandre?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=You are the email assistant of Alexandre, founder of MyVisaDTV (an agency that helps people apply for the DTV visa for Thailand). You talk to him on Telegram, in English, briefly and clearly, in plain text (no Markdown, no tables).\n\nIt is {{ $now.setZone('Asia/Bangkok').setLocale('en').toFormat(\"cccc d LLLL yyyy, HH:mm\") }} (Bangkok time).\n\nWhat you can do with your tools:\n- latest_emails: read the latest emails received at contact@myvisadtv.com.\n- search_emails: search for an email by keyword (name, address, subject, content).\n- find_client: find a client in the Notion \"Clients\" CRM (status, category, verdict, first message).\n- send_email: send an email from contact@myvisadtv.com.\n\nRules:\n1. Never send an email without explicit approval. First show the full draft (recipient, subject, text) and ask \"Shall I send it?\". Only call send_email if Alexandre's latest message clearly confirms (yes, send it, ok go…).\n2. Emails are signed automatically: do not add a signature to the text.\n3. Write to clients in their own language (French or English), in a professional and warm tone, and set the language parameter accordingly. Never promise that the visa will be granted: MyVisaDTV is not the Thai administration.\n4. For an inbox summary, give for each email: sender, subject, date, a one-line summary, and flag what needs a reply.\n5. If some information is not available through your tools, say so instead of making it up. The inbox has only been copied since the assistant went live: older emails cannot be looked up.",
+          "maxIterations": 8
+        }
+      },
+      "id": "ba95b2d4-a5a7-4076-9394-e77d04ad5c84",
+      "name": "Email assistant",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "options": {}
+      },
+      "id": "cdf0d79a-385b-4d55-a1dc-de7a37b58241",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        300,
+        540
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "7FHYwSXsLLoMcqxP",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ 'telegram-' + $('Telegram message').item.json.message.chat.id }}",
+        "contextWindowLength": 12
+      },
+      "id": "dfaea6b8-17b6-4e4b-aa75-aed41aa2dae1",
+      "name": "Conversation memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        440,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Reads the latest emails received at contact@myvisadtv.com, newest first.",
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/41c615ef3da181a883b2e1161a4a26d0/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ page_size: Math.min(20, Math.max(1, Number($fromAI('count', 'Number of emails to read (1 to 20)', 'number')) || 10)), sorts: [{ property: 'Reçu le', direction: 'descending' }] }) }}",
+        "options": {}
+      },
+      "id": "6577ef0b-40bc-461c-97a2-6d0502238ecd",
+      "name": "latest_emails",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        580,
+        540
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Searches received emails for a keyword in the subject, sender name, sender address or content.",
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/41c615ef3da181a883b2e1161a4a26d0/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ page_size: 15, sorts: [{ property: 'Reçu le', direction: 'descending' }], filter: { or: [ { property: 'Objet', title: { contains: $fromAI('query', 'Keyword to search for', 'string') } }, { property: 'De', rich_text: { contains: $fromAI('query', 'Keyword to search for', 'string') } }, { property: 'Email expéditeur', email: { contains: $fromAI('query', 'Keyword to search for', 'string') } }, { property: 'Contenu', rich_text: { contains: $fromAI('query', 'Keyword to search for', 'string') } } ] } }) }}",
+        "options": {}
+      },
+      "id": "12985c53-e98b-4b75-97ba-dec3b5c1c2e9",
+      "name": "search_emails",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        540
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Searches for a client in the Notion \"Clients\" CRM by name or email address.",
+        "method": "POST",
+        "url": "https://api.notion.com/v1/databases/419615ef3da18149b530d5b19aa6b379/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ page_size: 5, filter: { or: [ { property: 'Nom', title: { contains: $fromAI('client', 'Client name or email address', 'string') } }, { property: 'Email', email: { contains: $fromAI('client', 'Client name or email address', 'string') } } ] } }) }}",
+        "options": {}
+      },
+      "id": "0129bf0b-0067-4356-97fc-497d48904f37",
+      "name": "find_client",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        860,
+        540
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "dO9aiMYNnCTuvM1R",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Sends an email from contact@myvisadtv.com with the MyVisaDTV signature (logo) in the given language. Use ONLY after Alexandre has explicitly approved the draft.",
+        "fromEmail": "Alexandre - myvisaDTV <contact@myvisadtv.com>",
+        "toEmail": "={{ $fromAI('recipient', 'Recipient email address', 'string') }}",
+        "subject": "={{ $fromAI('subject', 'Email subject', 'string') }}",
+        "emailFormat": "both",
+        "text": "={{ $fromAI('message', 'Full email text, without signature', 'string') }}\n\n--\nAlexandre · MyVisaDTV\nmyvisadtv.com · WhatsApp +66 63 174 7492",
+        "options": {
+          "appendAttribution": false
+        },
+        "html": "={{ (() => { const t = String($fromAI('message', 'Full email text, without signature', 'string')); const lang = String($fromAI('language', 'Email language: fr or en (the client language)', 'string')).toLowerCase().startsWith('en') ? 'en' : 'fr'; const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); const corps = esc(t).split(/\\n{2,}/).map((p) => '<p style=\"margin:0 0 14px;\">' + p.replace(/\\n/g, '<br>') + '</p>').join(''); const sig = lang === 'en' ? \"<table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;color:#1F2430;\\\"><tr><td valign=\\\"middle\\\" style=\\\"padding:0 18px 0 0;\\\"><a href=\\\"https://myvisadtv.com/en/\\\" style=\\\"text-decoration:none;\\\"><img src=\\\"https://myvisadtv.com/images/logo-dtv-thailand.png\\\" width=\\\"132\\\" height=\\\"88\\\" alt=\\\"MyVisaDTV, DTV Thailand Visa Services\\\" style=\\\"display:block;border:0;width:132px;height:88px;\\\"></a></td><td valign=\\\"middle\\\" style=\\\"border-left:2px solid #C9A24C;padding:2px 0 2px 18px;\\\"><div style=\\\"font-family:Georgia,'Times New Roman',serif;font-size:19px;font-weight:bold;color:#16233F;line-height:1.2;\\\">Alexandre</div><div style=\\\"font-size:13px;color:#2F6F62;font-weight:bold;line-height:1.5;padding-top:2px;\\\">Founder · MyVisaDTV</div><div style=\\\"font-size:12px;color:#6F675B;line-height:1.5;\\\">DTV visa support for Thailand</div><table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;margin-top:8px;font-size:12.5px;line-height:1.7;\\\"><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">WhatsApp</td><td><a href=\\\"https://wa.me/66631747492\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">+66 63 174 7492</a></td></tr><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">Email</td><td><a href=\\\"mailto:contact@myvisadtv.com\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">contact@myvisadtv.com</a></td></tr><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">Web</td><td><a href=\\\"https://myvisadtv.com/en/\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">myvisadtv.com</a></td></tr></table><table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;margin-top:10px;\\\"><tr><td style=\\\"background:#16233F;border-radius:6px;\\\"><a href=\\\"https://cal.com/myvisadtv/appel-decouverte-dtv\\\" style=\\\"display:inline-block;padding:7px 14px;font-size:12px;font-weight:bold;color:#FFFFFF;text-decoration:none;\\\">Book a free 10-minute call</a></td></tr></table></td></tr><tr><td colspan=\\\"2\\\" style=\\\"padding-top:12px;font-size:10.5px;line-height:1.4;color:#9C9284;\\\"> MyVisaDTV is a private support agency. We are not the Thai government and cannot guarantee that a visa will be granted. </td></tr></table>\" : \"<table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;color:#1F2430;\\\"><tr><td valign=\\\"middle\\\" style=\\\"padding:0 18px 0 0;\\\"><a href=\\\"https://myvisadtv.com/\\\" style=\\\"text-decoration:none;\\\"><img src=\\\"https://myvisadtv.com/images/logo-dtv-thailand.png\\\" width=\\\"132\\\" height=\\\"88\\\" alt=\\\"MyVisaDTV, DTV Thailand Visa Services\\\" style=\\\"display:block;border:0;width:132px;height:88px;\\\"></a></td><td valign=\\\"middle\\\" style=\\\"border-left:2px solid #C9A24C;padding:2px 0 2px 18px;\\\"><div style=\\\"font-family:Georgia,'Times New Roman',serif;font-size:19px;font-weight:bold;color:#16233F;line-height:1.2;\\\">Alexandre</div><div style=\\\"font-size:13px;color:#2F6F62;font-weight:bold;line-height:1.5;padding-top:2px;\\\">Fondateur · MyVisaDTV</div><div style=\\\"font-size:12px;color:#6F675B;line-height:1.5;\\\">Accompagnement visa DTV pour la Thaïlande</div><table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;margin-top:8px;font-size:12.5px;line-height:1.7;\\\"><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">WhatsApp</td><td><a href=\\\"https://wa.me/66631747492\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">+66 63 174 7492</a></td></tr><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">E-mail</td><td><a href=\\\"mailto:contact@myvisadtv.com\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">contact@myvisadtv.com</a></td></tr><tr><td style=\\\"color:#C9A24C;font-weight:bold;padding-right:6px;\\\">Site</td><td><a href=\\\"https://myvisadtv.com/\\\" style=\\\"color:#1F2430;text-decoration:none;\\\">myvisadtv.com</a></td></tr></table><table cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" role=\\\"presentation\\\" style=\\\"border-collapse:collapse;margin-top:10px;\\\"><tr><td style=\\\"background:#16233F;border-radius:6px;\\\"><a href=\\\"https://cal.com/myvisadtv/appel-decouverte-dtv\\\" style=\\\"display:inline-block;padding:7px 14px;font-size:12px;font-weight:bold;color:#FFFFFF;text-decoration:none;\\\">Réserver un appel gratuit de 10 min</a></td></tr></table></td></tr><tr><td colspan=\\\"2\\\" style=\\\"padding-top:12px;font-size:10.5px;line-height:1.4;color:#9C9284;\\\"> MyVisaDTV est une agence privée d'accompagnement. Nous ne sommes pas l'administration thaïlandaise et ne garantissons pas l'obtention du visa. </td></tr></table>\"; return '<div style=\"font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.55;color:#1F2430;\">' + corps + '<div style=\"margin-top:18px;\">' + sig + '</div></div>'; })() }}"
+      },
+      "id": "8d1447bc-d689-4ed8-8f93-dbfb18790915",
+      "name": "send_email",
+      "type": "n8n-nodes-base.emailSendTool",
+      "typeVersion": 2.1,
+      "position": [
+        1000,
+        540
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "8Bc3etl2wxq6wEEm",
+          "name": "SMTP myvisaDTV (contact@)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram message').item.json.message.chat.id }}",
+        "text": "={{ String($json.output || 'I have no answer.').slice(0, 4000) }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "2596cc43-b83a-43f5-94bf-08fd4e676187",
+      "name": "Reply on Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TUuxivf4PXDKgHKU",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram message": {
+      "main": [
+        [
+          {
+            "node": "Is it Alexandre?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is it Alexandre?": {
+      "main": [
+        [
+          {
+            "node": "Email assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email assistant": {
+      "main": [
+        [
+          {
+            "node": "Reply on Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Email assistant",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "latest_emails": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search_emails": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "find_client": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send_email": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "Asia/Bangkok",
+    "executionOrder": "v1"
+  }
+}

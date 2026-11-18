@@ -1,0 +1,534 @@
+{
+  "name": "Dossiers : rappels, avis et purge RGPD",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "c1f04c63-898a-4bf1-966c-44bd41aa47fd",
+      "name": "Toutes les heures",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://ujrtyrnnhwsfqnftoawt.supabase.co/rest/v1/cases?select=id,client_name,status_changed_at&status=eq.verification&reminder_sent_at=is.null&status_changed_at=lt.' + $now.minus({ hours: 36 }).toUTC().toISO() }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {}
+      },
+      "id": "a5fcdfad-562c-4b95-8ad5-7ac1c706fc17",
+      "name": "Supabase : vérifications en retard",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        100
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().filter((i) => i.json.id).map((i) => {\n  const due = new Date(new Date(i.json.status_changed_at).getTime() + 48 * 3600e3);\n  const h = due.toLocaleString('fr-FR', { timeZone: 'Asia/Bangkok', weekday: 'long', hour: '2-digit', minute: '2-digit' });\n  return { json: { id: i.json.id, telegram: `⏰ Rapport à envoyer : ${i.json.client_name} est en « Vérification » depuis plus de 36 h. Échéance des 48 h : ${h} (heure de Bangkok).` } };\n});\n"
+      },
+      "id": "42e2da01-0723-47c7-9a65-3806fd990084",
+      "name": "Rappels",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "7817841281",
+        "text": "={{ $json.telegram }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "b402adf2-06f0-4c5c-9bed-998eb84b7449",
+      "name": "Telegram : rappel",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        660,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TUuxivf4PXDKgHKU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://ujrtyrnnhwsfqnftoawt.supabase.co/rest/v1/cases?id=eq.' + $('Rappels').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ reminder_sent_at: $now.toUTC().toISO() }) }}"
+      },
+      "id": "cabf85ac-9df5-4ca7-be59-239d33fbf817",
+      "name": "Supabase : rappel noté",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        100
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "5ad44ebe-480e-485f-a041-7b7c97dfc6e7",
+      "name": "Chaque jour à 9 h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://ujrtyrnnhwsfqnftoawt.supabase.co/rest/v1/cases?select=id,client_name,email,lang&status=eq.approuve&review_requested_at=is.null&email=not.is.null",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {}
+      },
+      "id": "b0d44b37-4fdd-4cf5-aa79-b159613a3b60",
+      "name": "Supabase : visas obtenus sans avis demandé",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        320
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const SITE = 'https://myvisadtv.com';\nconst espaceUrl = (lang) => SITE + ({ en: '/en', de: '/de' }[lang] || '') + '/dossier/';\nconst esc = (s) => String(s ?? '').replace(/[&<>\"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' })[c]);\nconst first = (n) => esc(String(n || '').trim().split(/\\s+/)[0] || '');\nconst SIGN = { fr: 'Alexandre<br>MyVisaDTV · contact@myvisadtv.com', en: 'Alexandre<br>MyVisaDTV · contact@myvisadtv.com', de: 'Alexandre<br>MyVisaDTV · contact@myvisadtv.com' };\nconst HELLO = { fr: 'Bonjour', en: 'Hello', de: 'Hallo' };\nfunction bouton(href, label) {\n  return `<p style=\"margin:28px 0\"><a href=\"${href}\" style=\"background:#16233f;color:#fff;padding:14px 22px;border-radius:999px;text-decoration:none;font-weight:600;display:inline-block\">${label}</a></p>`;\n}\nfunction mail(lang, name, paras, cta) {\n  const l = ['fr', 'en', 'de'].includes(lang) ? lang : 'fr';\n  const body = paras.map((p) => `<p style=\"margin:0 0 14px\">${p}</p>`).join('');\n  const html = `<div style=\"font-family:-apple-system,Segoe UI,Arial,sans-serif;font-size:15px;line-height:1.55;color:#1f2937;max-width:560px\">`\n    + `<p style=\"margin:0 0 14px\">${HELLO[l]} ${first(name)},</p>${body}${cta ? bouton(cta[0], cta[1]) : ''}<p style=\"margin:24px 0 0\">${SIGN[l]}</p></div>`;\n  const text = [`${HELLO[l]} ${String(name || '').split(' ')[0]},`, ...paras.map((p) => p.replace(/<br>/g, '\\n').replace(/<[^>]+>/g, '')), cta ? `${cta[1]} : ${cta[0]}` : '', 'Alexandre — MyVisaDTV'].filter(Boolean).join('\\n\\n');\n  return { html, text };\n}\n\n// ⚙️ RÉGLAGE : collez ici le lien direct « Laisser un avis » (Google Business ou Trustpilot).\nconst LIEN_AVIS = 'COLLER_LE_LIEN_AVIS_ICI';\nif (LIEN_AVIS.startsWith('COLLER')) return [];\nconst T = {\n  fr: { objet: 'Félicitations pour votre visa DTV 🎉', p: ['Encore bravo pour votre visa DTV, et merci de nous avoir fait confiance.', 'Votre avis aide d’autres francophones à préparer leur dossier sereinement. Il vous prendra une minute :', 'En répondant à cet e-mail avec « OK pour publier », vous nous autorisez aussi à afficher votre prénom et votre avis sur notre site.'], cta: 'Laisser mon avis' },\n  en: { objet: 'Congratulations on your DTV visa 🎉', p: ['Congratulations again on your DTV visa, and thank you for trusting us.', 'Your review helps others prepare their application with confidence. It takes one minute:', 'If you reply “OK to publish”, you also allow us to show your first name and review on our website.'], cta: 'Leave my review' },\n  de: { objet: 'Glückwunsch zu Ihrem DTV-Visum 🎉', p: ['Herzlichen Glückwunsch zu Ihrem DTV-Visum und danke für Ihr Vertrauen.', 'Ihre Bewertung hilft anderen, ihren Antrag entspannt vorzubereiten. Sie dauert eine Minute:', 'Wenn Sie mit „OK zur Veröffentlichung“ antworten, dürfen wir Ihren Vornamen und Ihre Bewertung auf unserer Website zeigen.'], cta: 'Bewertung abgeben' },\n};\nreturn $input.all().filter((i) => i.json.id && i.json.email).map((i) => {\n  const l = T[i.json.lang] ? i.json.lang : 'fr';\n  const m = mail(l, i.json.client_name, T[l].p, [LIEN_AVIS, T[l].cta]);\n  return { json: { id: i.json.id, to: i.json.email, objet: T[l].objet, html: m.html, text: m.text } };\n});\n"
+      },
+      "id": "7b50e57d-de0a-43b5-af02-0af25b0f90d1",
+      "name": "Préparer la demande d'avis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "Alexandre - myvisaDTV <contact@myvisadtv.com>",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.objet }}",
+        "emailFormat": "both",
+        "text": "={{ $json.text }}",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "056be17b-798a-43e5-8524-39243f892a85",
+      "name": "E-mail : demande d'avis",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        320
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "8Bc3etl2wxq6wEEm",
+          "name": "SMTP myvisaDTV (contact@)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://ujrtyrnnhwsfqnftoawt.supabase.co/rest/v1/cases?id=eq.' + $('Préparer la demande d\\'avis').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ review_requested_at: $now.toUTC().toISO() }) }}"
+      },
+      "id": "0fcd4a90-d9b0-49b0-9825-b66971ca725a",
+      "name": "Supabase : avis demandé",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        320
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://ujrtyrnnhwsfqnftoawt.supabase.co/rest/v1/cases?select=id,client_name,documents(storage_path)&status=in.(approuve,refuse,clos)&documents_purged_at=is.null&status_changed_at=lt.' + $now.minus({ days: 183 }).toUTC().toISO() }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {}
+      },
+      "id": "d866ffa0-7f2d-492e-95b6-96cf93e77dff",
+      "name": "Supabase : dossiers clos depuis 6 mois",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        520
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Promesse de la politique de confidentialité : pièces supprimées 6 mois après la décision.\nreturn $input.all().filter((i) => i.json.id).map((i) => ({ json: {\n  id: i.json.id, client_name: i.json.client_name,\n  paths: (i.json.documents || []).map((d) => d.storage_path).filter(Boolean),\n} }));\n"
+      },
+      "id": "a4522f4b-0270-43b1-a1d0-b288afc88cd6",
+      "name": "Purge : préparer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://ujrtyrnnhwsfqnftoawt.supabase.co/storage/v1/object/documents",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prefixes: $json.paths.length ? $json.paths : ['__aucun__'] }) }}"
+      },
+      "id": "9f9a1733-6bb8-4b42-a0af-13614cb2068b",
+      "name": "Supabase : supprimer les fichiers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        520
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "={{ 'https://ujrtyrnnhwsfqnftoawt.supabase.co/rest/v1/documents?case_id=eq.' + $('Purge : préparer').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {}
+      },
+      "id": "e645f967-f2dc-4b9d-b893-78400dbd99cc",
+      "name": "Supabase : supprimer la liste des pièces",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        520
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://ujrtyrnnhwsfqnftoawt.supabase.co/rest/v1/cases?id=eq.' + $('Purge : préparer').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ documents_purged_at: $now.toUTC().toISO() }) }}"
+      },
+      "id": "eab3c6a5-a84c-4595-bcbb-79569ce4b860",
+      "name": "Supabase : purge notée",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        520
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const done = $('Purge : préparer').all().map((i) => `${i.json.client_name} (${i.json.paths.length} fichier(s))`);\nreturn done.length ? [{ json: { telegram: `🗑️ RGPD : pièces supprimées pour ${done.length} dossier(s) clos depuis 6 mois : ${done.join(', ')}.` } }] : [];\n"
+      },
+      "id": "fc269ff1-4d4c-447b-aec0-23ea3d75102c",
+      "name": "Purge : résumé",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        520
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "chatId": "7817841281",
+        "text": "={{ $json.telegram }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "401c0370-1e2d-4683-ba51-3b6c4d16946f",
+      "name": "Telegram : purge",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1540,
+        520
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TUuxivf4PXDKgHKU",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Toutes les heures": {
+      "main": [
+        [
+          {
+            "node": "Supabase : vérifications en retard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : vérifications en retard": {
+      "main": [
+        [
+          {
+            "node": "Rappels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rappels": {
+      "main": [
+        [
+          {
+            "node": "Telegram : rappel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram : rappel": {
+      "main": [
+        [
+          {
+            "node": "Supabase : rappel noté",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chaque jour à 9 h": {
+      "main": [
+        [
+          {
+            "node": "Supabase : visas obtenus sans avis demandé",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supabase : dossiers clos depuis 6 mois",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : visas obtenus sans avis demandé": {
+      "main": [
+        [
+          {
+            "node": "Préparer la demande d'avis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer la demande d'avis": {
+      "main": [
+        [
+          {
+            "node": "E-mail : demande d'avis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "E-mail : demande d'avis": {
+      "main": [
+        [
+          {
+            "node": "Supabase : avis demandé",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : dossiers clos depuis 6 mois": {
+      "main": [
+        [
+          {
+            "node": "Purge : préparer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Purge : préparer": {
+      "main": [
+        [
+          {
+            "node": "Supabase : supprimer les fichiers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : supprimer les fichiers": {
+      "main": [
+        [
+          {
+            "node": "Supabase : supprimer la liste des pièces",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : supprimer la liste des pièces": {
+      "main": [
+        [
+          {
+            "node": "Supabase : purge notée",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : purge notée": {
+      "main": [
+        [
+          {
+            "node": "Purge : résumé",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Purge : résumé": {
+      "main": [
+        [
+          {
+            "node": "Telegram : purge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "timezone": "Asia/Bangkok",
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

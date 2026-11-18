@@ -8,6 +8,7 @@ const translatedPaths = [
   '/',
   '/a-propos/',
   '/blog/',
+  '/cgv/',
   '/confidentialite/',
   '/fiche-renseignement/',
   '/mentions-legales/',

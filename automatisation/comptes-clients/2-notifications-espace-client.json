@@ -1,0 +1,273 @@
+{
+  "name": "Espace client → notifications",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "myvisadtv-espace-client",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "60999b6d-1e54-4e40-93d0-2d0cf4656011",
+      "name": "Événement Supabase",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Secret webhook Supabase"
+        }
+      },
+      "webhookId": "b5ce7675-eaa5-4379-a961-2f68b5605d9a"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || {};\nconst { type, table, record = {}, old_record = {} } = b;\nlet event = null, caseId = null;\nif (table === 'documents' && type === 'INSERT') { event = 'document'; caseId = record.case_id; }\nelse if (table === 'messages' && type === 'INSERT') { event = record.author === 'advisor' ? 'message_conseiller' : 'message_client'; caseId = record.case_id; }\nelse if (table === 'cases' && type === 'UPDATE' && record.status !== old_record.status) { event = 'statut'; caseId = record.id; }\nif (!event || !caseId) return [];\nreturn [{ json: { event, caseId, record } }];\n"
+      },
+      "id": "1908a309-fcb7-4064-9e5f-95d28a6efbe8",
+      "name": "Analyser l'événement",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://ujrtyrnnhwsfqnftoawt.supabase.co/rest/v1/cases?select=id,client_name,email,lang,status,product&id=eq.' + $json.caseId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {}
+      },
+      "id": "b133630d-e484-4e33-9dd8-90481c832aec",
+      "name": "Supabase : lire le dossier",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "",
+          "name": "Supabase MyVisaDTV (service_role)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const SITE = 'https://myvisadtv.com';\nconst espaceUrl = (lang) => SITE + ({ en: '/en', de: '/de' }[lang] || '') + '/dossier/';\nconst esc = (s) => String(s ?? '').replace(/[&<>\"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' })[c]);\nconst first = (n) => esc(String(n || '').trim().split(/\\s+/)[0] || '');\nconst SIGN = { fr: 'Alexandre<br>MyVisaDTV · contact@myvisadtv.com', en: 'Alexandre<br>MyVisaDTV · contact@myvisadtv.com', de: 'Alexandre<br>MyVisaDTV · contact@myvisadtv.com' };\nconst HELLO = { fr: 'Bonjour', en: 'Hello', de: 'Hallo' };\nfunction bouton(href, label) {\n  return `<p style=\"margin:28px 0\"><a href=\"${href}\" style=\"background:#16233f;color:#fff;padding:14px 22px;border-radius:999px;text-decoration:none;font-weight:600;display:inline-block\">${label}</a></p>`;\n}\nfunction mail(lang, name, paras, cta) {\n  const l = ['fr', 'en', 'de'].includes(lang) ? lang : 'fr';\n  const body = paras.map((p) => `<p style=\"margin:0 0 14px\">${p}</p>`).join('');\n  const html = `<div style=\"font-family:-apple-system,Segoe UI,Arial,sans-serif;font-size:15px;line-height:1.55;color:#1f2937;max-width:560px\">`\n    + `<p style=\"margin:0 0 14px\">${HELLO[l]} ${first(name)},</p>${body}${cta ? bouton(cta[0], cta[1]) : ''}<p style=\"margin:24px 0 0\">${SIGN[l]}</p></div>`;\n  const text = [`${HELLO[l]} ${String(name || '').split(' ')[0]},`, ...paras.map((p) => p.replace(/<br>/g, '\\n').replace(/<[^>]+>/g, '')), cta ? `${cta[1]} : ${cta[0]}` : '', 'Alexandre — MyVisaDTV'].filter(Boolean).join('\\n\\n');\n  return { html, text };\n}\n\nconst c = $input.first().json;\nif (!c || !c.id) return [];\nconst ev = $('Analyser l\\'événement').first().json;\nconst espace = espaceUrl(c.lang);\nconst out = { telegram: '', sendMail: false };\nconst l = ['fr', 'en', 'de'].includes(c.lang) ? c.lang : 'fr';\n\nif (ev.event === 'document') out.telegram = `📄 ${c.client_name} a déposé « ${ev.record.file_name} ».`;\nif (ev.event === 'message_client') out.telegram = `💬 Nouveau message de ${c.client_name} dans son espace : ${String(ev.record.body || '').slice(0, 300)}`;\n\n// E-mails au client (uniquement s'il a un compte avec e-mail)\nconst S = {\n  verification: { fr: 'Votre dossier est complet : nous le vérifions. Vous recevez votre rapport écrit sous 48 h ouvrées.', en: 'Your file is complete and we are checking it. You will get your written report within 48 business hours.', de: 'Ihre Unterlagen sind vollständig und werden geprüft. Ihren schriftlichen Bericht erhalten Sie innerhalb von 48 Werktagsstunden.' },\n  rapport: { fr: 'Votre rapport de vérification est disponible dans votre espace.', en: 'Your document check report is available in your space.', de: 'Ihr Prüfbericht ist in Ihrem Bereich verfügbar.' },\n  depot: { fr: 'Votre demande de visa a été déposée sur le portail officiel e-Visa.', en: 'Your visa application has been filed on the official e-Visa portal.', de: 'Ihr Visumantrag wurde im offiziellen e-Visa-Portal eingereicht.' },\n  decision: { fr: 'Votre demande est en cours d’examen par les autorités thaïlandaises. Nous vous prévenons dès la décision.', en: 'Your application is being reviewed by the Thai authorities. We will let you know as soon as there is a decision.', de: 'Ihr Antrag wird von den thailändischen Behörden geprüft. Wir informieren Sie, sobald eine Entscheidung vorliegt.' },\n  approuve: { fr: '🎉 Bonne nouvelle : votre visa DTV a été accordé ! Les détails sont dans votre espace.', en: '🎉 Good news: your DTV visa has been granted! Details are in your space.', de: '🎉 Gute Nachricht: Ihr DTV-Visum wurde erteilt! Details finden Sie in Ihrem Bereich.' },\n  refuse: { fr: 'Votre demande a malheureusement été refusée. Nous analysons la décision et revenons vers vous très vite avec la suite, comme prévu dans nos conditions.', en: 'Unfortunately your application was refused. We are reviewing the decision and will get back to you shortly with the next steps, as set out in our terms.', de: 'Ihr Antrag wurde leider abgelehnt. Wir prüfen die Entscheidung und melden uns in Kürze mit den nächsten Schritten, wie in unseren AGB vorgesehen.' },\n};\nconst OBJ = {\n  statut: { fr: 'Votre dossier DTV avance', en: 'Your DTV file has been updated', de: 'Neuigkeiten zu Ihrem DTV-Antrag' },\n  message_conseiller: { fr: 'Nouveau message de votre conseiller', en: 'New message from your advisor', de: 'Neue Nachricht von Ihrem Berater' },\n};\nconst CTA = { fr: 'Ouvrir mon espace', en: 'Open my space', de: 'Bereich öffnen' };\nlet para = null;\nif (ev.event === 'statut' && S[c.status]) para = S[c.status][l];\nif (ev.event === 'message_conseiller') para = { fr: 'Vous avez un nouveau message de votre conseiller dans votre espace client.', en: 'You have a new message from your advisor in your client space.', de: 'Sie haben eine neue Nachricht Ihres Beraters in Ihrem Kundenbereich.' }[l];\nif (para && c.email) {\n  const m = mail(l, c.client_name, [para], [espace, CTA[l]]);\n  Object.assign(out, { sendMail: true, to: c.email, objet: OBJ[ev.event][l], html: m.html, text: m.text });\n}\nif (!out.sendMail && !out.telegram) return [];\nreturn [{ json: out }];\n"
+      },
+      "id": "853ac9b4-fad7-4d04-980e-b2adab4850a1",
+      "name": "Préparer la notification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "96fb9075-f6f2-42a2-bf20-a920a325654b",
+              "leftValue": "={{ $json.sendMail }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4315b10b-e7a1-414a-baf2-6a03a7770f5f",
+      "name": "E-mail au client ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "Alexandre - myvisaDTV <contact@myvisadtv.com>",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.objet }}",
+        "emailFormat": "both",
+        "text": "={{ $json.text }}",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "8a53e41a-e3e9-4bae-b742-9c587b9609af",
+      "name": "E-mail au client",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        200
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "8Bc3etl2wxq6wEEm",
+          "name": "SMTP myvisaDTV (contact@)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "31883ef2-1383-4fbe-92a9-a1928e92b17c",
+              "leftValue": "={{ !!$json.telegram }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1c290d81-2d68-403e-a937-aab80359555c",
+      "name": "Alerte pour Alexandre ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "7817841281",
+        "text": "={{ $json.telegram }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "4ef61368-aff4-4cba-9a7f-15be9e2dda0a",
+      "name": "Alerte Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1100,
+        420
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TUuxivf4PXDKgHKU",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Événement Supabase": {
+      "main": [
+        [
+          {
+            "node": "Analyser l'événement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyser l'événement": {
+      "main": [
+        [
+          {
+            "node": "Supabase : lire le dossier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase : lire le dossier": {
+      "main": [
+        [
+          {
+            "node": "Préparer la notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer la notification": {
+      "main": [
+        [
+          {
+            "node": "E-mail au client ?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alerte pour Alexandre ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "E-mail au client ?": {
+      "main": [
+        [
+          {
+            "node": "E-mail au client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alerte pour Alexandre ?": {
+      "main": [
+        [
+          {
+            "node": "Alerte Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "timezone": "Asia/Bangkok",
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
